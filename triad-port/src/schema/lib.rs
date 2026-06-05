@@ -172,6 +172,8 @@ pub enum DeployRejectionReason {
     BuilderUnreachable,
     SubstituterUnreachable,
     DeploymentInFlight,
+    UnsupportedDeployAction,
+    InternalError,
 }
 
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -181,6 +183,7 @@ pub enum PinRejectionReason {
     NodeUnknown,
     PinLabelInUse,
     PinSlotExhausted,
+    InternalError,
 }
 
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -189,6 +192,7 @@ pub enum UnpinRejectionReason {
     PinLabelUnknown,
     NodeUnknown,
     GenerationNotPinned,
+    InternalError,
 }
 
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -198,6 +202,7 @@ pub enum RetireRejectionReason {
     NodeUnknown,
     GenerationActive,
     GenerationPinned,
+    InternalError,
 }
 
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]

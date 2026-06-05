@@ -116,10 +116,15 @@
   AppliedUnpin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
   AppliedRetire { GenerationIdentifier * from_slot GenerationSlot DatabaseMarker * }
 
-  DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight]
-  PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted]
-  UnpinRejectionReason [PinLabelUnknown NodeUnknown GenerationNotPinned]
-  RetireRejectionReason [GenerationUnknown NodeUnknown GenerationActive GenerationPinned]
+  ;; UnsupportedDeployAction: the daemon does not yet implement this deploy
+  ;; shape (e.g. an activating action or a production build that needs horizon
+  ;; materialization) and rejects it honestly rather than falsely reporting
+  ;; Deployed. InternalError: an internal invariant failure (e.g. a poisoned
+  ;; lock) — never a misleading domain reason. Both per audit 29 (C1/C4).
+  DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError]
+  PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
+  UnpinRejectionReason [PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
+  RetireRejectionReason [GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]
 
   RejectedDeploy { DeployRejectionReason * DatabaseMarker * }
   RejectedPin { PinRejectionReason * DatabaseMarker * }

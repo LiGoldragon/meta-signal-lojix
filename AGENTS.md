@@ -4,7 +4,7 @@ You MUST read `~/primary/repos/lore/AGENTS.md` — the canonical agent
 contract.
 
 Read `INTENT.md` before editing. This repo is a pure meta signal
-contract under `triad-port/`.
+contract at the repo root.
 
 - Keep this repo wire-only: schema, generated typed records, codecs,
   and contract witnesses.

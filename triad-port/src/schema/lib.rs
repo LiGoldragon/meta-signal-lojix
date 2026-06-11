@@ -39,44 +39,77 @@ pub use signal_lojix::schema::lib::DatabaseMarker as DatabaseMarker;
 pub use nota_next::{NotaDecode, NotaDecodeError, NotaEncode, NotaSource};
 
 #[rustfmt::skip]
-pub type Deploy = DeployRequest;
-
-#[rustfmt::skip]
-pub type Pin = PinRequest;
-
-#[rustfmt::skip]
-pub type Unpin = UnpinRequest;
-
-#[rustfmt::skip]
-pub type Retire = RetireRequest;
-
-#[rustfmt::skip]
-pub type Deployed = AcceptedDeploy;
-
-#[rustfmt::skip]
-pub type DeployRejected = RejectedDeploy;
-
-#[rustfmt::skip]
-pub type Pinned = AppliedPin;
-
-#[rustfmt::skip]
-pub type PinRejected = RejectedPin;
-
-#[rustfmt::skip]
-pub type Unpinned = AppliedUnpin;
-
-#[rustfmt::skip]
-pub type UnpinRejected = RejectedUnpin;
-
-#[rustfmt::skip]
-pub type Retired = AppliedRetire;
-
-#[rustfmt::skip]
-pub type RetireRejected = RejectedRetire;
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Deploy(DeployRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Pin(PinRequest);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Unpin(UnpinRequest);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Retire(RetireRequest);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Deployed(AcceptedDeploy);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct DeployRejected(RejectedDeploy);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Pinned(AppliedPin);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct PinRejected(RejectedPin);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Unpinned(AppliedUnpin);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct UnpinRejected(RejectedUnpin);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Retired(AppliedRetire);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct RetireRejected(RejectedRetire);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+)]
 pub enum HomeMode {
     Build,
     Profile,
@@ -94,10 +127,12 @@ pub struct ExtraSubstituter {
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Builder(pub NodeName);
+pub struct Builder(NodeName);
 
 #[rustfmt::skip]
-pub type FlakeAttribute = String;
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct FlakeAttribute(String);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -205,7 +240,16 @@ pub struct AppliedRetire {
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+)]
 pub enum DeployRejectionReason {
     ClusterUnknown,
     NodeUnknown,
@@ -220,7 +264,16 @@ pub enum DeployRejectionReason {
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+)]
 pub enum PinRejectionReason {
     GenerationUnknown,
     NodeUnknown,
@@ -231,7 +284,16 @@ pub enum PinRejectionReason {
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+)]
 pub enum UnpinRejectionReason {
     PinLabelUnknown,
     NodeUnknown,
@@ -241,7 +303,16 @@ pub enum UnpinRejectionReason {
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+)]
 pub enum RetireRejectionReason {
     GenerationUnknown,
     NodeUnknown,
@@ -307,6 +378,234 @@ pub enum Output {
 }
 
 #[rustfmt::skip]
+impl Deploy {
+    pub fn new(payload: DeployRequest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &DeployRequest {
+        &self.0
+    }
+    pub fn into_payload(self) -> DeployRequest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<DeployRequest> for Deploy {
+    fn from(payload: DeployRequest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Pin {
+    pub fn new(payload: PinRequest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &PinRequest {
+        &self.0
+    }
+    pub fn into_payload(self) -> PinRequest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<PinRequest> for Pin {
+    fn from(payload: PinRequest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Unpin {
+    pub fn new(payload: UnpinRequest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &UnpinRequest {
+        &self.0
+    }
+    pub fn into_payload(self) -> UnpinRequest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<UnpinRequest> for Unpin {
+    fn from(payload: UnpinRequest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Retire {
+    pub fn new(payload: RetireRequest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &RetireRequest {
+        &self.0
+    }
+    pub fn into_payload(self) -> RetireRequest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<RetireRequest> for Retire {
+    fn from(payload: RetireRequest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Deployed {
+    pub fn new(payload: AcceptedDeploy) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &AcceptedDeploy {
+        &self.0
+    }
+    pub fn into_payload(self) -> AcceptedDeploy {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<AcceptedDeploy> for Deployed {
+    fn from(payload: AcceptedDeploy) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl DeployRejected {
+    pub fn new(payload: RejectedDeploy) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &RejectedDeploy {
+        &self.0
+    }
+    pub fn into_payload(self) -> RejectedDeploy {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<RejectedDeploy> for DeployRejected {
+    fn from(payload: RejectedDeploy) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Pinned {
+    pub fn new(payload: AppliedPin) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &AppliedPin {
+        &self.0
+    }
+    pub fn into_payload(self) -> AppliedPin {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<AppliedPin> for Pinned {
+    fn from(payload: AppliedPin) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl PinRejected {
+    pub fn new(payload: RejectedPin) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &RejectedPin {
+        &self.0
+    }
+    pub fn into_payload(self) -> RejectedPin {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<RejectedPin> for PinRejected {
+    fn from(payload: RejectedPin) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Unpinned {
+    pub fn new(payload: AppliedUnpin) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &AppliedUnpin {
+        &self.0
+    }
+    pub fn into_payload(self) -> AppliedUnpin {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<AppliedUnpin> for Unpinned {
+    fn from(payload: AppliedUnpin) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl UnpinRejected {
+    pub fn new(payload: RejectedUnpin) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &RejectedUnpin {
+        &self.0
+    }
+    pub fn into_payload(self) -> RejectedUnpin {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<RejectedUnpin> for UnpinRejected {
+    fn from(payload: RejectedUnpin) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Retired {
+    pub fn new(payload: AppliedRetire) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &AppliedRetire {
+        &self.0
+    }
+    pub fn into_payload(self) -> AppliedRetire {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<AppliedRetire> for Retired {
+    fn from(payload: AppliedRetire) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl RetireRejected {
+    pub fn new(payload: RejectedRetire) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &RejectedRetire {
+        &self.0
+    }
+    pub fn into_payload(self) -> RejectedRetire {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<RejectedRetire> for RetireRejected {
+    fn from(payload: RejectedRetire) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl Builder {
     pub fn new(payload: NodeName) -> Self {
         Self(payload)
@@ -326,6 +625,25 @@ impl From<NodeName> for Builder {
 }
 
 #[rustfmt::skip]
+impl FlakeAttribute {
+    pub fn new(payload: impl Into<String>) -> Self {
+        Self(payload.into())
+    }
+    pub fn payload(&self) -> &String {
+        &self.0
+    }
+    pub fn into_payload(self) -> String {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<String> for FlakeAttribute {
+    fn from(payload: String) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl DeployRequest {
     pub fn system(payload: SystemDeployment) -> Self {
         Self::System(payload)
@@ -337,45 +655,45 @@ impl DeployRequest {
 
 #[rustfmt::skip]
 impl Input {
-    pub fn deploy(payload: Deploy) -> Self {
-        Self::Deploy(payload)
+    pub fn deploy(payload: DeployRequest) -> Self {
+        Self::Deploy(Deploy::new(payload))
     }
-    pub fn pin(payload: Pin) -> Self {
-        Self::Pin(payload)
+    pub fn pin(payload: PinRequest) -> Self {
+        Self::Pin(Pin::new(payload))
     }
-    pub fn unpin(payload: Unpin) -> Self {
-        Self::Unpin(payload)
+    pub fn unpin(payload: UnpinRequest) -> Self {
+        Self::Unpin(Unpin::new(payload))
     }
-    pub fn retire(payload: Retire) -> Self {
-        Self::Retire(payload)
+    pub fn retire(payload: RetireRequest) -> Self {
+        Self::Retire(Retire::new(payload))
     }
 }
 
 #[rustfmt::skip]
 impl Output {
-    pub fn deployed(payload: Deployed) -> Self {
-        Self::Deployed(payload)
+    pub fn deployed(payload: AcceptedDeploy) -> Self {
+        Self::Deployed(Deployed::new(payload))
     }
-    pub fn deploy_rejected(payload: DeployRejected) -> Self {
-        Self::DeployRejected(payload)
+    pub fn deploy_rejected(payload: RejectedDeploy) -> Self {
+        Self::DeployRejected(DeployRejected::new(payload))
     }
-    pub fn pinned(payload: Pinned) -> Self {
-        Self::Pinned(payload)
+    pub fn pinned(payload: AppliedPin) -> Self {
+        Self::Pinned(Pinned::new(payload))
     }
-    pub fn pin_rejected(payload: PinRejected) -> Self {
-        Self::PinRejected(payload)
+    pub fn pin_rejected(payload: RejectedPin) -> Self {
+        Self::PinRejected(PinRejected::new(payload))
     }
-    pub fn unpinned(payload: Unpinned) -> Self {
-        Self::Unpinned(payload)
+    pub fn unpinned(payload: AppliedUnpin) -> Self {
+        Self::Unpinned(Unpinned::new(payload))
     }
-    pub fn unpin_rejected(payload: UnpinRejected) -> Self {
-        Self::UnpinRejected(payload)
+    pub fn unpin_rejected(payload: RejectedUnpin) -> Self {
+        Self::UnpinRejected(UnpinRejected::new(payload))
     }
-    pub fn retired(payload: Retired) -> Self {
-        Self::Retired(payload)
+    pub fn retired(payload: AppliedRetire) -> Self {
+        Self::Retired(Retired::new(payload))
     }
-    pub fn retire_rejected(payload: RetireRejected) -> Self {
-        Self::RetireRejected(payload)
+    pub fn retire_rejected(payload: RejectedRetire) -> Self {
+        Self::RetireRejected(RetireRejected::new(payload))
     }
 }
 
@@ -394,13 +712,229 @@ impl From<HomeDeployment> for DeployRequest {
 }
 
 #[rustfmt::skip]
+impl From<Deploy> for Input {
+    fn from(payload: Deploy) -> Self {
+        Self::Deploy(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Pin> for Input {
+    fn from(payload: Pin) -> Self {
+        Self::Pin(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Unpin> for Input {
+    fn from(payload: Unpin) -> Self {
+        Self::Unpin(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Retire> for Input {
+    fn from(payload: Retire) -> Self {
+        Self::Retire(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Deployed> for Output {
+    fn from(payload: Deployed) -> Self {
+        Self::Deployed(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<DeployRejected> for Output {
+    fn from(payload: DeployRejected) -> Self {
+        Self::DeployRejected(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Pinned> for Output {
+    fn from(payload: Pinned) -> Self {
+        Self::Pinned(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<PinRejected> for Output {
+    fn from(payload: PinRejected) -> Self {
+        Self::PinRejected(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Unpinned> for Output {
+    fn from(payload: Unpinned) -> Self {
+        Self::Unpinned(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<UnpinRejected> for Output {
+    fn from(payload: UnpinRejected) -> Self {
+        Self::UnpinRejected(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Retired> for Output {
+    fn from(payload: Retired) -> Self {
+        Self::Retired(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<RetireRejected> for Output {
+    fn from(payload: RetireRejected) -> Self {
+        Self::RetireRejected(payload)
+    }
+}
+
+#[rustfmt::skip]
 #[cfg(feature = "nota-text")]
-impl HomeMode {
+impl Deploy {
     pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
         <Self as NotaDecode>::from_nota_block(block)
     }
     pub fn to_nota(&self) -> String {
         <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Pin {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Unpin {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Retire {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Deployed {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl DeployRejected {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Pinned {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl PinRejected {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Unpinned {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl UnpinRejected {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl Retired {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl RetireRejected {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl HomeMode {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(self) -> String {
+        <Self as NotaEncode>::to_nota(&self)
     }
 }
 
@@ -418,6 +952,17 @@ impl ExtraSubstituter {
 #[rustfmt::skip]
 #[cfg(feature = "nota-text")]
 impl Builder {
+    pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
+        <Self as NotaDecode>::from_nota_block(block)
+    }
+    pub fn to_nota(&self) -> String {
+        <Self as NotaEncode>::to_nota(self)
+    }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "nota-text")]
+impl FlakeAttribute {
     pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
         <Self as NotaDecode>::from_nota_block(block)
     }
@@ -542,8 +1087,8 @@ impl DeployRejectionReason {
     pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
         <Self as NotaDecode>::from_nota_block(block)
     }
-    pub fn to_nota(&self) -> String {
-        <Self as NotaEncode>::to_nota(self)
+    pub fn to_nota(self) -> String {
+        <Self as NotaEncode>::to_nota(&self)
     }
 }
 
@@ -553,8 +1098,8 @@ impl PinRejectionReason {
     pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
         <Self as NotaDecode>::from_nota_block(block)
     }
-    pub fn to_nota(&self) -> String {
-        <Self as NotaEncode>::to_nota(self)
+    pub fn to_nota(self) -> String {
+        <Self as NotaEncode>::to_nota(&self)
     }
 }
 
@@ -564,8 +1109,8 @@ impl UnpinRejectionReason {
     pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
         <Self as NotaDecode>::from_nota_block(block)
     }
-    pub fn to_nota(&self) -> String {
-        <Self as NotaEncode>::to_nota(self)
+    pub fn to_nota(self) -> String {
+        <Self as NotaEncode>::to_nota(&self)
     }
 }
 
@@ -575,8 +1120,8 @@ impl RetireRejectionReason {
     pub fn from_nota_block(block: &nota_next::Block) -> Result<Self, NotaDecodeError> {
         <Self as NotaDecode>::from_nota_block(block)
     }
-    pub fn to_nota(&self) -> String {
-        <Self as NotaEncode>::to_nota(self)
+    pub fn to_nota(self) -> String {
+        <Self as NotaEncode>::to_nota(&self)
     }
 }
 
@@ -922,5 +1467,58 @@ impl Output {
             });
         }
         Ok((route, value))
+    }
+}
+
+#[rustfmt::skip]
+impl signal_frame::RequestPayload for Input {}
+#[rustfmt::skip]
+impl signal_frame::SignalOperationHeads for Input {
+    const HEADS: &'static [&'static str] = &["Deploy", "Pin", "Unpin", "Retire"];
+}
+#[rustfmt::skip]
+impl signal_frame::LogVariant for Input {
+    fn log_variant(&self) -> u64 {
+        self.short_header()
+    }
+}
+#[rustfmt::skip]
+pub type Frame = signal_frame::ExchangeFrame<Input, Output>;
+#[rustfmt::skip]
+pub type FrameBody = signal_frame::ExchangeFrameBody<Input, Output>;
+#[rustfmt::skip]
+pub type Request = signal_frame::Request<Input>;
+#[rustfmt::skip]
+pub type ReplyEnvelope = signal_frame::Reply<Output>;
+#[rustfmt::skip]
+pub type RequestBuilder = signal_frame::RequestBuilder<Input>;
+#[rustfmt::skip]
+impl Input {
+    pub fn into_frame(self, exchange: signal_frame::ExchangeIdentifier) -> Frame {
+        let short_header = signal_frame::ShortHeader::new(self.short_header());
+        let request = signal_frame::Request::from_payload(self);
+        Frame::with_short_header(
+            short_header,
+            FrameBody::Request {
+                exchange,
+                request,
+            },
+        )
+    }
+}
+#[rustfmt::skip]
+impl Output {
+    pub fn into_reply_frame(self, exchange: signal_frame::ExchangeIdentifier) -> Frame {
+        let short_header = signal_frame::ShortHeader::new(self.short_header());
+        let reply = signal_frame::Reply::committed(
+            signal_frame::NonEmpty::single(signal_frame::SubReply::Ok(self)),
+        );
+        Frame::with_short_header(
+            short_header,
+            FrameBody::Reply {
+                exchange,
+                reply,
+            },
+        )
     }
 }

@@ -14,6 +14,8 @@ pub use signal_lojix::schema::lib::DeploymentIdentifier as DeploymentIdentifier;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::GenerationIdentifier as GenerationIdentifier;
 #[rustfmt::skip]
+pub use signal_lojix::schema::lib::TestRunIdentifier as TestRunIdentifier;
+#[rustfmt::skip]
 pub use signal_lojix::schema::lib::ClusterName as ClusterName;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::NodeName as NodeName;
@@ -33,6 +35,10 @@ pub use signal_lojix::schema::lib::ProposalSource as ProposalSource;
 pub use signal_lojix::schema::lib::FlakeReference as FlakeReference;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::DatabaseMarker as DatabaseMarker;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::TestMode as TestMode;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::HostSelection as HostSelection;
 
 #[rustfmt::skip]
 #[cfg(feature = "nota-text")]
@@ -57,6 +63,11 @@ pub struct Unpin(UnpinRequest);
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Retire(RetireRequest);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Test(TestRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -97,6 +108,47 @@ pub struct Retired(AppliedRetire);
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RetireRejected(RejectedRetire);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct Tested(AcceptedTest);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct TestRejected(RejectedTest);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub enum TestRequest {
+    Run(TestRun),
+    Check(QuickCheck),
+}
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub enum NodeSelection {
+    Nodes(Vec<NodeName>),
+    All,
+}
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct TestRun {
+    pub cluster_name: ClusterName,
+    pub node_selection: NodeSelection,
+    pub host_selection: HostSelection,
+    pub test_mode: TestMode,
+}
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct QuickCheck(Vec<NodeName>);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -204,6 +256,14 @@ pub struct RetireRequest {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct AcceptedDeploy {
     pub deployment_identifier: DeploymentIdentifier,
+    pub database_marker: DatabaseMarker,
+}
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct AcceptedTest {
+    pub test_run_identifier: TestRunIdentifier,
     pub database_marker: DatabaseMarker,
 }
 
@@ -323,6 +383,28 @@ pub enum RetireRejectionReason {
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+)]
+pub enum TestRejectionReason {
+    ClusterUnknown,
+    NodeUnknown,
+    VmHostNotDeclaredForNode,
+    HostDeclaresNoVmHost,
+    NoTestDefaults,
+    SubstrateUnavailable,
+    InternalError,
+}
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RejectedDeploy {
     pub deploy_rejection_reason: DeployRejectionReason,
@@ -356,11 +438,20 @@ pub struct RejectedRetire {
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct RejectedTest {
+    pub test_rejection_reason: TestRejectionReason,
+    pub database_marker: DatabaseMarker,
+}
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Input {
     Deploy(Deploy),
     Pin(Pin),
     Unpin(Unpin),
     Retire(Retire),
+    Test(Test),
 }
 
 #[rustfmt::skip]
@@ -375,6 +466,8 @@ pub enum Output {
     UnpinRejected(UnpinRejected),
     Retired(Retired),
     RetireRejected(RetireRejected),
+    Tested(Tested),
+    TestRejected(TestRejected),
 }
 
 #[rustfmt::skip]
@@ -449,6 +542,25 @@ impl Retire {
 #[rustfmt::skip]
 impl From<RetireRequest> for Retire {
     fn from(payload: RetireRequest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl Test {
+    pub fn new(payload: TestRequest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &TestRequest {
+        &self.0
+    }
+    pub fn into_payload(self) -> TestRequest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<TestRequest> for Test {
+    fn from(payload: TestRequest) -> Self {
         Self::new(payload)
     }
 }
@@ -606,6 +718,63 @@ impl From<RejectedRetire> for RetireRejected {
 }
 
 #[rustfmt::skip]
+impl Tested {
+    pub fn new(payload: AcceptedTest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &AcceptedTest {
+        &self.0
+    }
+    pub fn into_payload(self) -> AcceptedTest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<AcceptedTest> for Tested {
+    fn from(payload: AcceptedTest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl TestRejected {
+    pub fn new(payload: RejectedTest) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &RejectedTest {
+        &self.0
+    }
+    pub fn into_payload(self) -> RejectedTest {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<RejectedTest> for TestRejected {
+    fn from(payload: RejectedTest) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl QuickCheck {
+    pub fn new(payload: Vec<NodeName>) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &Vec<NodeName> {
+        &self.0
+    }
+    pub fn into_payload(self) -> Vec<NodeName> {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<Vec<NodeName>> for QuickCheck {
+    fn from(payload: Vec<NodeName>) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl Builder {
     pub fn new(payload: NodeName) -> Self {
         Self(payload)
@@ -644,6 +813,23 @@ impl From<String> for FlakeAttribute {
 }
 
 #[rustfmt::skip]
+impl TestRequest {
+    pub fn run(payload: TestRun) -> Self {
+        Self::Run(payload)
+    }
+    pub fn check(payload: Vec<NodeName>) -> Self {
+        Self::Check(QuickCheck::new(payload))
+    }
+}
+
+#[rustfmt::skip]
+impl NodeSelection {
+    pub fn nodes(payload: Vec<NodeName>) -> Self {
+        Self::Nodes(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl DeployRequest {
     pub fn system(payload: SystemDeployment) -> Self {
         Self::System(payload)
@@ -666,6 +852,9 @@ impl Input {
     }
     pub fn retire(payload: RetireRequest) -> Self {
         Self::Retire(Retire::new(payload))
+    }
+    pub fn test(payload: TestRequest) -> Self {
+        Self::Test(Test::new(payload))
     }
 }
 
@@ -694,6 +883,26 @@ impl Output {
     }
     pub fn retire_rejected(payload: RejectedRetire) -> Self {
         Self::RetireRejected(RetireRejected::new(payload))
+    }
+    pub fn tested(payload: AcceptedTest) -> Self {
+        Self::Tested(Tested::new(payload))
+    }
+    pub fn test_rejected(payload: RejectedTest) -> Self {
+        Self::TestRejected(TestRejected::new(payload))
+    }
+}
+
+#[rustfmt::skip]
+impl From<TestRun> for TestRequest {
+    fn from(payload: TestRun) -> Self {
+        Self::Run(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<QuickCheck> for TestRequest {
+    fn from(payload: QuickCheck) -> Self {
+        Self::Check(payload)
     }
 }
 
@@ -736,6 +945,13 @@ impl From<Unpin> for Input {
 impl From<Retire> for Input {
     fn from(payload: Retire) -> Self {
         Self::Retire(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<Test> for Input {
+    fn from(payload: Test) -> Self {
+        Self::Test(payload)
     }
 }
 
@@ -796,6 +1012,20 @@ impl From<RetireRejected> for Output {
 }
 
 #[rustfmt::skip]
+impl From<Tested> for Output {
+    fn from(payload: Tested) -> Self {
+        Self::Tested(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl From<TestRejected> for Output {
+    fn from(payload: TestRejected) -> Self {
+        Self::TestRejected(payload)
+    }
+}
+
+#[rustfmt::skip]
 #[cfg(feature = "nota-text")]
 impl std::str::FromStr for Input {
     type Err = NotaDecodeError;
@@ -833,6 +1063,7 @@ pub mod short_header {
     pub const INPUT_PIN: u64 = 0x0001000000000000;
     pub const INPUT_UNPIN: u64 = 0x0002000000000000;
     pub const INPUT_RETIRE: u64 = 0x0003000000000000;
+    pub const INPUT_TEST: u64 = 0x0004000000000000;
     pub const OUTPUT_DEPLOYED: u64 = 0x0100000000000000;
     pub const OUTPUT_DEPLOY_REJECTED: u64 = 0x0101000000000000;
     pub const OUTPUT_PINNED: u64 = 0x0102000000000000;
@@ -841,6 +1072,8 @@ pub mod short_header {
     pub const OUTPUT_UNPIN_REJECTED: u64 = 0x0105000000000000;
     pub const OUTPUT_RETIRED: u64 = 0x0106000000000000;
     pub const OUTPUT_RETIRE_REJECTED: u64 = 0x0107000000000000;
+    pub const OUTPUT_TESTED: u64 = 0x0108000000000000;
+    pub const OUTPUT_TEST_REJECTED: u64 = 0x0109000000000000;
 }
 
 #[rustfmt::skip]
@@ -895,6 +1128,7 @@ pub enum InputRoute {
     Pin,
     Unpin,
     Retire,
+    Test,
 }
 
 #[rustfmt::skip]
@@ -918,6 +1152,8 @@ pub enum OutputRoute {
     UnpinRejected,
     Retired,
     RetireRejected,
+    Tested,
+    TestRejected,
 }
 
 #[rustfmt::skip]
@@ -928,6 +1164,7 @@ impl Input {
             Self::Pin(_) => InputRoute::Pin,
             Self::Unpin(_) => InputRoute::Unpin,
             Self::Retire(_) => InputRoute::Retire,
+            Self::Test(_) => InputRoute::Test,
         }
     }
     pub fn short_header(&self) -> u64 {
@@ -936,6 +1173,7 @@ impl Input {
             Self::Pin(_) => short_header::INPUT_PIN,
             Self::Unpin(_) => short_header::INPUT_UNPIN,
             Self::Retire(_) => short_header::INPUT_RETIRE,
+            Self::Test(_) => short_header::INPUT_TEST,
         }
     }
     pub fn route_from_short_header(header: u64) -> Result<InputRoute, SignalFrameError> {
@@ -944,6 +1182,7 @@ impl Input {
             short_header::INPUT_PIN => Ok(InputRoute::Pin),
             short_header::INPUT_UNPIN => Ok(InputRoute::Unpin),
             short_header::INPUT_RETIRE => Ok(InputRoute::Retire),
+            short_header::INPUT_TEST => Ok(InputRoute::Test),
             _ => {
                 Err(SignalFrameError::UnknownHeader {
                     root_enum: "Input",
@@ -1002,6 +1241,8 @@ impl Output {
             Self::UnpinRejected(_) => OutputRoute::UnpinRejected,
             Self::Retired(_) => OutputRoute::Retired,
             Self::RetireRejected(_) => OutputRoute::RetireRejected,
+            Self::Tested(_) => OutputRoute::Tested,
+            Self::TestRejected(_) => OutputRoute::TestRejected,
         }
     }
     pub fn short_header(&self) -> u64 {
@@ -1014,6 +1255,8 @@ impl Output {
             Self::UnpinRejected(_) => short_header::OUTPUT_UNPIN_REJECTED,
             Self::Retired(_) => short_header::OUTPUT_RETIRED,
             Self::RetireRejected(_) => short_header::OUTPUT_RETIRE_REJECTED,
+            Self::Tested(_) => short_header::OUTPUT_TESTED,
+            Self::TestRejected(_) => short_header::OUTPUT_TEST_REJECTED,
         }
     }
     pub fn route_from_short_header(
@@ -1028,6 +1271,8 @@ impl Output {
             short_header::OUTPUT_UNPIN_REJECTED => Ok(OutputRoute::UnpinRejected),
             short_header::OUTPUT_RETIRED => Ok(OutputRoute::Retired),
             short_header::OUTPUT_RETIRE_REJECTED => Ok(OutputRoute::RetireRejected),
+            short_header::OUTPUT_TESTED => Ok(OutputRoute::Tested),
+            short_header::OUTPUT_TEST_REJECTED => Ok(OutputRoute::TestRejected),
             _ => {
                 Err(SignalFrameError::UnknownHeader {
                     root_enum: "Output",
@@ -1078,7 +1323,7 @@ impl Output {
 impl signal_frame::RequestPayload for Input {}
 #[rustfmt::skip]
 impl signal_frame::SignalOperationHeads for Input {
-    const HEADS: &'static [&'static str] = &["Deploy", "Pin", "Unpin", "Retire"];
+    const HEADS: &'static [&'static str] = &["Deploy", "Pin", "Unpin", "Retire", "Test"];
 }
 #[rustfmt::skip]
 impl signal_frame::LogVariant for Input {

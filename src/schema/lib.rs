@@ -399,6 +399,7 @@ pub enum TestRejectionReason {
     VmHostNotDeclaredForNode,
     HostDeclaresNoVmHost,
     NoTestDefaults,
+    LiveNotYetEnabled,
     SubstrateUnavailable,
     InternalError,
 }

@@ -152,8 +152,12 @@
   ;; node's declared host-set ({super_node} ∪ super_nodes). HostDeclaresNoVmHost:
   ;; the resolved host runs no VmHost service. NoTestDefaults: a (Check …)
   ;; arrived but the daemon config carries no TestDefaults to lower it.
-  ;; SubstrateUnavailable/InternalError per the Deploy precedent.
-  TestRejectionReason [ClusterUnknown NodeUnknown VmHostNotDeclaredForNode HostDeclaresNoVmHost NoTestDefaults SubstrateUnavailable InternalError]
+  ;; LiveNotYetEnabled: a (Run … Live) arrived but the live deploy-into-VM +
+  ;; assert chain is not yet implemented; the daemon rejects it honestly at
+  ;; submit rather than recording a Passed it never earned (mirrors the Deploy
+  ;; UnsupportedDeployAction precedent). SubstrateUnavailable/InternalError per
+  ;; the Deploy precedent.
+  TestRejectionReason [ClusterUnknown NodeUnknown VmHostNotDeclaredForNode HostDeclaresNoVmHost NoTestDefaults LiveNotYetEnabled SubstrateUnavailable InternalError]
 
   RejectedDeploy { DeployRejectionReason * DatabaseMarker * }
   RejectedPin { PinRejectionReason * DatabaseMarker * }

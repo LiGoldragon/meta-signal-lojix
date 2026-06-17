@@ -362,7 +362,7 @@ dependencies = [
 [[package]]
 name = "schema-rust-next"
 version = "0.5.3"
-source = "git+https://github.com/LiGoldragon/schema-rust-next.git?branch=main#0a7d1db2c468a387dc33bb75e6b4d21c5bbac8d0"
+source = "git+https://github.com/LiGoldragon/schema-rust-next.git?branch=main#6e04d70ff679181938c50b6a5488035efa0979b8"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -381,7 +381,7 @@ checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
 [[package]]
 name = "signal-frame"
 version = "0.2.1"
-source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#166bda84dc63bf8461fff11a41c43d6a1c92a941"
+source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#e2eae5c28dac47eea6c4c641b60c4fd27bb547d8"
 dependencies = [
  "nota-next",
  "paste",
@@ -393,7 +393,7 @@ dependencies = [
 [[package]]
 name = "signal-frame-macros"
 version = "0.1.1"
-source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#166bda84dc63bf8461fff11a41c43d6a1c92a941"
+source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#e2eae5c28dac47eea6c4c641b60c4fd27bb547d8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -403,7 +403,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "0.1.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?branch=main#cc8bbf32aa45657a94462e0e9e152d2f99fcbfd6"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?branch=main#25175ea4b24a1514d98dc56575fc618130c8707f"
 dependencies = [
  "nota-next",
  "rkyv",

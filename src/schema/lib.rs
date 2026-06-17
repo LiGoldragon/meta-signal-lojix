@@ -812,6 +812,24 @@ impl From<String> for FlakeAttribute {
         Self::new(payload)
     }
 }
+#[rustfmt::skip]
+impl std::fmt::Display for FlakeAttribute {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.payload().fmt(formatter)
+    }
+}
+#[rustfmt::skip]
+impl AsRef<str> for FlakeAttribute {
+    fn as_ref(&self) -> &str {
+        self.payload().as_str()
+    }
+}
+#[rustfmt::skip]
+impl PartialEq<&str> for FlakeAttribute {
+    fn eq(&self, other: &&str) -> bool {
+        self.payload() == other
+    }
+}
 
 #[rustfmt::skip]
 impl TestRequest {

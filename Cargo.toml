@@ -20,11 +20,11 @@ nota-text = ["dep:nota-next", "signal-lojix/nota-text", "signal-frame/nota-text"
 [dependencies]
 nota-next    = { git = "https://github.com/LiGoldragon/nota-next.git", branch = "main", optional = true }
 rkyv         = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", branch = "main" }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", branch = "system-operator-contained-test-poc" }
 signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", branch = "main", default-features = false }
 
 [build-dependencies]
-schema-rust-next = { git = "https://github.com/LiGoldragon/schema-rust-next.git", branch = "main" }
+schema-rust-next = { git = "https://github.com/LiGoldragon/schema-rust-next.git", branch = "system-operator-contained-test-poc" }
 
 [lints.rust]
 unsafe_code = "forbid"

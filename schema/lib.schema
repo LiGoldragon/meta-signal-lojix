@@ -43,7 +43,6 @@
 {
   DeploymentIdentifier   signal-lojix:lib:DeploymentIdentifier
   GenerationIdentifier   signal-lojix:lib:GenerationIdentifier
-  TestRunIdentifier      signal-lojix:lib:TestRunIdentifier
   ClusterName            signal-lojix:lib:ClusterName
   NodeName               signal-lojix:lib:NodeName
   UserName               signal-lojix:lib:UserName
@@ -54,17 +53,14 @@
   ProposalSource         signal-lojix:lib:ProposalSource
   FlakeReference         signal-lojix:lib:FlakeReference
   DatabaseMarker         signal-lojix:lib:DatabaseMarker
-  TestMode               signal-lojix:lib:TestMode
-  HostSelection          signal-lojix:lib:HostSelection
 }
-[Deploy Pin Unpin Retire Test]
-[Deployed DeployRejected Pinned PinRejected Unpinned UnpinRejected Retired RetireRejected Tested TestRejected]
+[Deploy Pin Unpin Retire]
+[Deployed DeployRejected Pinned PinRejected Unpinned UnpinRejected Retired RetireRejected]
 {
   Deploy DeployRequest
   Pin PinRequest
   Unpin UnpinRequest
   Retire RetireRequest
-  Test TestRequest
 
   Deployed AcceptedDeploy
   DeployRejected RejectedDeploy
@@ -74,27 +70,12 @@
   UnpinRejected RejectedUnpin
   Retired AppliedRetire
   RetireRejected RejectedRetire
-  Tested AcceptedTest
-  TestRejected RejectedTest
-
-  ;; TEST OP (report 54). The owner-only meta verb that starts a test VM and
-  ;; deploys into it — strictly more privileged than Deploy, so it lives here,
-  ;; not on the ordinary read socket. TestRequest is a real shorter variant,
-  ;; not a defaulted record (nota forbids tail-omission):
-  ;;   (Run …)   — the full form: explicit node selection, host, and mode.
-  ;;   (Check …) — the routine shorthand: just the node(s); the daemon fills
-  ;;               cluster + host + mode from TestDefaults at lowering (the
-  ;;               spirit State->Record precedent — a distinct typed op the
-  ;;               daemon expands, never an under-filled struct).
-  TestRequest    [(Run TestRun) (Check QuickCheck)]
-  NodeSelection  [(Nodes (Vec NodeName)) All]
-  TestRun        { ClusterName * NodeSelection * HostSelection * TestMode * }
-  QuickCheck     (Vec NodeName)
 
   HomeMode [Build Profile Activate]
 
   ExtraSubstituter { url String public_key String }
   Builder { NodeName * }
+  ProductionNode { ClusterName * NodeName * }
 
   ;; A direct flake output attribute to build, naming a self-contained
   ;; closure (a fixture / test toplevel, or any directly-buildable output)
@@ -105,8 +86,7 @@
   FlakeAttribute String
 
   SystemDeployment {
-    ClusterName *
-    NodeName *
+    ProductionNode *
     DeploymentKind *
     source ProposalSource
     flake FlakeReference
@@ -116,8 +96,7 @@
     build_attribute (Optional FlakeAttribute)
   }
   HomeDeployment {
-    ClusterName *
-    NodeName *
+    ProductionNode *
     UserName *
     source ProposalSource
     flake FlakeReference
@@ -127,13 +106,11 @@
   }
   DeployRequest [(System SystemDeployment) (Home HomeDeployment)]
 
-  PinRequest { ClusterName * NodeName * GenerationIdentifier * PinLabel * }
-  UnpinRequest { ClusterName * NodeName * PinLabel * }
-  RetireRequest { ClusterName * NodeName * GenerationIdentifier * }
+  PinRequest { ProductionNode * GenerationIdentifier * PinLabel * }
+  UnpinRequest { ProductionNode * PinLabel * }
+  RetireRequest { ProductionNode * GenerationIdentifier * }
 
   AcceptedDeploy { DeploymentIdentifier * DatabaseMarker * }
-  ;; Mirrors AcceptedDeploy: the minted run identifier plus the durable marker.
-  AcceptedTest { TestRunIdentifier * DatabaseMarker * }
   AppliedPin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
   AppliedUnpin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
   AppliedRetire { GenerationIdentifier * from_slot GenerationSlot DatabaseMarker * }
@@ -147,21 +124,8 @@
   PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
   UnpinRejectionReason [PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
   RetireRejectionReason [GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]
-  ;; ClusterUnknown/NodeUnknown: the named cluster or node is not in the
-  ;; projection. VmHostNotDeclaredForNode: the resolved host is not in the
-  ;; node's declared host-set ({super_node} ∪ super_nodes). HostDeclaresNoVmHost:
-  ;; the resolved host runs no VmHost service. NoTestDefaults: a (Check …)
-  ;; arrived but the daemon config carries no TestDefaults to lower it.
-  ;; LiveNotYetEnabled: a (Run … Live) arrived but the live deploy-into-VM +
-  ;; assert chain is not yet implemented; the daemon rejects it honestly at
-  ;; submit rather than recording a Passed it never earned (mirrors the Deploy
-  ;; UnsupportedDeployAction precedent). SubstrateUnavailable/InternalError per
-  ;; the Deploy precedent.
-  TestRejectionReason [ClusterUnknown NodeUnknown VmHostNotDeclaredForNode HostDeclaresNoVmHost NoTestDefaults LiveNotYetEnabled SubstrateUnavailable InternalError]
-
   RejectedDeploy { DeployRejectionReason * DatabaseMarker * }
   RejectedPin { PinRejectionReason * DatabaseMarker * }
   RejectedUnpin { UnpinRejectionReason * DatabaseMarker * }
   RejectedRetire { RetireRejectionReason * DatabaseMarker * }
-  RejectedTest { TestRejectionReason * DatabaseMarker * }
 }

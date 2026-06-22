@@ -1,7 +1,8 @@
 #![cfg(feature = "nota-text")]
 
 use meta_signal_lojix::schema::lib::{
-    AcceptedDeploy, DatabaseMarker, DeployRequest, Input, Output, PinRequest, SystemDeployment,
+    AcceptedDeploy, DatabaseMarker, DeployRequest, Input, Output, PinRequest, ProductionNode,
+    SystemDeployment,
 };
 use nota_next::{NotaDecode, NotaEncode, NotaSource};
 
@@ -14,17 +15,19 @@ fn marker() -> DatabaseMarker {
 
 fn deploy_request() -> DeployRequest {
     DeployRequest::System(SystemDeployment {
-        cluster_name: "goldragon".to_string().into(),
-        node_name: "ouranos".to_string().into(),
+        production_node: ProductionNode {
+            cluster_name: "goldragon".to_string().into(),
+            node_name: "ouranos".to_string().into(),
+        },
         deployment_kind: signal_lojix::schema::lib::DeploymentKind::OsOnly,
-        source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
+        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
             .to_string()
             .into(),
-        flake: "github:LiGoldragon/CriOMOS/main".to_string().into(),
+        flake_reference: "github:LiGoldragon/CriOMOS/main".to_string().into(),
         system_action: signal_lojix::schema::lib::SystemAction::Eval,
-        builder: None,
-        substituters: Vec::new(),
-        build_attribute: None,
+        builder_override: None.into(),
+        extra_substituters: Vec::new().into(),
+        build_attribute: None.into(),
     })
 }
 
@@ -35,8 +38,10 @@ fn deploy_input() -> Input {
 fn pin_input() -> Input {
     Input::Pin(
         PinRequest {
-            cluster_name: "goldragon".to_string().into(),
-            node_name: "ouranos".to_string().into(),
+            production_node: ProductionNode {
+                cluster_name: "goldragon".to_string().into(),
+                node_name: "ouranos".to_string().into(),
+            },
             generation_identifier: 1.into(),
             pin_label: "known-good".to_string().into(),
         }

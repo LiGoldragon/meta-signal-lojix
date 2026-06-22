@@ -132,6 +132,16 @@ pub struct Builder(NodeName);
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct BuilderOverride(Option<Builder>);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct ExtraSubstituters(Vec<ExtraSubstituter>);
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct ProductionNode {
     pub cluster_name: ClusterName,
     pub node_name: NodeName,
@@ -148,12 +158,12 @@ pub struct FlakeAttribute(String);
 pub struct SystemDeployment {
     pub production_node: ProductionNode,
     pub deployment_kind: DeploymentKind,
-    pub source: ProposalSource,
-    pub flake: FlakeReference,
+    pub proposal_source: ProposalSource,
+    pub flake_reference: FlakeReference,
     pub system_action: SystemAction,
-    pub builder: Option<Builder>,
-    pub substituters: Vec<ExtraSubstituter>,
-    pub build_attribute: Option<FlakeAttribute>,
+    pub builder_override: BuilderOverride,
+    pub extra_substituters: ExtraSubstituters,
+    pub build_attribute: BuildAttribute,
 }
 
 #[rustfmt::skip]
@@ -162,11 +172,11 @@ pub struct SystemDeployment {
 pub struct HomeDeployment {
     pub production_node: ProductionNode,
     pub user_name: UserName,
-    pub source: ProposalSource,
-    pub flake: FlakeReference,
+    pub proposal_source: ProposalSource,
+    pub flake_reference: FlakeReference,
     pub home_mode: HomeMode,
-    pub builder: Option<Builder>,
-    pub substituters: Vec<ExtraSubstituter>,
+    pub builder_override: BuilderOverride,
+    pub extra_substituters: ExtraSubstituters,
 }
 
 #[rustfmt::skip]
@@ -176,6 +186,11 @@ pub enum DeployRequest {
     System(SystemDeployment),
     Home(HomeDeployment),
 }
+
+#[rustfmt::skip]
+#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct BuildAttribute(Option<FlakeAttribute>);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -628,6 +643,44 @@ impl From<NodeName> for Builder {
 }
 
 #[rustfmt::skip]
+impl BuilderOverride {
+    pub fn new(payload: Option<Builder>) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &Option<Builder> {
+        &self.0
+    }
+    pub fn into_payload(self) -> Option<Builder> {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<Option<Builder>> for BuilderOverride {
+    fn from(payload: Option<Builder>) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl ExtraSubstituters {
+    pub fn new(payload: Vec<ExtraSubstituter>) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &Vec<ExtraSubstituter> {
+        &self.0
+    }
+    pub fn into_payload(self) -> Vec<ExtraSubstituter> {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<Vec<ExtraSubstituter>> for ExtraSubstituters {
+    fn from(payload: Vec<ExtraSubstituter>) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl FlakeAttribute {
     pub fn new(payload: impl Into<String>) -> Self {
         Self(payload.into())
@@ -661,6 +714,25 @@ impl AsRef<str> for FlakeAttribute {
 impl PartialEq<&str> for FlakeAttribute {
     fn eq(&self, other: &&str) -> bool {
         self.payload() == other
+    }
+}
+
+#[rustfmt::skip]
+impl BuildAttribute {
+    pub fn new(payload: Option<FlakeAttribute>) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &Option<FlakeAttribute> {
+        &self.0
+    }
+    pub fn into_payload(self) -> Option<FlakeAttribute> {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<Option<FlakeAttribute>> for BuildAttribute {
+    fn from(payload: Option<FlakeAttribute>) -> Self {
+        Self::new(payload)
     }
 }
 

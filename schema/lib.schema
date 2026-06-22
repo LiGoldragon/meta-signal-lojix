@@ -73,9 +73,11 @@
 
   HomeMode [Build Profile Activate]
 
-  ExtraSubstituter { url String public_key String }
-  Builder { NodeName * }
-  ProductionNode { ClusterName * NodeName * }
+  ExtraSubstituter { url.String publicKey.String }
+  Builder { NodeName }
+  BuilderOverride (Optional Builder)
+  ExtraSubstituters (Vector ExtraSubstituter)
+  ProductionNode { ClusterName NodeName }
 
   ;; A direct flake output attribute to build, naming a self-contained
   ;; closure (a fixture / test toplevel, or any directly-buildable output)
@@ -86,34 +88,35 @@
   FlakeAttribute String
 
   SystemDeployment {
-    ProductionNode *
-    DeploymentKind *
-    source ProposalSource
-    flake FlakeReference
-    SystemAction *
-    builder (Optional Builder)
-    substituters (Vec ExtraSubstituter)
-    build_attribute (Optional FlakeAttribute)
+    ProductionNode
+    DeploymentKind
+    ProposalSource
+    FlakeReference
+    SystemAction
+    BuilderOverride
+    ExtraSubstituters
+    BuildAttribute
   }
   HomeDeployment {
-    ProductionNode *
-    UserName *
-    source ProposalSource
-    flake FlakeReference
-    HomeMode *
-    builder (Optional Builder)
-    substituters (Vec ExtraSubstituter)
+    ProductionNode
+    UserName
+    ProposalSource
+    FlakeReference
+    HomeMode
+    BuilderOverride
+    ExtraSubstituters
   }
   DeployRequest [(System SystemDeployment) (Home HomeDeployment)]
 
-  PinRequest { ProductionNode * GenerationIdentifier * PinLabel * }
-  UnpinRequest { ProductionNode * PinLabel * }
-  RetireRequest { ProductionNode * GenerationIdentifier * }
+  BuildAttribute (Optional FlakeAttribute)
+  PinRequest { ProductionNode GenerationIdentifier PinLabel }
+  UnpinRequest { ProductionNode PinLabel }
+  RetireRequest { ProductionNode GenerationIdentifier }
 
-  AcceptedDeploy { DeploymentIdentifier * DatabaseMarker * }
-  AppliedPin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
-  AppliedUnpin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
-  AppliedRetire { GenerationIdentifier * from_slot GenerationSlot DatabaseMarker * }
+  AcceptedDeploy { DeploymentIdentifier DatabaseMarker }
+  AppliedPin { GenerationIdentifier PinLabel fromSlot.GenerationSlot toSlot.GenerationSlot DatabaseMarker }
+  AppliedUnpin { GenerationIdentifier PinLabel fromSlot.GenerationSlot toSlot.GenerationSlot DatabaseMarker }
+  AppliedRetire { GenerationIdentifier fromSlot.GenerationSlot DatabaseMarker }
 
   ;; UnsupportedDeployAction: the daemon does not yet implement this deploy
   ;; shape (e.g. an activating action or a production build that needs horizon
@@ -124,8 +127,8 @@
   PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
   UnpinRejectionReason [PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
   RetireRejectionReason [GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]
-  RejectedDeploy { DeployRejectionReason * DatabaseMarker * }
-  RejectedPin { PinRejectionReason * DatabaseMarker * }
-  RejectedUnpin { UnpinRejectionReason * DatabaseMarker * }
-  RejectedRetire { RetireRejectionReason * DatabaseMarker * }
+  RejectedDeploy { DeployRejectionReason DatabaseMarker }
+  RejectedPin { PinRejectionReason DatabaseMarker }
+  RejectedUnpin { UnpinRejectionReason DatabaseMarker }
+  RejectedRetire { RetireRejectionReason DatabaseMarker }
 }

@@ -1,5 +1,6 @@
 use meta_signal_lojix::schema::lib::{
-    AcceptedDeploy, DatabaseMarker, DeployRequest, Input, Output, SystemDeployment,
+    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output,
+    SourceRevisionPolicy,
 };
 
 fn marker() -> DatabaseMarker {
@@ -10,15 +11,16 @@ fn marker() -> DatabaseMarker {
 }
 
 fn deploy_request() -> DeployRequest {
-    DeployRequest::System(SystemDeployment {
+    DeployRequest::Host(HostDeployment {
         cluster_name: "goldragon".to_string().into(),
         node_name: "ouranos".to_string().into(),
-        deployment_kind: signal_lojix::schema::lib::DeploymentKind::OsOnly,
+        host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
         source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
             .to_string()
             .into(),
         flake: "github:LiGoldragon/CriOMOS/main".to_string().into(),
-        system_action: signal_lojix::schema::lib::SystemAction::Eval,
+        host_deploy_action: signal_lojix::schema::lib::HostDeployAction::Evaluate,
+        source_revision_policy: SourceRevisionPolicy::ResolveAndRecord,
         builder: None,
         substituters: Vec::new(),
         build_attribute: None,
@@ -40,8 +42,8 @@ fn default_build_round_trips_meta_request_without_nota_text() {
 
 #[test]
 fn default_build_round_trips_meta_reply_without_nota_text() {
-    let output = Output::Deployed(
-        AcceptedDeploy {
+    let output = Output::DeployAccepted(
+        DeployHandle {
             deployment_identifier: 1.into(),
             database_marker: marker(),
         }

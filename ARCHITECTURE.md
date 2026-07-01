@@ -15,9 +15,10 @@ contract carries deploy and retention mutations: `Deploy`, `Pin`,
 
 Shared types are imported from `signal-lojix` by schema dependency:
 cluster and node names, deployment and generation identifiers,
-generation slots, deployment kinds, system actions, proposal and flake
-references, and database markers. This keeps the two contracts on the
-same wire vocabulary without duplicating nouns.
+generation slots, generation artifacts, host compositions, deploy
+actions, proposal and flake references, and database markers. This
+keeps the two contracts on the same wire vocabulary without duplicating
+nouns.
 
 Non-ownership is strict: daemon runtime, actors, storage, process
 effects, socket binding, authorization, and the CLI live in `lojix`.

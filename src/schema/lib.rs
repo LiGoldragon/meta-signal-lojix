@@ -24,9 +24,13 @@ pub use signal_lojix::schema::lib::UserName as UserName;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::PinLabel as PinLabel;
 #[rustfmt::skip]
-pub use signal_lojix::schema::lib::DeploymentKind as DeploymentKind;
+pub use signal_lojix::schema::lib::HostComposition as HostComposition;
 #[rustfmt::skip]
-pub use signal_lojix::schema::lib::SystemAction as SystemAction;
+pub use signal_lojix::schema::lib::HostDeployAction as HostDeployAction;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::UserEnvironmentAction as UserEnvironmentAction;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::SourceRevisionPolicy as SourceRevisionPolicy;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::GenerationSlot as GenerationSlot;
 #[rustfmt::skip]
@@ -72,7 +76,7 @@ pub struct Test(TestRequest);
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Deployed(AcceptedDeploy);
+pub struct DeployAccepted(DeployHandle);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
@@ -152,24 +156,6 @@ pub struct QuickCheck(Vec<NodeName>);
 
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-)]
-pub enum HomeMode {
-    Build,
-    Profile,
-    Activate,
-}
-
-#[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct ExtraSubstituter {
     pub url: String,
@@ -189,13 +175,14 @@ pub struct FlakeAttribute(String);
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct SystemDeployment {
+pub struct HostDeployment {
     pub cluster_name: ClusterName,
     pub node_name: NodeName,
-    pub deployment_kind: DeploymentKind,
+    pub host_composition: HostComposition,
     pub source: ProposalSource,
     pub flake: FlakeReference,
-    pub system_action: SystemAction,
+    pub host_deploy_action: HostDeployAction,
+    pub source_revision_policy: SourceRevisionPolicy,
     pub builder: Option<Builder>,
     pub substituters: Vec<ExtraSubstituter>,
     pub build_attribute: Option<FlakeAttribute>,
@@ -204,13 +191,14 @@ pub struct SystemDeployment {
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct HomeDeployment {
+pub struct UserEnvironmentDeployment {
     pub cluster_name: ClusterName,
     pub node_name: NodeName,
     pub user_name: UserName,
     pub source: ProposalSource,
     pub flake: FlakeReference,
-    pub home_mode: HomeMode,
+    pub user_environment_action: UserEnvironmentAction,
+    pub source_revision_policy: SourceRevisionPolicy,
     pub builder: Option<Builder>,
     pub substituters: Vec<ExtraSubstituter>,
 }
@@ -219,8 +207,8 @@ pub struct HomeDeployment {
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum DeployRequest {
-    System(SystemDeployment),
-    Home(HomeDeployment),
+    Host(HostDeployment),
+    UserEnvironment(UserEnvironmentDeployment),
 }
 
 #[rustfmt::skip]
@@ -254,7 +242,7 @@ pub struct RetireRequest {
 #[rustfmt::skip]
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct AcceptedDeploy {
+pub struct DeployHandle {
     pub deployment_identifier: DeploymentIdentifier,
     pub database_marker: DatabaseMarker,
 }
@@ -459,7 +447,7 @@ pub enum Input {
 #[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Output {
-    Deployed(Deployed),
+    DeployAccepted(DeployAccepted),
     DeployRejected(DeployRejected),
     Pinned(Pinned),
     PinRejected(PinRejected),
@@ -567,20 +555,20 @@ impl From<TestRequest> for Test {
 }
 
 #[rustfmt::skip]
-impl Deployed {
-    pub fn new(payload: AcceptedDeploy) -> Self {
+impl DeployAccepted {
+    pub fn new(payload: DeployHandle) -> Self {
         Self(payload)
     }
-    pub fn payload(&self) -> &AcceptedDeploy {
+    pub fn payload(&self) -> &DeployHandle {
         &self.0
     }
-    pub fn into_payload(self) -> AcceptedDeploy {
+    pub fn into_payload(self) -> DeployHandle {
         self.0
     }
 }
 #[rustfmt::skip]
-impl From<AcceptedDeploy> for Deployed {
-    fn from(payload: AcceptedDeploy) -> Self {
+impl From<DeployHandle> for DeployAccepted {
+    fn from(payload: DeployHandle) -> Self {
         Self::new(payload)
     }
 }
@@ -850,11 +838,11 @@ impl NodeSelection {
 
 #[rustfmt::skip]
 impl DeployRequest {
-    pub fn system(payload: SystemDeployment) -> Self {
-        Self::System(payload)
+    pub fn host(payload: HostDeployment) -> Self {
+        Self::Host(payload)
     }
-    pub fn home(payload: HomeDeployment) -> Self {
-        Self::Home(payload)
+    pub fn user_environment(payload: UserEnvironmentDeployment) -> Self {
+        Self::UserEnvironment(payload)
     }
 }
 
@@ -879,8 +867,8 @@ impl Input {
 
 #[rustfmt::skip]
 impl Output {
-    pub fn deployed(payload: AcceptedDeploy) -> Self {
-        Self::Deployed(Deployed::new(payload))
+    pub fn deploy_accepted(payload: DeployHandle) -> Self {
+        Self::DeployAccepted(DeployAccepted::new(payload))
     }
     pub fn deploy_rejected(payload: RejectedDeploy) -> Self {
         Self::DeployRejected(DeployRejected::new(payload))
@@ -926,16 +914,16 @@ impl From<QuickCheck> for TestRequest {
 }
 
 #[rustfmt::skip]
-impl From<SystemDeployment> for DeployRequest {
-    fn from(payload: SystemDeployment) -> Self {
-        Self::System(payload)
+impl From<HostDeployment> for DeployRequest {
+    fn from(payload: HostDeployment) -> Self {
+        Self::Host(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<HomeDeployment> for DeployRequest {
-    fn from(payload: HomeDeployment) -> Self {
-        Self::Home(payload)
+impl From<UserEnvironmentDeployment> for DeployRequest {
+    fn from(payload: UserEnvironmentDeployment) -> Self {
+        Self::UserEnvironment(payload)
     }
 }
 
@@ -975,9 +963,9 @@ impl From<Test> for Input {
 }
 
 #[rustfmt::skip]
-impl From<Deployed> for Output {
-    fn from(payload: Deployed) -> Self {
-        Self::Deployed(payload)
+impl From<DeployAccepted> for Output {
+    fn from(payload: DeployAccepted) -> Self {
+        Self::DeployAccepted(payload)
     }
 }
 
@@ -1083,7 +1071,7 @@ pub mod short_header {
     pub const INPUT_UNPIN: u64 = 0x0002000000000000;
     pub const INPUT_RETIRE: u64 = 0x0003000000000000;
     pub const INPUT_TEST: u64 = 0x0004000000000000;
-    pub const OUTPUT_DEPLOYED: u64 = 0x0100000000000000;
+    pub const OUTPUT_DEPLOY_ACCEPTED: u64 = 0x0100000000000000;
     pub const OUTPUT_DEPLOY_REJECTED: u64 = 0x0101000000000000;
     pub const OUTPUT_PINNED: u64 = 0x0102000000000000;
     pub const OUTPUT_PIN_REJECTED: u64 = 0x0103000000000000;
@@ -1163,7 +1151,7 @@ pub enum InputRoute {
     Eq,
 )]
 pub enum OutputRoute {
-    Deployed,
+    DeployAccepted,
     DeployRejected,
     Pinned,
     PinRejected,
@@ -1252,7 +1240,7 @@ impl Input {
 impl Output {
     pub fn route(&self) -> OutputRoute {
         match self {
-            Self::Deployed(_) => OutputRoute::Deployed,
+            Self::DeployAccepted(_) => OutputRoute::DeployAccepted,
             Self::DeployRejected(_) => OutputRoute::DeployRejected,
             Self::Pinned(_) => OutputRoute::Pinned,
             Self::PinRejected(_) => OutputRoute::PinRejected,
@@ -1266,7 +1254,7 @@ impl Output {
     }
     pub fn short_header(&self) -> u64 {
         match self {
-            Self::Deployed(_) => short_header::OUTPUT_DEPLOYED,
+            Self::DeployAccepted(_) => short_header::OUTPUT_DEPLOY_ACCEPTED,
             Self::DeployRejected(_) => short_header::OUTPUT_DEPLOY_REJECTED,
             Self::Pinned(_) => short_header::OUTPUT_PINNED,
             Self::PinRejected(_) => short_header::OUTPUT_PIN_REJECTED,
@@ -1282,7 +1270,7 @@ impl Output {
         header: u64,
     ) -> Result<OutputRoute, SignalFrameError> {
         match header {
-            short_header::OUTPUT_DEPLOYED => Ok(OutputRoute::Deployed),
+            short_header::OUTPUT_DEPLOY_ACCEPTED => Ok(OutputRoute::DeployAccepted),
             short_header::OUTPUT_DEPLOY_REJECTED => Ok(OutputRoute::DeployRejected),
             short_header::OUTPUT_PINNED => Ok(OutputRoute::Pinned),
             short_header::OUTPUT_PIN_REJECTED => Ok(OutputRoute::PinRejected),

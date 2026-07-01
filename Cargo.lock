@@ -166,7 +166,7 @@ checksum = "68ab91017fe16c622486840e4c83c9a37afeff978bd239b5293d61ece587de66"
 
 [[package]]
 name = "meta-signal-lojix"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "nota-next",
  "rkyv",
@@ -402,8 +402,8 @@ dependencies = [
 
 [[package]]
 name = "signal-lojix"
-version = "0.1.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?branch=main#970da115b2e1fe97486f8d360bf212778a4bb4b8"
+version = "0.2.0"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?branch=main#fbb28cf4775340d71886af866b4a403622ff6cef"
 dependencies = [
  "nota-next",
  "rkyv",

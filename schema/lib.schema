@@ -24,16 +24,11 @@
 ;; the GenerationIdentifier pinned/retired, the typed rejection reasons,
 ;; and the DatabaseMarker all come from the ordinary contract.
 ;;
-;; DEPLOY SURFACE PROVENANCE. The Deploy request reconstructs the legacy
-;; lojix-cli deploy surface (lojix-cli/src/request.rs:13-45 FullOs/OsOnly/
-;; HomeOnly + lojix-cli/src/build.rs:9-23 SystemAction Eval/Build/Boot/
-;; Switch/Test/BootOnce) as a single typed request: cluster, node, source
-;; proposal ref, flake ref, the SystemAction, optional builder, optional
-;; extra substituters. The FullOs/OsOnly/HomeOnly split is carried by the
-;; DeploymentKind discriminant (from signal-lojix:lib), so one Deploy verb
-;; covers all three shapes. The daemon mints the DeploymentIdentifier and
-;; the deploy lifecycle is observed over the ordinary contract's
-;; DeploymentPhaseEvent stream — no phase events on the policy contract.
+;; DEPLOY SURFACE. The Deploy request is the direct typed owner-socket
+;; submission contract: a host deploy or a user-environment deploy. The daemon
+;; mints the DeploymentIdentifier and the deploy lifecycle is observed over the
+;; ordinary contract's DeploymentPhaseEvent stream — no phase events on the
+;; policy contract.
 ;;
 ;; LOCAL BUILDS PERMITTED. The daemon must NOT reject a deploy whose
 ;; builder is absent (a local dispatcher build). That is daemon behaviour,
@@ -48,8 +43,10 @@
   NodeName               signal-lojix:lib:NodeName
   UserName               signal-lojix:lib:UserName
   PinLabel               signal-lojix:lib:PinLabel
-  DeploymentKind         signal-lojix:lib:DeploymentKind
-  SystemAction           signal-lojix:lib:SystemAction
+  HostComposition        signal-lojix:lib:HostComposition
+  HostDeployAction       signal-lojix:lib:HostDeployAction
+  UserEnvironmentAction  signal-lojix:lib:UserEnvironmentAction
+  SourceRevisionPolicy   signal-lojix:lib:SourceRevisionPolicy
   GenerationSlot         signal-lojix:lib:GenerationSlot
   ProposalSource         signal-lojix:lib:ProposalSource
   FlakeReference         signal-lojix:lib:FlakeReference
@@ -58,7 +55,7 @@
   HostSelection          signal-lojix:lib:HostSelection
 }
 [Deploy Pin Unpin Retire Test]
-[Deployed DeployRejected Pinned PinRejected Unpinned UnpinRejected Retired RetireRejected Tested TestRejected]
+[DeployAccepted DeployRejected Pinned PinRejected Unpinned UnpinRejected Retired RetireRejected Tested TestRejected]
 {
   Deploy DeployRequest
   Pin PinRequest
@@ -66,7 +63,7 @@
   Retire RetireRequest
   Test TestRequest
 
-  Deployed AcceptedDeploy
+  DeployAccepted DeployHandle
   DeployRejected RejectedDeploy
   Pinned AppliedPin
   PinRejected RejectedPin
@@ -91,8 +88,6 @@
   TestRun        { ClusterName * NodeSelection * HostSelection * TestMode * }
   QuickCheck     (Vec NodeName)
 
-  HomeMode [Build Profile Activate]
-
   ExtraSubstituter { url String public_key String }
   Builder { NodeName * }
 
@@ -100,39 +95,41 @@
   ;; closure (a fixture / test toplevel, or any directly-buildable output)
   ;; instead of the production nixosConfigurations.target form. When absent,
   ;; the daemon builds the production attribute and injects cluster data via
-  ;; the horizon override (lojix-cli/build.rs:181-186). When present, the
+  ;; the generated Horizon override. When present, the
   ;; daemon evals/builds <flake>#<build_attribute> with no override-inputs.
   FlakeAttribute String
 
-  SystemDeployment {
+  HostDeployment {
     ClusterName *
     NodeName *
-    DeploymentKind *
+    HostComposition *
     source ProposalSource
     flake FlakeReference
-    SystemAction *
+    HostDeployAction *
+    source_revision_policy SourceRevisionPolicy
     builder (Optional Builder)
     substituters (Vec ExtraSubstituter)
     build_attribute (Optional FlakeAttribute)
   }
-  HomeDeployment {
+  UserEnvironmentDeployment {
     ClusterName *
     NodeName *
     UserName *
     source ProposalSource
     flake FlakeReference
-    HomeMode *
+    UserEnvironmentAction *
+    source_revision_policy SourceRevisionPolicy
     builder (Optional Builder)
     substituters (Vec ExtraSubstituter)
   }
-  DeployRequest [(System SystemDeployment) (Home HomeDeployment)]
+  DeployRequest [(Host HostDeployment) (UserEnvironment UserEnvironmentDeployment)]
 
   PinRequest { ClusterName * NodeName * GenerationIdentifier * PinLabel * }
   UnpinRequest { ClusterName * NodeName * PinLabel * }
   RetireRequest { ClusterName * NodeName * GenerationIdentifier * }
 
-  AcceptedDeploy { DeploymentIdentifier * DatabaseMarker * }
-  ;; Mirrors AcceptedDeploy: the minted run identifier plus the durable marker.
+  DeployHandle { DeploymentIdentifier * DatabaseMarker * }
+  ;; The minted run identifier plus the durable marker for accepted deploy work.
   AcceptedTest { TestRunIdentifier * DatabaseMarker * }
   AppliedPin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
   AppliedUnpin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
@@ -141,7 +138,7 @@
   ;; UnsupportedDeployAction: the daemon does not yet implement this deploy
   ;; shape (e.g. an activating action or a production build that needs horizon
   ;; materialization) and rejects it honestly rather than falsely reporting
-  ;; Deployed. InternalError: an internal invariant failure (e.g. a poisoned
+  ;; acceptance. InternalError: an internal invariant failure (e.g. a poisoned
   ;; lock) — never a misleading domain reason. Both per audit 29 (C1/C4).
   DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError]
   PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]

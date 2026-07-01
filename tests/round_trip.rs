@@ -1,7 +1,8 @@
 #![cfg(feature = "nota-text")]
 
 use meta_signal_lojix::schema::lib::{
-    AcceptedDeploy, DatabaseMarker, DeployRequest, Input, Output, PinRequest, SystemDeployment,
+    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output, PinRequest,
+    SourceRevisionPolicy,
 };
 use nota_next::{NotaDecode, NotaEncode, NotaSource};
 
@@ -13,15 +14,16 @@ fn marker() -> DatabaseMarker {
 }
 
 fn deploy_request() -> DeployRequest {
-    DeployRequest::System(SystemDeployment {
+    DeployRequest::Host(HostDeployment {
         cluster_name: "goldragon".to_string().into(),
         node_name: "ouranos".to_string().into(),
-        deployment_kind: signal_lojix::schema::lib::DeploymentKind::OsOnly,
+        host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
         source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
             .to_string()
             .into(),
         flake: "github:LiGoldragon/CriOMOS/main".to_string().into(),
-        system_action: signal_lojix::schema::lib::SystemAction::Eval,
+        host_deploy_action: signal_lojix::schema::lib::HostDeployAction::Evaluate,
+        source_revision_policy: SourceRevisionPolicy::ResolveAndRecord,
         builder: None,
         substituters: Vec::new(),
         build_attribute: None,
@@ -44,9 +46,9 @@ fn pin_input() -> Input {
     )
 }
 
-fn deployed_output() -> Output {
-    Output::Deployed(
-        AcceptedDeploy {
+fn deploy_accepted_output() -> Output {
+    Output::DeployAccepted(
+        DeployHandle {
             deployment_identifier: 1.into(),
             database_marker: marker(),
         }
@@ -76,7 +78,7 @@ fn meta_requests_round_trip_through_rkyv_frames() {
 
 #[test]
 fn meta_replies_round_trip_through_rkyv_frames() {
-    let reply = deployed_output();
+    let reply = deploy_accepted_output();
     let frame = reply.encode_signal_frame().expect("encode reply");
     let (_route, decoded) = Output::decode_signal_frame(&frame).expect("decode reply");
     assert_eq!(decoded, reply);
@@ -86,12 +88,16 @@ fn meta_replies_round_trip_through_rkyv_frames() {
 fn meta_roots_round_trip_through_nota_text() {
     round_trip_nota(deploy_input());
     round_trip_nota(pin_input());
-    round_trip_nota(deployed_output());
+    round_trip_nota(deploy_accepted_output());
 }
 
 #[test]
 fn meta_nota_heads_are_owner_policy_verbs() {
     assert!(deploy_input().to_nota().starts_with("(Deploy "));
     assert!(pin_input().to_nota().starts_with("(Pin "));
-    assert!(deployed_output().to_nota().starts_with("(Deployed "));
+    assert!(
+        deploy_accepted_output()
+            .to_nota()
+            .starts_with("(DeployAccepted ")
+    );
 }

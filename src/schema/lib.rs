@@ -308,6 +308,7 @@ pub enum DeployRejectionReason {
     DeploymentInFlight,
     UnsupportedDeployAction,
     InternalError,
+    ActivationFailed,
 }
 
 #[rustfmt::skip]

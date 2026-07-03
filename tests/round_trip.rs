@@ -1,8 +1,8 @@
 #![cfg(feature = "nota-text")]
 
 use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output, PinRequest,
-    SourceRevisionPolicy,
+    DatabaseMarker, DeployHandle, DeployRejectionReason, DeployRequest, HostDeployment, Input,
+    Output, PinRequest, RejectedDeploy, SourceRevisionPolicy,
 };
 use nota_next::{NotaDecode, NotaEncode, NotaSource};
 
@@ -56,6 +56,16 @@ fn deploy_accepted_output() -> Output {
     )
 }
 
+fn deploy_rejected_activation_failed() -> Output {
+    Output::DeployRejected(
+        RejectedDeploy {
+            deploy_rejection_reason: DeployRejectionReason::ActivationFailed,
+            database_marker: marker(),
+        }
+        .into(),
+    )
+}
+
 fn round_trip_nota<Value>(value: Value)
 where
     Value: NotaEncode + NotaDecode + PartialEq + std::fmt::Debug,
@@ -89,6 +99,16 @@ fn meta_roots_round_trip_through_nota_text() {
     round_trip_nota(deploy_input());
     round_trip_nota(pin_input());
     round_trip_nota(deploy_accepted_output());
+}
+
+#[test]
+fn activation_failed_reason_round_trips_through_nota_text() {
+    round_trip_nota(deploy_rejected_activation_failed());
+    assert!(
+        deploy_rejected_activation_failed()
+            .to_nota()
+            .contains("ActivationFailed")
+    );
 }
 
 #[test]

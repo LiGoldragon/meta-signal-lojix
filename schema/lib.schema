@@ -33,7 +33,10 @@
 ;; LOCAL BUILDS PERMITTED. The daemon must NOT reject a deploy whose
 ;; builder is absent (a local dispatcher build). That is daemon behaviour,
 ;; not contract surface; this schema carries no local-build guard and the
-;; DeployRejectionReason enum below names no such reason.
+;; DeployRejectionReason enum below names no such reason. A local (or
+;; remote) activation step that itself exits non-zero is reported as
+;; ActivationFailed — a target-side activation failure, distinct from
+;; BuilderUnreachable (a build/copy/reachability failure).
 
 {
   DeploymentIdentifier   signal-lojix:lib:DeploymentIdentifier
@@ -140,7 +143,12 @@
   ;; materialization) and rejects it honestly rather than falsely reporting
   ;; acceptance. InternalError: an internal invariant failure (e.g. a poisoned
   ;; lock) — never a misleading domain reason. Both per audit 29 (C1/C4).
-  DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError]
+  ;; BuilderUnreachable: a build/copy/reachability failure — the closure could
+  ;; not be built on or copied from the builder. ActivationFailed: the
+  ;; target-side activation step (e.g. home-manager activate /
+  ;; switch-to-configuration) exited non-zero — distinct from BuilderUnreachable
+  ;; so a local/home activation failure is not mislabelled as a builder problem.
+  DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError ActivationFailed]
   PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
   UnpinRejectionReason [PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
   RetireRejectionReason [GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]

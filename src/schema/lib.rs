@@ -46,85 +46,85 @@ pub use signal_lojix::schema::lib::HostSelection as HostSelection;
 
 #[rustfmt::skip]
 #[cfg(feature = "nota-text")]
-pub use nota_next::{NotaDecodeError, NotaEncode, NotaSource};
+pub use nota::{NotaDecodeError, NotaEncode, NotaSource};
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Deploy(DeployRequest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Pin(PinRequest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Unpin(UnpinRequest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Retire(RetireRequest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Test(TestRequest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct DeployAccepted(DeployHandle);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct DeployRejected(RejectedDeploy);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Pinned(AppliedPin);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct PinRejected(RejectedPin);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Unpinned(AppliedUnpin);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UnpinRejected(RejectedUnpin);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Retired(AppliedRetire);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RetireRejected(RejectedRetire);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Tested(AcceptedTest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct TestRejected(RejectedTest);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum TestRequest {
     Run(TestRun),
@@ -132,7 +132,7 @@ pub enum TestRequest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum NodeSelection {
     Nodes(Vec<NodeName>),
@@ -140,7 +140,7 @@ pub enum NodeSelection {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct TestRun {
     pub cluster_name: ClusterName,
@@ -150,12 +150,12 @@ pub struct TestRun {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct QuickCheck(Vec<NodeName>);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct ExtraSubstituter {
     pub url: String,
@@ -163,17 +163,17 @@ pub struct ExtraSubstituter {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct Builder(NodeName);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct FlakeAttribute(String);
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct HostDeployment {
     pub cluster_name: ClusterName,
@@ -189,7 +189,7 @@ pub struct HostDeployment {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UserEnvironmentDeployment {
     pub cluster_name: ClusterName,
@@ -204,7 +204,7 @@ pub struct UserEnvironmentDeployment {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum DeployRequest {
     Host(HostDeployment),
@@ -212,7 +212,7 @@ pub enum DeployRequest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct PinRequest {
     pub cluster_name: ClusterName,
@@ -222,7 +222,7 @@ pub struct PinRequest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct UnpinRequest {
     pub cluster_name: ClusterName,
@@ -231,7 +231,7 @@ pub struct UnpinRequest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RetireRequest {
     pub cluster_name: ClusterName,
@@ -240,7 +240,7 @@ pub struct RetireRequest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct DeployHandle {
     pub deployment_identifier: DeploymentIdentifier,
@@ -248,7 +248,7 @@ pub struct DeployHandle {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct AcceptedTest {
     pub test_run_identifier: TestRunIdentifier,
@@ -256,7 +256,7 @@ pub struct AcceptedTest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct AppliedPin {
     pub generation_identifier: GenerationIdentifier,
@@ -267,7 +267,7 @@ pub struct AppliedPin {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct AppliedUnpin {
     pub generation_identifier: GenerationIdentifier,
@@ -278,7 +278,7 @@ pub struct AppliedUnpin {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct AppliedRetire {
     pub generation_identifier: GenerationIdentifier,
@@ -287,7 +287,7 @@ pub struct AppliedRetire {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,
@@ -312,7 +312,7 @@ pub enum DeployRejectionReason {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,
@@ -332,7 +332,7 @@ pub enum PinRejectionReason {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,
@@ -351,7 +351,7 @@ pub enum UnpinRejectionReason {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,
@@ -371,7 +371,7 @@ pub enum RetireRejectionReason {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,
@@ -394,7 +394,7 @@ pub enum TestRejectionReason {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RejectedDeploy {
     pub deploy_rejection_reason: DeployRejectionReason,
@@ -402,7 +402,7 @@ pub struct RejectedDeploy {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RejectedPin {
     pub pin_rejection_reason: PinRejectionReason,
@@ -410,7 +410,7 @@ pub struct RejectedPin {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RejectedUnpin {
     pub unpin_rejection_reason: UnpinRejectionReason,
@@ -418,7 +418,7 @@ pub struct RejectedUnpin {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RejectedRetire {
     pub retire_rejection_reason: RetireRejectionReason,
@@ -426,7 +426,7 @@ pub struct RejectedRetire {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct RejectedTest {
     pub test_rejection_reason: TestRejectionReason,
@@ -434,7 +434,7 @@ pub struct RejectedTest {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Input {
     Deploy(Deploy),
@@ -445,7 +445,7 @@ pub enum Input {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Output {
     DeployAccepted(DeployAccepted),
@@ -1120,7 +1120,7 @@ impl std::fmt::Display for SignalFrameError {
 impl std::error::Error for SignalFrameError {}
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,
@@ -1140,7 +1140,7 @@ pub enum InputRoute {
 }
 
 #[rustfmt::skip]
-#[cfg_attr(feature = "nota-text", derive(nota_next::NotaDecode, nota_next::NotaEncode))]
+#[cfg_attr(feature = "nota-text", derive(nota::NotaDecode, nota::NotaEncode))]
 #[derive(
     rkyv::Archive,
     rkyv::Serialize,

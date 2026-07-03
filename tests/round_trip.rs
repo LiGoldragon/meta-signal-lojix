@@ -4,7 +4,7 @@ use meta_signal_lojix::schema::lib::{
     DatabaseMarker, DeployHandle, DeployRejectionReason, DeployRequest, HostDeployment, Input,
     Output, PinRequest, RejectedDeploy, SourceRevisionPolicy,
 };
-use nota_next::{NotaDecode, NotaEncode, NotaSource};
+use nota::{NotaDecode, NotaEncode, NotaSource};
 
 fn marker() -> DatabaseMarker {
     DatabaseMarker {

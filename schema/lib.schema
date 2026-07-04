@@ -87,12 +87,12 @@
   ;;               spirit State->Record precedent — a distinct typed op the
   ;;               daemon expands, never an under-filled struct).
   TestRequest    [(Run TestRun) (Check QuickCheck)]
-  NodeSelection  [(Nodes (Vec NodeName)) All]
-  TestRun        { ClusterName * NodeSelection * HostSelection * TestMode * }
-  QuickCheck     (Vec NodeName)
+  NodeSelection  [(Nodes (Vector NodeName)) All]
+  TestRun        { ClusterName NodeSelection HostSelection TestMode }
+  QuickCheck     (Vector NodeName)
 
-  ExtraSubstituter { url String public_key String }
-  Builder { NodeName * }
+  ExtraSubstituter { url.String public_key.String }
+  Builder { NodeName }
 
   ;; A direct flake output attribute to build, naming a self-contained
   ;; closure (a fixture / test toplevel, or any directly-buildable output)
@@ -103,40 +103,40 @@
   FlakeAttribute String
 
   HostDeployment {
-    ClusterName *
-    NodeName *
-    HostComposition *
-    source ProposalSource
-    flake FlakeReference
-    HostDeployAction *
-    source_revision_policy SourceRevisionPolicy
-    builder (Optional Builder)
-    substituters (Vec ExtraSubstituter)
-    build_attribute (Optional FlakeAttribute)
+    ClusterName
+    NodeName
+    HostComposition
+    source.ProposalSource
+    flake.FlakeReference
+    HostDeployAction
+    SourceRevisionPolicy
+    builder.(Optional Builder)
+    substituters.(Vector ExtraSubstituter)
+    build_attribute.(Optional FlakeAttribute)
   }
   UserEnvironmentDeployment {
-    ClusterName *
-    NodeName *
-    UserName *
-    source ProposalSource
-    flake FlakeReference
-    UserEnvironmentAction *
-    source_revision_policy SourceRevisionPolicy
-    builder (Optional Builder)
-    substituters (Vec ExtraSubstituter)
+    ClusterName
+    NodeName
+    UserName
+    source.ProposalSource
+    flake.FlakeReference
+    UserEnvironmentAction
+    SourceRevisionPolicy
+    builder.(Optional Builder)
+    substituters.(Vector ExtraSubstituter)
   }
   DeployRequest [(Host HostDeployment) (UserEnvironment UserEnvironmentDeployment)]
 
-  PinRequest { ClusterName * NodeName * GenerationIdentifier * PinLabel * }
-  UnpinRequest { ClusterName * NodeName * PinLabel * }
-  RetireRequest { ClusterName * NodeName * GenerationIdentifier * }
+  PinRequest { ClusterName NodeName GenerationIdentifier PinLabel }
+  UnpinRequest { ClusterName NodeName PinLabel }
+  RetireRequest { ClusterName NodeName GenerationIdentifier }
 
-  DeployHandle { DeploymentIdentifier * DatabaseMarker * }
+  DeployHandle { DeploymentIdentifier DatabaseMarker }
   ;; The minted run identifier plus the durable marker for accepted deploy work.
-  AcceptedTest { TestRunIdentifier * DatabaseMarker * }
-  AppliedPin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
-  AppliedUnpin { GenerationIdentifier * PinLabel * from_slot GenerationSlot to_slot GenerationSlot DatabaseMarker * }
-  AppliedRetire { GenerationIdentifier * from_slot GenerationSlot DatabaseMarker * }
+  AcceptedTest { TestRunIdentifier DatabaseMarker }
+  AppliedPin { GenerationIdentifier PinLabel from_slot.GenerationSlot to_slot.GenerationSlot DatabaseMarker }
+  AppliedUnpin { GenerationIdentifier PinLabel from_slot.GenerationSlot to_slot.GenerationSlot DatabaseMarker }
+  AppliedRetire { GenerationIdentifier from_slot.GenerationSlot DatabaseMarker }
 
   ;; UnsupportedDeployAction: the daemon does not yet implement this deploy
   ;; shape (e.g. an activating action or a production build that needs horizon
@@ -164,9 +164,9 @@
   ;; the Deploy precedent.
   TestRejectionReason [ClusterUnknown NodeUnknown VmHostNotDeclaredForNode HostDeclaresNoVmHost NoTestDefaults LiveNotYetEnabled SubstrateUnavailable InternalError]
 
-  RejectedDeploy { DeployRejectionReason * DatabaseMarker * }
-  RejectedPin { PinRejectionReason * DatabaseMarker * }
-  RejectedUnpin { UnpinRejectionReason * DatabaseMarker * }
-  RejectedRetire { RetireRejectionReason * DatabaseMarker * }
-  RejectedTest { TestRejectionReason * DatabaseMarker * }
+  RejectedDeploy { DeployRejectionReason DatabaseMarker }
+  RejectedPin { PinRejectionReason DatabaseMarker }
+  RejectedUnpin { UnpinRejectionReason DatabaseMarker }
+  RejectedRetire { RetireRejectionReason DatabaseMarker }
+  RejectedTest { TestRejectionReason DatabaseMarker }
 }

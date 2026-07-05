@@ -15,9 +15,9 @@
 ;; SHARED-TYPE OWNERSHIP. The ordinary signal-lojix contract DEFINES the
 ;; shared record types ONCE; this contract cross-imports them via the
 ;; single-colon path form  signal-lojix:lib:TypeName  in the imports
-;; block below (precedent: schema-next import-consumer/schema/lib.schema:1
+;; block below (precedent: schema import-consumer/schema/lib.schema:1
 ;;   { DatabaseMarker marker-core:mail:DatabaseMarker }
-;; and schema-rust-next driver-runtime/schema/nexus.schema:2
+;; and schema-rust driver-runtime/schema/nexus.schema:2
 ;;   ContractInput driver-contract:lib:Input). Imported under a local
 ;; alias, an imported type is referenced exactly like a local one. NOTHING
 ;; shared is redefined here — the DeploymentIdentifier minted by Deploy,

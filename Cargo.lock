@@ -521,7 +521,7 @@ dependencies = [
 [[package]]
 name = "schema-rust"
 version = "0.5.3"
-source = "git+https://github.com/LiGoldragon/schema-rust.git?branch=drop-next#94a0aa88a1d909b6f87cbf1431762c6fb0e19b71"
+source = "git+https://github.com/LiGoldragon/schema-rust.git?branch=drop-next#72c71ffc558fee0d29c5b0517013de46e0307597"
 dependencies = [
  "nota",
  "prettyplease",
@@ -594,7 +594,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "0.2.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?branch=drop-next#a341571950826780d8b5dbae17f884e6010f3a17"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?branch=drop-next#7ba944cf7bcae5eac5cbeecdebf894ce7ba2f1cf"
 dependencies = [
  "nota",
  "rkyv",

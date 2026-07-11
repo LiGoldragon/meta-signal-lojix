@@ -125,14 +125,7 @@
     builder.(Optional Builder)
     substituters.(Vector ExtraSubstituter)
   }
-  ;; A normal deploy preserves the managed target's recorded requested source.
-  ;; An Override deploy is the explicit, auditable compare-and-swap escape hatch:
-  ;; expected_source must equal the target's current requested source before the
-  ;; enclosed candidate is admitted. This makes rollback deliberate instead of
-  ;; allowing a stale immutable pin to silently replace a managed target.
-  DeploymentRequest [(Host HostDeployment) (UserEnvironment UserEnvironmentDeployment)]
-  DeploymentOverride { expected_source.FlakeReference deployment.DeploymentRequest }
-  DeployRequest [(Host HostDeployment) (UserEnvironment UserEnvironmentDeployment) (Override DeploymentOverride)]
+  DeployRequest [(Host HostDeployment) (UserEnvironment UserEnvironmentDeployment)]
 
   PinRequest { ClusterName NodeName GenerationIdentifier PinLabel }
   UnpinRequest { ClusterName NodeName PinLabel }
@@ -155,10 +148,7 @@
   ;; target-side activation step (e.g. home-manager activate /
   ;; switch-to-configuration) exited non-zero — distinct from BuilderUnreachable
   ;; so a local/home activation failure is not mislabelled as a builder problem.
-  ;; ManagedSourceConflict: an activating normal deploy named a different
-  ;; source than the target's recorded current source, or an Override's
-  ;; expected_source failed its compare-and-swap precondition.
-  DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight ManagedSourceConflict UnsupportedDeployAction InternalError ActivationFailed]
+  DeployRejectionReason [ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError ActivationFailed]
   PinRejectionReason [GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
   UnpinRejectionReason [PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
   RetireRejectionReason [GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]

@@ -281,32 +281,9 @@ pub struct UserEnvironmentDeployment {
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub enum DeploymentRequest {
-    Host(HostDeployment),
-    UserEnvironment(UserEnvironmentDeployment),
-}
-
-#[rustfmt::skip]
-#[cfg_attr(
-    feature = "nota-text",
-    derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
-)]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct DeploymentOverride {
-    pub expected_source: FlakeReference,
-    pub deployment: DeploymentRequest,
-}
-
-#[rustfmt::skip]
-#[cfg_attr(
-    feature = "nota-text",
-    derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
-)]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum DeployRequest {
     Host(HostDeployment),
     UserEnvironment(UserEnvironmentDeployment),
-    Override(DeploymentOverride),
 }
 
 #[rustfmt::skip]
@@ -431,7 +408,6 @@ pub enum DeployRejectionReason {
     BuilderUnreachable,
     SubstituterUnreachable,
     DeploymentInFlight,
-    ManagedSourceConflict,
     UnsupportedDeployAction,
     InternalError,
     ActivationFailed,
@@ -979,25 +955,12 @@ impl NodeSelection {
 }
 
 #[rustfmt::skip]
-impl DeploymentRequest {
-    pub fn host(payload: HostDeployment) -> Self {
-        Self::Host(payload)
-    }
-    pub fn user_environment(payload: UserEnvironmentDeployment) -> Self {
-        Self::UserEnvironment(payload)
-    }
-}
-
-#[rustfmt::skip]
 impl DeployRequest {
     pub fn host(payload: HostDeployment) -> Self {
         Self::Host(payload)
     }
     pub fn user_environment(payload: UserEnvironmentDeployment) -> Self {
         Self::UserEnvironment(payload)
-    }
-    pub fn r#override(payload: DeploymentOverride) -> Self {
-        Self::Override(payload)
     }
 }
 
@@ -1069,20 +1032,6 @@ impl From<QuickCheck> for TestRequest {
 }
 
 #[rustfmt::skip]
-impl From<HostDeployment> for DeploymentRequest {
-    fn from(payload: HostDeployment) -> Self {
-        Self::Host(payload)
-    }
-}
-
-#[rustfmt::skip]
-impl From<UserEnvironmentDeployment> for DeploymentRequest {
-    fn from(payload: UserEnvironmentDeployment) -> Self {
-        Self::UserEnvironment(payload)
-    }
-}
-
-#[rustfmt::skip]
 impl From<HostDeployment> for DeployRequest {
     fn from(payload: HostDeployment) -> Self {
         Self::Host(payload)
@@ -1093,13 +1042,6 @@ impl From<HostDeployment> for DeployRequest {
 impl From<UserEnvironmentDeployment> for DeployRequest {
     fn from(payload: UserEnvironmentDeployment) -> Self {
         Self::UserEnvironment(payload)
-    }
-}
-
-#[rustfmt::skip]
-impl From<DeploymentOverride> for DeployRequest {
-    fn from(payload: DeploymentOverride) -> Self {
-        Self::Override(payload)
     }
 }
 

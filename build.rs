@@ -29,7 +29,7 @@ impl SchemaBuild {
                 .expect("signal-lojix schema directory exposed via DEP_SIGNAL_LOJIX_SCHEMA_DIR");
 
         GenerationDriver::new(
-            GenerationPlan::wire_contract(&self.crate_root, "meta-signal-lojix", "0.2.0")
+            GenerationPlan::wire_contract(&self.crate_root, "meta-signal-lojix", "0.3.0")
                 .with_dependency_schema(ordinary_signal),
         )
         .generate()

@@ -1,8 +1,9 @@
 #![cfg(feature = "nota-text")]
 
 use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRejectionReason, DeployRequest, HostDeployment, Input,
-    Output, PinRequest, RejectedDeploy, SourceRevisionPolicy,
+    DatabaseMarker, DeployHandle, DeployRejectionReason, DeployRequest, DeploymentOverride,
+    DeploymentRequest, HostDeployment, Input, Output, PinRequest, RejectedDeploy,
+    SourceRevisionPolicy,
 };
 use nota::{NotaDecode, NotaEncode, NotaSource};
 
@@ -32,6 +33,21 @@ fn deploy_request() -> DeployRequest {
 
 fn deploy_input() -> Input {
     Input::Deploy(deploy_request().into())
+}
+
+fn override_deploy_input() -> Input {
+    Input::Deploy(
+        DeployRequest::Override(DeploymentOverride {
+            expected_source: "github:LiGoldragon/CriOMOS?rev=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                .to_string()
+                .into(),
+            deployment: DeploymentRequest::Host(match deploy_request() {
+                DeployRequest::Host(deployment) => deployment,
+                _ => unreachable!("fixture constructs a host deployment"),
+            }),
+        })
+        .into(),
+    )
 }
 
 fn pin_input() -> Input {
@@ -79,7 +95,7 @@ where
 
 #[test]
 fn meta_requests_round_trip_through_rkyv_frames() {
-    for request in [deploy_input(), pin_input()] {
+    for request in [deploy_input(), override_deploy_input(), pin_input()] {
         let frame = request.encode_signal_frame().expect("encode request");
         let (_route, decoded) = Input::decode_signal_frame(&frame).expect("decode request");
         assert_eq!(decoded, request);
@@ -97,6 +113,7 @@ fn meta_replies_round_trip_through_rkyv_frames() {
 #[test]
 fn meta_roots_round_trip_through_nota_text() {
     round_trip_nota(deploy_input());
+    round_trip_nota(override_deploy_input());
     round_trip_nota(pin_input());
     round_trip_nota(deploy_accepted_output());
 }

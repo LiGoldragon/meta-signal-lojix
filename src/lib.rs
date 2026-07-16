@@ -13,3 +13,7 @@
 //! generation and compilation.
 
 pub mod schema;
+
+/// Canonical package roots consumed by package-qualified external schemas.
+/// `schema::lib` remains the generated implementation module.
+pub use schema::lib::{Input, Output};

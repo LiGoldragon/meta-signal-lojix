@@ -1,7 +1,7 @@
 use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output,
-    SourceRevisionPolicy,
+    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, SourceRevisionPolicy,
 };
+use meta_signal_lojix::{Input, Output};
 
 fn marker() -> DatabaseMarker {
     DatabaseMarker {
@@ -41,7 +41,7 @@ fn default_build_round_trips_meta_request_without_nota_text() {
 }
 
 #[test]
-fn default_build_round_trips_meta_reply_without_nota_text() {
+fn canonical_package_roots_round_trip_meta_reply_without_nota_text() {
     let output = Output::DeployAccepted(
         DeployHandle {
             deployment_identifier: 1.into(),

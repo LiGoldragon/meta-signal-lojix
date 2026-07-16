@@ -18,15 +18,15 @@ fn deploy_request() -> DeployRequest {
         cluster_name: "goldragon".to_string().into(),
         node_name: "ouranos".to_string().into(),
         host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
-        source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
+        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
             .to_string()
             .into(),
-        flake: "github:LiGoldragon/CriOMOS/main".to_string().into(),
+        flake_reference: "github:LiGoldragon/CriOMOS/main".to_string().into(),
         host_deploy_action: signal_lojix::schema::lib::HostDeployAction::Evaluate,
         source_revision_policy: SourceRevisionPolicy::ResolveAndRecord,
-        builder: None,
-        substituters: Vec::new(),
-        build_attribute: None,
+        optional_builder: None,
+        extra_substituter_vector: Vec::new(),
+        optional_flake_attribute: None,
     })
 }
 

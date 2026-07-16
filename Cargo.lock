@@ -258,7 +258,7 @@ dependencies = [
 [[package]]
 name = "kameo"
 version = "0.20.0"
-source = "git+https://github.com/LiGoldragon/kameo.git?branch=main#f491b45d7dcb55e5837eddde3d5d7ca8ceaa9f01"
+source = "git+https://github.com/LiGoldragon/kameo.git?rev=f491b45d#f491b45d7dcb55e5837eddde3d5d7ca8ceaa9f01"
 dependencies = [
  "downcast-rs",
  "dyn-clone",
@@ -272,7 +272,7 @@ dependencies = [
 [[package]]
 name = "kameo_macros"
 version = "0.20.0"
-source = "git+https://github.com/LiGoldragon/kameo.git?branch=main#f491b45d7dcb55e5837eddde3d5d7ca8ceaa9f01"
+source = "git+https://github.com/LiGoldragon/kameo.git?rev=f491b45d#f491b45d7dcb55e5837eddde3d5d7ca8ceaa9f01"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -343,7 +343,7 @@ dependencies = [
 [[package]]
 name = "nota"
 version = "0.7.0"
-source = "git+https://github.com/LiGoldragon/nota.git?branch=main#f8de7a516b769fc544c7f8c0030e258833c1cf9b"
+source = "git+https://github.com/LiGoldragon/nota.git?rev=f8de7a516b769fc544c7f8c0030e258833c1cf9b#f8de7a516b769fc544c7f8c0030e258833c1cf9b"
 dependencies = [
  "nota-derive",
  "rkyv",
@@ -352,7 +352,7 @@ dependencies = [
 [[package]]
 name = "nota-derive"
 version = "0.3.0"
-source = "git+https://github.com/LiGoldragon/nota.git?branch=main#f8de7a516b769fc544c7f8c0030e258833c1cf9b"
+source = "git+https://github.com/LiGoldragon/nota.git?rev=f8de7a516b769fc544c7f8c0030e258833c1cf9b#f8de7a516b769fc544c7f8c0030e258833c1cf9b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -495,7 +495,7 @@ checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 [[package]]
 name = "schema-language"
 version = "0.3.0"
-source = "git+https://github.com/LiGoldragon/schema-language.git?rev=4dcd70eb672d2926b4ce85f99c17de9ed24776cc#4dcd70eb672d2926b4ce85f99c17de9ed24776cc"
+source = "git+https://github.com/LiGoldragon/schema-language.git?rev=7fac6ac810bc#7fac6ac810bc736a68fa95f866b7ee1ddad19a33"
 dependencies = [
  "blake3",
  "nota",
@@ -506,7 +506,7 @@ dependencies = [
 [[package]]
 name = "schema-rust"
 version = "0.9.0"
-source = "git+https://github.com/LiGoldragon/schema-rust.git?rev=9987c588cad8da6507c378dad5d3cbeef3eebad1#9987c588cad8da6507c378dad5d3cbeef3eebad1"
+source = "git+https://github.com/LiGoldragon/schema-rust.git?rev=51a65c4b241f#51a65c4b241f269644918e62e69a8f64ed84b71c"
 dependencies = [
  "nota",
  "prettyplease",
@@ -557,7 +557,7 @@ checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
 [[package]]
 name = "signal-frame"
 version = "0.3.0"
-source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#fd7909d1497b7bb18751521387a1087cd9e7c91c"
+source = "git+https://github.com/LiGoldragon/signal-frame.git?rev=b61ec7d9e98e#b61ec7d9e98e8d80381ad9497efcd4379adb5ede"
 dependencies = [
  "nota",
  "paste",
@@ -569,7 +569,7 @@ dependencies = [
 [[package]]
 name = "signal-frame-macros"
 version = "0.1.1"
-source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#fd7909d1497b7bb18751521387a1087cd9e7c91c"
+source = "git+https://github.com/LiGoldragon/signal-frame.git?rev=b61ec7d9e98e#b61ec7d9e98e8d80381ad9497efcd4379adb5ede"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -579,7 +579,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "0.4.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=866275f6e05a353f370de6b0197f011d41e38e56#866275f6e05a353f370de6b0197f011d41e38e56"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=3c96c5c06563#3c96c5c0656377dc67c054f5f82db8d6ad7aa56b"
 dependencies = [
  "nota",
  "rkyv",
@@ -716,7 +716,7 @@ dependencies = [
 [[package]]
 name = "triad-runtime"
 version = "0.7.0"
-source = "git+https://github.com/LiGoldragon/triad-runtime.git?branch=main#d323f9024f8490961c687798cf2dad4aea54aa7e"
+source = "git+https://github.com/LiGoldragon/triad-runtime.git?rev=d93ad0d08e46#d93ad0d08e46ecfff08b8f67fcebc4a0d936d0ae"
 dependencies = [
  "kameo",
  "rkyv",

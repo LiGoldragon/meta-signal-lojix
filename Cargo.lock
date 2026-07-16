@@ -506,7 +506,7 @@ dependencies = [
 [[package]]
 name = "schema-rust"
 version = "0.9.0"
-source = "git+https://github.com/LiGoldragon/schema-rust.git?rev=51a65c4b241f#51a65c4b241f269644918e62e69a8f64ed84b71c"
+source = "git+https://github.com/LiGoldragon/schema-rust.git?rev=ab366e40135992ef1f73791153b70b9c6ed0a972#ab366e40135992ef1f73791153b70b9c6ed0a972"
 dependencies = [
  "nota",
  "prettyplease",
@@ -579,7 +579,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "0.4.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=3c96c5c06563#3c96c5c0656377dc67c054f5f82db8d6ad7aa56b"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=8893cd4bb239fec87d23ae145ea751893050a8a1#8893cd4bb239fec87d23ae145ea751893050a8a1"
 dependencies = [
  "nota",
  "rkyv",
@@ -657,9 +657,9 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "tokio"
-version = "1.52.3"
+version = "1.52.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fc7f01b389ac15039e4dc9531aa973a135d7a4135281b12d7c1bc79fd57fffe"
+checksum = "317fafbbe3f02fc663dad00ea6186197de963cd4190e86a26d8d0fae095539af"
 dependencies = [
  "bytes",
  "libc",

@@ -54,7 +54,7 @@ pub use nota::{NotaDecodeError, NotaEncode, NotaSource};
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Deploy(DeployRequest);
+pub struct DeployPayload(DeployRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -62,7 +62,7 @@ pub struct Deploy(DeployRequest);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Pin(PinRequest);
+pub struct PinPayload(PinRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -70,7 +70,7 @@ pub struct Pin(PinRequest);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Unpin(UnpinRequest);
+pub struct UnpinPayload(UnpinRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -78,7 +78,7 @@ pub struct Unpin(UnpinRequest);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Retire(RetireRequest);
+pub struct RetirePayload(RetireRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -86,7 +86,7 @@ pub struct Retire(RetireRequest);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Test(TestRequest);
+pub struct TestPayload(TestRequest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -94,7 +94,7 @@ pub struct Test(TestRequest);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct DeployAccepted(DeployHandle);
+pub struct DeployAcceptedPayload(DeployHandle);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -102,7 +102,7 @@ pub struct DeployAccepted(DeployHandle);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct DeployRejected(RejectedDeploy);
+pub struct DeployRejectedPayload(RejectedDeploy);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -110,7 +110,7 @@ pub struct DeployRejected(RejectedDeploy);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Pinned(AppliedPin);
+pub struct PinnedPayload(AppliedPin);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -118,7 +118,7 @@ pub struct Pinned(AppliedPin);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct PinRejected(RejectedPin);
+pub struct PinRejectedPayload(RejectedPin);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -126,7 +126,7 @@ pub struct PinRejected(RejectedPin);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Unpinned(AppliedUnpin);
+pub struct UnpinnedPayload(AppliedUnpin);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -134,7 +134,7 @@ pub struct Unpinned(AppliedUnpin);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct UnpinRejected(RejectedUnpin);
+pub struct UnpinRejectedPayload(RejectedUnpin);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -142,7 +142,7 @@ pub struct UnpinRejected(RejectedUnpin);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Retired(AppliedRetire);
+pub struct RetiredPayload(AppliedRetire);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -150,7 +150,7 @@ pub struct Retired(AppliedRetire);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct RetireRejected(RejectedRetire);
+pub struct RetireRejectedPayload(RejectedRetire);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -158,7 +158,7 @@ pub struct RetireRejected(RejectedRetire);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Tested(AcceptedTest);
+pub struct TestedPayload(AcceptedTest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -166,7 +166,7 @@ pub struct Tested(AcceptedTest);
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct TestRejected(RejectedTest);
+pub struct TestRejectedPayload(RejectedTest);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -248,13 +248,13 @@ pub struct HostDeployment {
     pub cluster_name: ClusterName,
     pub node_name: NodeName,
     pub host_composition: HostComposition,
-    pub source: ProposalSource,
-    pub flake: FlakeReference,
+    pub proposal_source: ProposalSource,
+    pub flake_reference: FlakeReference,
     pub host_deploy_action: HostDeployAction,
     pub source_revision_policy: SourceRevisionPolicy,
-    pub builder: Option<Builder>,
-    pub substituters: Vec<ExtraSubstituter>,
-    pub build_attribute: Option<FlakeAttribute>,
+    pub optional_builder: Option<Builder>,
+    pub extra_substituter_vector: Vec<ExtraSubstituter>,
+    pub optional_flake_attribute: Option<FlakeAttribute>,
 }
 
 #[rustfmt::skip]
@@ -267,12 +267,12 @@ pub struct UserEnvironmentDeployment {
     pub cluster_name: ClusterName,
     pub node_name: NodeName,
     pub user_name: UserName,
-    pub source: ProposalSource,
-    pub flake: FlakeReference,
+    pub proposal_source: ProposalSource,
+    pub flake_reference: FlakeReference,
     pub user_environment_action: UserEnvironmentAction,
     pub source_revision_policy: SourceRevisionPolicy,
-    pub builder: Option<Builder>,
-    pub substituters: Vec<ExtraSubstituter>,
+    pub optional_builder: Option<Builder>,
+    pub extra_substituter_vector: Vec<ExtraSubstituter>,
 }
 
 #[rustfmt::skip]
@@ -381,7 +381,7 @@ pub struct AppliedUnpin {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct AppliedRetire {
     pub generation_identifier: GenerationIdentifier,
-    pub from_slot: GenerationSlot,
+    pub generation_slot: GenerationSlot,
     pub database_marker: DatabaseMarker,
 }
 
@@ -569,11 +569,11 @@ pub struct RejectedTest {
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Input {
-    Deploy(Deploy),
-    Pin(Pin),
-    Unpin(Unpin),
-    Retire(Retire),
-    Test(Test),
+    Deploy(DeployPayload),
+    Pin(PinPayload),
+    Unpin(UnpinPayload),
+    Retire(RetirePayload),
+    Test(TestPayload),
 }
 
 #[rustfmt::skip]
@@ -583,20 +583,20 @@ pub enum Input {
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Output {
-    DeployAccepted(DeployAccepted),
-    DeployRejected(DeployRejected),
-    Pinned(Pinned),
-    PinRejected(PinRejected),
-    Unpinned(Unpinned),
-    UnpinRejected(UnpinRejected),
-    Retired(Retired),
-    RetireRejected(RetireRejected),
-    Tested(Tested),
-    TestRejected(TestRejected),
+    DeployAccepted(DeployAcceptedPayload),
+    DeployRejected(DeployRejectedPayload),
+    Pinned(PinnedPayload),
+    PinRejected(PinRejectedPayload),
+    Unpinned(UnpinnedPayload),
+    UnpinRejected(UnpinRejectedPayload),
+    Retired(RetiredPayload),
+    RetireRejected(RetireRejectedPayload),
+    Tested(TestedPayload),
+    TestRejected(TestRejectedPayload),
 }
 
 #[rustfmt::skip]
-impl Deploy {
+impl DeployPayload {
     pub fn new(payload: DeployRequest) -> Self {
         Self(payload)
     }
@@ -608,14 +608,14 @@ impl Deploy {
     }
 }
 #[rustfmt::skip]
-impl From<DeployRequest> for Deploy {
+impl From<DeployRequest> for DeployPayload {
     fn from(payload: DeployRequest) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Pin {
+impl PinPayload {
     pub fn new(payload: PinRequest) -> Self {
         Self(payload)
     }
@@ -627,14 +627,14 @@ impl Pin {
     }
 }
 #[rustfmt::skip]
-impl From<PinRequest> for Pin {
+impl From<PinRequest> for PinPayload {
     fn from(payload: PinRequest) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Unpin {
+impl UnpinPayload {
     pub fn new(payload: UnpinRequest) -> Self {
         Self(payload)
     }
@@ -646,14 +646,14 @@ impl Unpin {
     }
 }
 #[rustfmt::skip]
-impl From<UnpinRequest> for Unpin {
+impl From<UnpinRequest> for UnpinPayload {
     fn from(payload: UnpinRequest) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Retire {
+impl RetirePayload {
     pub fn new(payload: RetireRequest) -> Self {
         Self(payload)
     }
@@ -665,14 +665,14 @@ impl Retire {
     }
 }
 #[rustfmt::skip]
-impl From<RetireRequest> for Retire {
+impl From<RetireRequest> for RetirePayload {
     fn from(payload: RetireRequest) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Test {
+impl TestPayload {
     pub fn new(payload: TestRequest) -> Self {
         Self(payload)
     }
@@ -684,14 +684,14 @@ impl Test {
     }
 }
 #[rustfmt::skip]
-impl From<TestRequest> for Test {
+impl From<TestRequest> for TestPayload {
     fn from(payload: TestRequest) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl DeployAccepted {
+impl DeployAcceptedPayload {
     pub fn new(payload: DeployHandle) -> Self {
         Self(payload)
     }
@@ -703,14 +703,14 @@ impl DeployAccepted {
     }
 }
 #[rustfmt::skip]
-impl From<DeployHandle> for DeployAccepted {
+impl From<DeployHandle> for DeployAcceptedPayload {
     fn from(payload: DeployHandle) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl DeployRejected {
+impl DeployRejectedPayload {
     pub fn new(payload: RejectedDeploy) -> Self {
         Self(payload)
     }
@@ -722,14 +722,14 @@ impl DeployRejected {
     }
 }
 #[rustfmt::skip]
-impl From<RejectedDeploy> for DeployRejected {
+impl From<RejectedDeploy> for DeployRejectedPayload {
     fn from(payload: RejectedDeploy) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Pinned {
+impl PinnedPayload {
     pub fn new(payload: AppliedPin) -> Self {
         Self(payload)
     }
@@ -741,14 +741,14 @@ impl Pinned {
     }
 }
 #[rustfmt::skip]
-impl From<AppliedPin> for Pinned {
+impl From<AppliedPin> for PinnedPayload {
     fn from(payload: AppliedPin) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl PinRejected {
+impl PinRejectedPayload {
     pub fn new(payload: RejectedPin) -> Self {
         Self(payload)
     }
@@ -760,14 +760,14 @@ impl PinRejected {
     }
 }
 #[rustfmt::skip]
-impl From<RejectedPin> for PinRejected {
+impl From<RejectedPin> for PinRejectedPayload {
     fn from(payload: RejectedPin) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Unpinned {
+impl UnpinnedPayload {
     pub fn new(payload: AppliedUnpin) -> Self {
         Self(payload)
     }
@@ -779,14 +779,14 @@ impl Unpinned {
     }
 }
 #[rustfmt::skip]
-impl From<AppliedUnpin> for Unpinned {
+impl From<AppliedUnpin> for UnpinnedPayload {
     fn from(payload: AppliedUnpin) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl UnpinRejected {
+impl UnpinRejectedPayload {
     pub fn new(payload: RejectedUnpin) -> Self {
         Self(payload)
     }
@@ -798,14 +798,14 @@ impl UnpinRejected {
     }
 }
 #[rustfmt::skip]
-impl From<RejectedUnpin> for UnpinRejected {
+impl From<RejectedUnpin> for UnpinRejectedPayload {
     fn from(payload: RejectedUnpin) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Retired {
+impl RetiredPayload {
     pub fn new(payload: AppliedRetire) -> Self {
         Self(payload)
     }
@@ -817,14 +817,14 @@ impl Retired {
     }
 }
 #[rustfmt::skip]
-impl From<AppliedRetire> for Retired {
+impl From<AppliedRetire> for RetiredPayload {
     fn from(payload: AppliedRetire) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl RetireRejected {
+impl RetireRejectedPayload {
     pub fn new(payload: RejectedRetire) -> Self {
         Self(payload)
     }
@@ -836,14 +836,14 @@ impl RetireRejected {
     }
 }
 #[rustfmt::skip]
-impl From<RejectedRetire> for RetireRejected {
+impl From<RejectedRetire> for RetireRejectedPayload {
     fn from(payload: RejectedRetire) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl Tested {
+impl TestedPayload {
     pub fn new(payload: AcceptedTest) -> Self {
         Self(payload)
     }
@@ -855,14 +855,14 @@ impl Tested {
     }
 }
 #[rustfmt::skip]
-impl From<AcceptedTest> for Tested {
+impl From<AcceptedTest> for TestedPayload {
     fn from(payload: AcceptedTest) -> Self {
         Self::new(payload)
     }
 }
 
 #[rustfmt::skip]
-impl TestRejected {
+impl TestRejectedPayload {
     pub fn new(payload: RejectedTest) -> Self {
         Self(payload)
     }
@@ -874,7 +874,7 @@ impl TestRejected {
     }
 }
 #[rustfmt::skip]
-impl From<RejectedTest> for TestRejected {
+impl From<RejectedTest> for TestRejectedPayload {
     fn from(payload: RejectedTest) -> Self {
         Self::new(payload)
     }
@@ -967,53 +967,53 @@ impl DeployRequest {
 #[rustfmt::skip]
 impl Input {
     pub fn deploy(payload: DeployRequest) -> Self {
-        Self::Deploy(Deploy::new(payload))
+        Self::Deploy(DeployPayload::new(payload))
     }
     pub fn pin(payload: PinRequest) -> Self {
-        Self::Pin(Pin::new(payload))
+        Self::Pin(PinPayload::new(payload))
     }
     pub fn unpin(payload: UnpinRequest) -> Self {
-        Self::Unpin(Unpin::new(payload))
+        Self::Unpin(UnpinPayload::new(payload))
     }
     pub fn retire(payload: RetireRequest) -> Self {
-        Self::Retire(Retire::new(payload))
+        Self::Retire(RetirePayload::new(payload))
     }
     pub fn test(payload: TestRequest) -> Self {
-        Self::Test(Test::new(payload))
+        Self::Test(TestPayload::new(payload))
     }
 }
 
 #[rustfmt::skip]
 impl Output {
     pub fn deploy_accepted(payload: DeployHandle) -> Self {
-        Self::DeployAccepted(DeployAccepted::new(payload))
+        Self::DeployAccepted(DeployAcceptedPayload::new(payload))
     }
     pub fn deploy_rejected(payload: RejectedDeploy) -> Self {
-        Self::DeployRejected(DeployRejected::new(payload))
+        Self::DeployRejected(DeployRejectedPayload::new(payload))
     }
     pub fn pinned(payload: AppliedPin) -> Self {
-        Self::Pinned(Pinned::new(payload))
+        Self::Pinned(PinnedPayload::new(payload))
     }
     pub fn pin_rejected(payload: RejectedPin) -> Self {
-        Self::PinRejected(PinRejected::new(payload))
+        Self::PinRejected(PinRejectedPayload::new(payload))
     }
     pub fn unpinned(payload: AppliedUnpin) -> Self {
-        Self::Unpinned(Unpinned::new(payload))
+        Self::Unpinned(UnpinnedPayload::new(payload))
     }
     pub fn unpin_rejected(payload: RejectedUnpin) -> Self {
-        Self::UnpinRejected(UnpinRejected::new(payload))
+        Self::UnpinRejected(UnpinRejectedPayload::new(payload))
     }
     pub fn retired(payload: AppliedRetire) -> Self {
-        Self::Retired(Retired::new(payload))
+        Self::Retired(RetiredPayload::new(payload))
     }
     pub fn retire_rejected(payload: RejectedRetire) -> Self {
-        Self::RetireRejected(RetireRejected::new(payload))
+        Self::RetireRejected(RetireRejectedPayload::new(payload))
     }
     pub fn tested(payload: AcceptedTest) -> Self {
-        Self::Tested(Tested::new(payload))
+        Self::Tested(TestedPayload::new(payload))
     }
     pub fn test_rejected(payload: RejectedTest) -> Self {
-        Self::TestRejected(TestRejected::new(payload))
+        Self::TestRejected(TestRejectedPayload::new(payload))
     }
 }
 
@@ -1046,106 +1046,106 @@ impl From<UserEnvironmentDeployment> for DeployRequest {
 }
 
 #[rustfmt::skip]
-impl From<Deploy> for Input {
-    fn from(payload: Deploy) -> Self {
+impl From<DeployPayload> for Input {
+    fn from(payload: DeployPayload) -> Self {
         Self::Deploy(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Pin> for Input {
-    fn from(payload: Pin) -> Self {
+impl From<PinPayload> for Input {
+    fn from(payload: PinPayload) -> Self {
         Self::Pin(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Unpin> for Input {
-    fn from(payload: Unpin) -> Self {
+impl From<UnpinPayload> for Input {
+    fn from(payload: UnpinPayload) -> Self {
         Self::Unpin(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Retire> for Input {
-    fn from(payload: Retire) -> Self {
+impl From<RetirePayload> for Input {
+    fn from(payload: RetirePayload) -> Self {
         Self::Retire(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Test> for Input {
-    fn from(payload: Test) -> Self {
+impl From<TestPayload> for Input {
+    fn from(payload: TestPayload) -> Self {
         Self::Test(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<DeployAccepted> for Output {
-    fn from(payload: DeployAccepted) -> Self {
+impl From<DeployAcceptedPayload> for Output {
+    fn from(payload: DeployAcceptedPayload) -> Self {
         Self::DeployAccepted(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<DeployRejected> for Output {
-    fn from(payload: DeployRejected) -> Self {
+impl From<DeployRejectedPayload> for Output {
+    fn from(payload: DeployRejectedPayload) -> Self {
         Self::DeployRejected(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Pinned> for Output {
-    fn from(payload: Pinned) -> Self {
+impl From<PinnedPayload> for Output {
+    fn from(payload: PinnedPayload) -> Self {
         Self::Pinned(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<PinRejected> for Output {
-    fn from(payload: PinRejected) -> Self {
+impl From<PinRejectedPayload> for Output {
+    fn from(payload: PinRejectedPayload) -> Self {
         Self::PinRejected(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Unpinned> for Output {
-    fn from(payload: Unpinned) -> Self {
+impl From<UnpinnedPayload> for Output {
+    fn from(payload: UnpinnedPayload) -> Self {
         Self::Unpinned(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<UnpinRejected> for Output {
-    fn from(payload: UnpinRejected) -> Self {
+impl From<UnpinRejectedPayload> for Output {
+    fn from(payload: UnpinRejectedPayload) -> Self {
         Self::UnpinRejected(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Retired> for Output {
-    fn from(payload: Retired) -> Self {
+impl From<RetiredPayload> for Output {
+    fn from(payload: RetiredPayload) -> Self {
         Self::Retired(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<RetireRejected> for Output {
-    fn from(payload: RetireRejected) -> Self {
+impl From<RetireRejectedPayload> for Output {
+    fn from(payload: RetireRejectedPayload) -> Self {
         Self::RetireRejected(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<Tested> for Output {
-    fn from(payload: Tested) -> Self {
+impl From<TestedPayload> for Output {
+    fn from(payload: TestedPayload) -> Self {
         Self::Tested(payload)
     }
 }
 
 #[rustfmt::skip]
-impl From<TestRejected> for Output {
-    fn from(payload: TestRejected) -> Self {
+impl From<TestRejectedPayload> for Output {
+    fn from(payload: TestRejectedPayload) -> Self {
         Self::TestRejected(payload)
     }
 }

@@ -411,6 +411,7 @@ pub enum DeployRejectionReason {
     UnsupportedDeployAction,
     InternalError,
     ActivationFailed,
+    FlakeEvaluationFailed,
 }
 
 #[rustfmt::skip]

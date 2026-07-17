@@ -143,12 +143,16 @@
   ;; materialization) and rejects it honestly rather than falsely reporting
   ;; acceptance. InternalError: an internal invariant failure (e.g. a poisoned
   ;; lock) — never a misleading domain reason. Both per audit 29 (C1/C4).
-  ;; BuilderUnreachable: a build/copy/reachability failure — the closure could
-  ;; not be built on or copied from the builder. ActivationFailed: the
-  ;; target-side activation step (e.g. home-manager activate /
-  ;; switch-to-configuration) exited non-zero — distinct from BuilderUnreachable
-  ;; so a local/home activation failure is not mislabelled as a builder problem.
-  DeployRejectionReason.[ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError ActivationFailed]
+  ;; FlakeEvaluationFailed: Nix accepted the immutable source reference but
+  ;; could not evaluate the requested output; this is distinct from an invalid
+  ;; reference and from a later builder/copy failure. BuilderUnreachable: a
+  ;; build/copy/reachability failure — the closure could not be built on or
+  ;; copied from the builder. ActivationFailed: the target-side activation step
+  ;; (e.g. home-manager activate / switch-to-configuration) exited non-zero —
+  ;; distinct from BuilderUnreachable so a local/home activation failure is not
+  ;; mislabelled as a builder problem. Appending preserves existing wire enum
+  ;; discriminants.
+  DeployRejectionReason.[ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError ActivationFailed FlakeEvaluationFailed]
   PinRejectionReason.[GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
   UnpinRejectionReason.[PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
   RetireRejectionReason.[GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]

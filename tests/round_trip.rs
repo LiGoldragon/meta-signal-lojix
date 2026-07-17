@@ -56,10 +56,10 @@ fn deploy_accepted_output() -> Output {
     )
 }
 
-fn deploy_rejected_activation_failed() -> Output {
+fn deploy_rejected(reason: DeployRejectionReason) -> Output {
     Output::DeployRejected(
         RejectedDeploy {
-            deploy_rejection_reason: DeployRejectionReason::ActivationFailed,
+            deploy_rejection_reason: reason,
             database_marker: marker(),
         }
         .into(),
@@ -102,13 +102,15 @@ fn meta_roots_round_trip_through_nota_text() {
 }
 
 #[test]
-fn activation_failed_reason_round_trips_through_nota_text() {
-    round_trip_nota(deploy_rejected_activation_failed());
-    assert!(
-        deploy_rejected_activation_failed()
-            .to_nota()
-            .contains("ActivationFailed")
-    );
+fn deploy_failure_reasons_round_trip_through_nota_text() {
+    for reason in [
+        DeployRejectionReason::ActivationFailed,
+        DeployRejectionReason::FlakeEvaluationFailed,
+    ] {
+        let rejected = deploy_rejected(reason);
+        round_trip_nota(rejected.clone());
+        assert!(rejected.to_nota().contains(&format!("{reason:?}")));
+    }
 }
 
 #[test]

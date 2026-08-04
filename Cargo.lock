@@ -622,7 +622,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "0.4.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=a5faebc4284ff596e78ff6c6e12bdd9bd785fbd1#a5faebc4284ff596e78ff6c6e12bdd9bd785fbd1"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=ce188446586839b463cc8cb3acd37403e85aa67d#ce188446586839b463cc8cb3acd37403e85aa67d"
 dependencies = [
  "dotos",
  "protos",

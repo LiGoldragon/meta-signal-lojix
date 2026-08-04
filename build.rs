@@ -1,5 +1,6 @@
 use std::{env, path::PathBuf};
 
+use protos::WireContractFamily;
 use schema_rust::build::{CargoSchemaMetadata, DependencySchema, GenerationDriver, GenerationPlan};
 
 fn main() {
@@ -29,8 +30,13 @@ impl SchemaBuild {
                 .expect("signal-lojix schema directory exposed via DEP_SIGNAL_LOJIX_SCHEMA_DIR");
 
         GenerationDriver::new(
-            GenerationPlan::wire_contract(&self.crate_root, "meta-signal-lojix", "0.4.0")
-                .with_dependency_schema(ordinary_signal),
+            GenerationPlan::wire_contract(
+                &self.crate_root,
+                "meta-signal-lojix",
+                "0.4.0",
+                WireContractFamily::MetaSignalLojix,
+            )
+            .with_dependency_schema(ordinary_signal),
         )
         .generate()
         .expect("generate meta-signal-lojix schema artifacts")

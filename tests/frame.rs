@@ -1,7 +1,15 @@
 use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output,
+    DatabaseMarker, DeployHandle, DeployRequest, FrameBody, HostDeployment, Input, Output,
     SourceRevisionPolicy,
 };
+
+fn exchange() -> signal_frame::ExchangeIdentifier {
+    signal_frame::ExchangeIdentifier::new(
+        signal_frame::SessionEpoch::new(9),
+        signal_frame::ExchangeLane::Connector,
+        signal_frame::LaneSequence::new(3),
+    )
+}
 
 fn marker() -> DatabaseMarker {
     DatabaseMarker {
@@ -15,7 +23,7 @@ fn deploy_request() -> DeployRequest {
         cluster_name: "goldragon".to_string().into(),
         node_name: "ouranos".to_string().into(),
         host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
-        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
+        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.dotos"
             .to_string()
             .into(),
         flake_reference: "github:LiGoldragon/CriOMOS/main".to_string().into(),
@@ -32,16 +40,22 @@ fn deploy_input() -> Input {
 }
 
 #[test]
-fn default_build_round_trips_meta_request_without_nota_text() {
+fn default_build_round_trips_meta_request_without_dotos_text() {
     let input = deploy_input();
-    let frame = input.encode_signal_frame().expect("encode request");
-    let (_route, decoded) = Input::decode_signal_frame(&frame).expect("decode request");
+    let frame = input
+        .clone()
+        .encode_request_frame(exchange())
+        .expect("encode request");
+    let (decoded_exchange, decoded) =
+        meta_signal_lojix::schema::lib::ContractMarker::decode_single_request(&frame)
+            .expect("decode request");
 
+    assert_eq!(decoded_exchange, exchange());
     assert_eq!(decoded, input);
 }
 
 #[test]
-fn default_build_round_trips_meta_reply_without_nota_text() {
+fn default_build_round_trips_meta_reply_without_dotos_text() {
     let output = Output::DeployAccepted(
         DeployHandle {
             deployment_identifier: 1.into(),
@@ -49,8 +63,20 @@ fn default_build_round_trips_meta_reply_without_nota_text() {
         }
         .into(),
     );
-    let frame = output.encode_signal_frame().expect("encode reply");
-    let (_route, decoded) = Output::decode_signal_frame(&frame).expect("decode reply");
+    let frame = output
+        .clone()
+        .encode_reply_frame(exchange())
+        .expect("encode reply");
+    let decoded =
+        meta_signal_lojix::schema::lib::ContractMarker::decode_frame(&frame).expect("decode reply");
 
-    assert_eq!(decoded, output);
+    assert_eq!(
+        decoded.into_body(),
+        FrameBody::Reply {
+            exchange: exchange(),
+            reply: signal_frame::Reply::committed(signal_frame::NonEmpty::single(
+                signal_frame::SubReply::Ok(output),
+            )),
+        },
+    );
 }

@@ -82,7 +82,7 @@
   ;; TEST OP (report 54). The owner-only meta verb that starts a test VM and
   ;; deploys into it — strictly more privileged than Deploy, so it lives here,
   ;; not on the ordinary read socket. TestRequest is a real shorter variant,
-  ;; not a defaulted record (nota forbids tail-omission):
+  ;; not a defaulted record (dotos forbids tail-omission):
   ;;   (Run …)   — the full form: explicit node selection, host, and mode.
   ;;   (Check …) — the routine shorthand: just the node(s); the daemon fills
   ;;               cluster + host + mode from TestDefaults at lowering (the

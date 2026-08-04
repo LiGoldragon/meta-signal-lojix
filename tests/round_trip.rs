@@ -1,13 +1,13 @@
-#![cfg(feature = "nota-text")]
+#![cfg(feature = "dotos-text")]
 
+use dotos::{DotosDecode, DotosEncode, DotosSource};
 use meta_signal_lojix::schema::lib::{
     DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output, PinRequest,
     RejectedDeploy, SourceRevisionPolicy,
 };
-use nota::{NotaDecode, NotaEncode, NotaSource};
 use signal_lojix::schema::lib::{
-    ActivationEffect, AdmissionMarker, DeploymentEnvironment, DeploymentLifecycle, DeploymentRecord,
-    DeploymentRequestIdentity, DeploymentTerminal, DeploymentTerminalReason,
+    ActivationEffect, AdmissionMarker, DeploymentEnvironment, DeploymentLifecycle,
+    DeploymentRecord, DeploymentRequestIdentity, DeploymentTerminal, DeploymentTerminalReason,
     GenerationArtifact, RequestedDeploymentAction, TerminalMarker,
 };
 
@@ -23,7 +23,7 @@ fn deploy_request() -> DeployRequest {
         cluster_name: "goldragon".to_string().into(),
         node_name: "ouranos".to_string().into(),
         host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
-        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.nota"
+        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.dotos"
             .to_string()
             .into(),
         flake_reference: "github:LiGoldragon/CriOMOS/main".to_string().into(),
@@ -93,22 +93,36 @@ fn deploy_rejected_activation_failed() -> Output {
     )
 }
 
-fn round_trip_nota<Value>(value: Value)
+fn exchange() -> signal_frame::ExchangeIdentifier {
+    signal_frame::ExchangeIdentifier::new(
+        signal_frame::SessionEpoch::new(9),
+        signal_frame::ExchangeLane::Connector,
+        signal_frame::LaneSequence::new(3),
+    )
+}
+
+fn round_trip_dotos<Value>(value: Value)
 where
-    Value: NotaEncode + NotaDecode + PartialEq + std::fmt::Debug,
+    Value: DotosEncode + DotosDecode + PartialEq + std::fmt::Debug,
 {
-    let encoded = value.to_nota();
-    let recovered = NotaSource::new(&encoded)
+    let encoded = value.to_dotos();
+    let recovered = DotosSource::new(&encoded)
         .parse::<Value>()
-        .expect("decode nota text");
+        .expect("decode dotos text");
     assert_eq!(recovered, value);
 }
 
 #[test]
 fn meta_requests_round_trip_through_rkyv_frames() {
     for request in [deploy_input(), pin_input()] {
-        let frame = request.encode_signal_frame().expect("encode request");
-        let (_route, decoded) = Input::decode_signal_frame(&frame).expect("decode request");
+        let frame = request
+            .clone()
+            .encode_request_frame(exchange())
+            .expect("encode request");
+        let (decoded_exchange, decoded) =
+            meta_signal_lojix::schema::lib::ContractMarker::decode_single_request(&frame)
+                .expect("decode request");
+        assert_eq!(decoded_exchange, exchange());
         assert_eq!(decoded, request);
     }
 }
@@ -116,35 +130,52 @@ fn meta_requests_round_trip_through_rkyv_frames() {
 #[test]
 fn meta_replies_round_trip_through_rkyv_frames() {
     let reply = deploy_accepted_output();
-    let frame = reply.encode_signal_frame().expect("encode reply");
-    let (_route, decoded) = Output::decode_signal_frame(&frame).expect("decode reply");
-    assert_eq!(decoded, reply);
+    let frame = reply
+        .clone()
+        .encode_reply_frame(exchange())
+        .expect("encode reply");
+    let decoded =
+        meta_signal_lojix::schema::lib::ContractMarker::decode_frame(&frame).expect("decode reply");
+    let meta_signal_lojix::schema::lib::FrameBody::Reply {
+        exchange: decoded_exchange,
+        reply: decoded_reply,
+    } = decoded.into_body()
+    else {
+        panic!("decoded frame must retain a reply body");
+    };
+    assert_eq!(decoded_exchange, exchange());
+    assert_eq!(
+        decoded_reply,
+        signal_frame::Reply::committed(signal_frame::NonEmpty::single(signal_frame::SubReply::Ok(
+            reply
+        ),)),
+    );
 }
 
 #[test]
-fn meta_roots_round_trip_through_nota_text() {
-    round_trip_nota(deploy_input());
-    round_trip_nota(pin_input());
-    round_trip_nota(deploy_accepted_output());
+fn meta_roots_round_trip_through_dotos_text() {
+    round_trip_dotos(deploy_input());
+    round_trip_dotos(pin_input());
+    round_trip_dotos(deploy_accepted_output());
 }
 
 #[test]
-fn activation_failed_reason_round_trips_through_nota_text() {
-    round_trip_nota(deploy_rejected_activation_failed());
+fn activation_failed_reason_round_trips_through_dotos_text() {
+    round_trip_dotos(deploy_rejected_activation_failed());
     assert!(
         deploy_rejected_activation_failed()
-            .to_nota()
+            .to_dotos()
             .contains("ActivationFailed")
     );
 }
 
 #[test]
-fn meta_nota_heads_are_owner_policy_verbs() {
-    assert!(deploy_input().to_nota().starts_with("(Deploy "));
-    assert!(pin_input().to_nota().starts_with("(Pin "));
+fn meta_dotos_heads_are_owner_policy_verbs() {
+    assert!(deploy_input().to_dotos().contains("Deploy"));
+    assert!(pin_input().to_dotos().contains("Pin"));
     assert!(
         deploy_accepted_output()
-            .to_nota()
-            .starts_with("(DeployAccepted ")
+            .to_dotos()
+            .contains("DeployAccepted")
     );
 }

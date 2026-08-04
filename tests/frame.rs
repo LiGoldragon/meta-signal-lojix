@@ -20,18 +20,26 @@ fn marker() -> DatabaseMarker {
 
 fn deploy_request() -> DeployRequest {
     DeployRequest::Host(HostDeployment {
-        cluster_name: "goldragon".to_string().into(),
-        node_name: "ouranos".to_string().into(),
+        cluster_name: "fixture-cluster".to_string().into(),
+        node_name: "fixture-node".to_string().into(),
         host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
-        proposal_source: "/git/github.com/LiGoldragon/goldragon/datom.dotos"
+        proposal_source: "/tmp/fixture-cluster.dotos".to_string().into(),
+        flake_reference: "github:example/fixture?rev=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             .to_string()
             .into(),
-        flake_reference: "github:LiGoldragon/CriOMOS/main".to_string().into(),
+        deployment_transport: signal_lojix::schema::lib::DeploymentTransport {
+            nix_store_uri: "ssh-ng://fixture-copy-a.invalid".to_string().into(),
+            ssh_destination: "fixture-login-a@fixture-activate-a.invalid".to_string().into(),
+        },
+        deployment_input_mode: signal_lojix::schema::lib::DeploymentInputMode::Direct,
+        deployment_output_selector: signal_lojix::schema::lib::DeploymentOutputSelector::new(
+            signal_lojix::schema::lib::FlakeAttribute::new("checks.fixture-a"),
+        ),
+        activation_backend: signal_lojix::schema::lib::ActivationBackend::NixosSystemdBootV1,
         host_deploy_action: signal_lojix::schema::lib::HostDeployAction::Evaluate,
         source_revision_policy: SourceRevisionPolicy::ResolveAndRecord,
-        optional_builder: None,
+        optional_nix_builder_spec: None,
         extra_substituter_vector: Vec::new(),
-        optional_flake_attribute: None,
     })
 }
 

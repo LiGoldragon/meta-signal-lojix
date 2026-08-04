@@ -38,6 +38,18 @@ pub use signal_lojix::schema::lib::ProposalSource as ProposalSource;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::FlakeReference as FlakeReference;
 #[rustfmt::skip]
+pub use signal_lojix::schema::lib::DeploymentTransport as DeploymentTransport;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::DeploymentInputMode as DeploymentInputMode;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::DeploymentOutputSelector as DeploymentOutputSelector;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::ActivationBackend as ActivationBackend;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::NixBuilderSpec as NixBuilderSpec;
+#[rustfmt::skip]
+pub use signal_lojix::schema::lib::TestExecutionProfile as TestExecutionProfile;
+#[rustfmt::skip]
 pub use signal_lojix::schema::lib::DatabaseMarker as DatabaseMarker;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::DeploymentRecord as DeploymentRecord;
@@ -210,7 +222,7 @@ pub struct TestRun {
     pub cluster_name: ClusterName,
     pub node_selection: NodeSelection,
     pub host_selection: HostSelection,
-    pub test_mode: TestMode,
+    pub test_execution_profile: TestExecutionProfile,
 }
 
 #[rustfmt::skip]
@@ -238,33 +250,20 @@ pub struct ExtraSubstituter {
     derive(dotos::DotosDecode, dotos::DotosDecodeTraced, dotos::DotosEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct Builder(NodeName);
-
-#[rustfmt::skip]
-#[cfg_attr(
-    feature = "dotos-text",
-    derive(dotos::DotosDecode, dotos::DotosDecodeTraced, dotos::DotosEncode)
-)]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct FlakeAttribute(String);
-
-#[rustfmt::skip]
-#[cfg_attr(
-    feature = "dotos-text",
-    derive(dotos::DotosDecode, dotos::DotosDecodeTraced, dotos::DotosEncode)
-)]
-#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct HostDeployment {
     pub cluster_name: ClusterName,
     pub node_name: NodeName,
     pub host_composition: HostComposition,
     pub proposal_source: ProposalSource,
     pub flake_reference: FlakeReference,
+    pub deployment_transport: DeploymentTransport,
+    pub deployment_input_mode: DeploymentInputMode,
+    pub deployment_output_selector: DeploymentOutputSelector,
+    pub activation_backend: ActivationBackend,
     pub host_deploy_action: HostDeployAction,
     pub source_revision_policy: SourceRevisionPolicy,
-    pub optional_builder: Option<Builder>,
+    pub optional_nix_builder_spec: Option<NixBuilderSpec>,
     pub extra_substituter_vector: Vec<ExtraSubstituter>,
-    pub optional_flake_attribute: Option<FlakeAttribute>,
 }
 
 #[rustfmt::skip]
@@ -279,9 +278,13 @@ pub struct UserEnvironmentDeployment {
     pub user_name: UserName,
     pub proposal_source: ProposalSource,
     pub flake_reference: FlakeReference,
+    pub deployment_transport: DeploymentTransport,
+    pub deployment_input_mode: DeploymentInputMode,
+    pub deployment_output_selector: DeploymentOutputSelector,
+    pub activation_backend: ActivationBackend,
     pub user_environment_action: UserEnvironmentAction,
     pub source_revision_policy: SourceRevisionPolicy,
-    pub optional_builder: Option<Builder>,
+    pub optional_nix_builder_spec: Option<NixBuilderSpec>,
     pub extra_substituter_vector: Vec<ExtraSubstituter>,
 }
 
@@ -894,44 +897,6 @@ impl QuickCheck {
 #[rustfmt::skip]
 impl From<Vec<NodeName>> for QuickCheck {
     fn from(payload: Vec<NodeName>) -> Self {
-        Self::new(payload)
-    }
-}
-
-#[rustfmt::skip]
-impl Builder {
-    pub fn new(payload: NodeName) -> Self {
-        Self(payload)
-    }
-    pub fn payload(&self) -> &NodeName {
-        &self.0
-    }
-    pub fn into_payload(self) -> NodeName {
-        self.0
-    }
-}
-#[rustfmt::skip]
-impl From<NodeName> for Builder {
-    fn from(payload: NodeName) -> Self {
-        Self::new(payload)
-    }
-}
-
-#[rustfmt::skip]
-impl FlakeAttribute {
-    pub fn new(payload: impl Into<String>) -> Self {
-        Self(payload.into())
-    }
-    pub fn payload(&self) -> &String {
-        &self.0
-    }
-    pub fn into_payload(self) -> String {
-        self.0
-    }
-}
-#[rustfmt::skip]
-impl From<String> for FlakeAttribute {
-    fn from(payload: String) -> Self {
         Self::new(payload)
     }
 }

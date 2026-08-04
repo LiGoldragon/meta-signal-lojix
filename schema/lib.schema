@@ -53,6 +53,12 @@
   signal-lojix.lib.GenerationSlot
   signal-lojix.lib.ProposalSource
   signal-lojix.lib.FlakeReference
+  signal-lojix.lib.DeploymentTransport
+  signal-lojix.lib.DeploymentInputMode
+  signal-lojix.lib.DeploymentOutputSelector
+  signal-lojix.lib.ActivationBackend
+  signal-lojix.lib.NixBuilderSpec
+  signal-lojix.lib.TestExecutionProfile
   signal-lojix.lib.DatabaseMarker
   signal-lojix.lib.DeploymentRecord
   signal-lojix.lib.TestMode
@@ -83,26 +89,17 @@
   ;; deploys into it — strictly more privileged than Deploy, so it lives here,
   ;; not on the ordinary read socket. TestRequest is a real shorter variant,
   ;; not a defaulted record (dotos forbids tail-omission):
-  ;;   (Run …)   — the full form: explicit node selection, host, and mode.
+  ;;   (Run …)   — the full form: explicit node selection, host, and execution profile.
   ;;   (Check …) — the routine shorthand: just the node(s); the daemon fills
   ;;               cluster + host + mode from TestDefaults at lowering (the
   ;;               spirit State->Record precedent — a distinct typed op the
   ;;               daemon expands, never an under-filled struct).
   TestRequest.[(Run TestRun) (Check QuickCheck)]
   NodeSelection.[(Nodes Vector.NodeName) All]
-  TestRun.{ ClusterName NodeSelection HostSelection TestMode }
+  TestRun.{ ClusterName NodeSelection HostSelection TestExecutionProfile }
   QuickCheck.Vector.NodeName
 
   ExtraSubstituter.{ url.String public_key.String }
-  Builder.{ NodeName }
-
-  ;; A direct flake output attribute to build, naming a self-contained
-  ;; closure (a fixture / test toplevel, or any directly-buildable output)
-  ;; instead of the production nixosConfigurations.target form. When absent,
-  ;; the daemon builds the production attribute and injects cluster data via
-  ;; the generated Horizon override. When present, the
-  ;; daemon evals/builds <flake>#<build_attribute> with no override-inputs.
-  FlakeAttribute.String
 
   HostDeployment.{
     ClusterName
@@ -110,11 +107,14 @@
     HostComposition
     ProposalSource
     FlakeReference
+    DeploymentTransport
+    DeploymentInputMode
+    DeploymentOutputSelector
+    ActivationBackend
     HostDeployAction
     SourceRevisionPolicy
-    Optional.Builder
+    Optional.NixBuilderSpec
     Vector.ExtraSubstituter
-    Optional.FlakeAttribute
   }
   UserEnvironmentDeployment.{
     ClusterName
@@ -122,9 +122,13 @@
     UserName
     ProposalSource
     FlakeReference
+    DeploymentTransport
+    DeploymentInputMode
+    DeploymentOutputSelector
+    ActivationBackend
     UserEnvironmentAction
     SourceRevisionPolicy
-    Optional.Builder
+    Optional.NixBuilderSpec
     Vector.ExtraSubstituter
   }
   DeployRequest.[(Host HostDeployment) (UserEnvironment UserEnvironmentDeployment)]

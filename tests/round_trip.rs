@@ -6,9 +6,9 @@ use meta_signal_lojix::schema::lib::{
 };
 use nota::{NotaDecode, NotaEncode, NotaSource};
 use signal_lojix::schema::lib::{
-    ActivationEffect, DeploymentEnvironment, DeploymentLifecycle, DeploymentRecord,
+    ActivationEffect, AdmissionMarker, DeploymentEnvironment, DeploymentLifecycle, DeploymentRecord,
     DeploymentRequestIdentity, DeploymentTerminal, DeploymentTerminalReason,
-    GenerationArtifact, RequestedDeploymentAction,
+    GenerationArtifact, RequestedDeploymentAction, TerminalMarker,
 };
 
 fn marker() -> DatabaseMarker {
@@ -82,9 +82,9 @@ fn deploy_rejected_activation_failed() -> Output {
                     ),
                 ),
             },
-            database_marker: marker(),
+            optional_admission_marker: Some(AdmissionMarker::new(marker())),
             deployment_lifecycle: DeploymentLifecycle::Rejected,
-            optional_database_marker: Some(marker()),
+            optional_terminal_marker: Some(TerminalMarker::new(marker())),
             optional_deployment_terminal: Some(DeploymentTerminal::Rejected(
                 DeploymentTerminalReason::ActivationFailed,
             )),

@@ -580,7 +580,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "0.4.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=8346bc3f1a734dc9d61aef1f858f9b4ca72e59e3#8346bc3f1a734dc9d61aef1f858f9b4ca72e59e3"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=72aea52294d5d6fb109f7e15f460e07dba448593#72aea52294d5d6fb109f7e15f460e07dba448593"
 dependencies = [
  "nota",
  "rkyv",

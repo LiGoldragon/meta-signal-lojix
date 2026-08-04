@@ -20,7 +20,7 @@ nota-text = ["dep:nota", "signal-lojix/nota-text", "signal-frame/nota-text"]
 [dependencies]
 nota    = { git = "https://github.com/LiGoldragon/nota.git", branch = "main", optional = true }
 rkyv         = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "8346bc3f1a734dc9d61aef1f858f9b4ca72e59e3" }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "72aea52294d5d6fb109f7e15f460e07dba448593" }
 signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", branch = "main", default-features = false }
 
 [build-dependencies]

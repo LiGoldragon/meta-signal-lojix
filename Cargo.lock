@@ -329,7 +329,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "meta-signal-lojix"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "dotos",
  "protos",
@@ -621,8 +621,8 @@ dependencies = [
 
 [[package]]
 name = "signal-lojix"
-version = "0.6.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=f66581a2854661d2b716497dde54e3cea09a353a#f66581a2854661d2b716497dde54e3cea09a353a"
+version = "0.7.0"
+source = "git+https://github.com/LiGoldragon/signal-lojix.git?rev=974217440b2d2a6b431150c37e7e5eaafb69c29a#974217440b2d2a6b431150c37e7e5eaafb69c29a"
 dependencies = [
  "dotos",
  "protos",

@@ -1,6 +1,6 @@
 [package]
 name         = "meta-signal-lojix"
-version      = "0.6.0"
+version      = "0.7.0"
 edition      = "2024"
 rust-version = "1.88"
 license      = "MIT OR Apache-2.0"
@@ -20,7 +20,7 @@ dotos-text = ["dep:dotos", "signal-lojix/dotos-text", "signal-frame/dotos-text"]
 [dependencies]
 dotos   = { package = "dotos", git = "https://github.com/LiGoldragon/dotos.git", rev = "80c7b17f7ad3cf547d2624c6a243e5de5f85c9f3", optional = true }
 rkyv         = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "f66581a2854661d2b716497dde54e3cea09a353a" }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "974217440b2d2a6b431150c37e7e5eaafb69c29a" }
 signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", rev = "01676293a623d97b65e320d4138c4b480c6d5dad", default-features = false }
 
 [build-dependencies]

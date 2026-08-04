@@ -29,7 +29,9 @@ fn deploy_request() -> DeployRequest {
             .into(),
         deployment_transport: signal_lojix::schema::lib::DeploymentTransport {
             nix_store_uri: "ssh-ng://fixture-copy-a.invalid".to_string().into(),
-            ssh_destination: "fixture-login-a@fixture-activate-a.invalid".to_string().into(),
+            ssh_destination: "fixture-login-a@fixture-activate-a.invalid"
+                .to_string()
+                .into(),
         },
         deployment_input_mode: signal_lojix::schema::lib::DeploymentInputMode::Direct,
         deployment_output_selector: signal_lojix::schema::lib::DeploymentOutputSelector::new(

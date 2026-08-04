@@ -144,11 +144,10 @@
   AppliedUnpin.{ GenerationIdentifier PinLabel from_slot.GenerationSlot to_slot.GenerationSlot DatabaseMarker }
   AppliedRetire.{ GenerationIdentifier GenerationSlot DatabaseMarker }
 
-  ;; UnsupportedDeployAction: the daemon does not yet implement this deploy
-  ;; shape (e.g. an activating action or a production build that needs horizon
-  ;; materialization) and rejects it honestly rather than falsely reporting
-  ;; acceptance. InternalError: an internal invariant failure (e.g. a poisoned
-  ;; lock) — never a misleading domain reason. Both per audit 29 (C1/C4).
+  ;; UnsupportedDeployAction: the selected action/backend shape is not
+  ;; implemented. InvalidDeploymentRouting means the exact request-owned
+  ;; transport, selector, backend, or builder specification failed admission.
+  ;; InternalError names an invariant failure, never a misleading domain reason.
   ;; BuilderUnreachable: a build/copy/reachability failure — the closure could
   ;; not be built on or copied from the builder. ActivationFailed: the
   ;; target-side activation step (e.g. home-manager activate /

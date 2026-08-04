@@ -7,8 +7,8 @@ use meta_signal_lojix::schema::lib::{
 use nota::{NotaDecode, NotaEncode, NotaSource};
 use signal_lojix::schema::lib::{
     ActivationEffect, DeploymentEnvironment, DeploymentLifecycle, DeploymentRecord,
-    DeploymentRequestIdentity, DeploymentRequestedSource, DeploymentTerminal,
-    DeploymentTerminalReason, GenerationArtifact, RequestedFlakeReference,
+    DeploymentRequestIdentity, DeploymentTerminal, DeploymentTerminalReason,
+    GenerationArtifact, RequestedDeploymentAction,
 };
 
 fn marker() -> DatabaseMarker {
@@ -71,14 +71,16 @@ fn deploy_rejected_activation_failed() -> Output {
                 cluster_name: "goldragon".to_string().into(),
                 node_name: "ouranos".to_string().into(),
                 generation_artifact: GenerationArtifact::CompleteHost,
+                requested_deployment_action: RequestedDeploymentAction::Host(
+                    signal_lojix::schema::lib::HostDeployAction::ActivateNow,
+                ),
                 activation_effect: ActivationEffect::LiveActivation,
-                deployment_requested_source: DeploymentRequestedSource {
-                    source_revision_policy: SourceRevisionPolicy::RequireImmutable,
-                    requested_flake_reference: RequestedFlakeReference::new(
-                        "github:LiGoldragon/CriomOS/fixture",
+                source_revision_policy: SourceRevisionPolicy::RequireImmutable,
+                optional_immutable_revision: Some(
+                    signal_lojix::schema::lib::ImmutableRevision::new(
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     ),
-                },
-                optional_source_revision_record: None,
+                ),
             },
             database_marker: marker(),
             deployment_lifecycle: DeploymentLifecycle::Rejected,

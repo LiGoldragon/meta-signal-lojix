@@ -1,10 +1,15 @@
 #![cfg(feature = "nota-text")]
 
 use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRejectionReason, DeployRequest, HostDeployment, Input,
-    Output, PinRequest, RejectedDeploy, SourceRevisionPolicy,
+    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output, PinRequest,
+    RejectedDeploy, SourceRevisionPolicy,
 };
 use nota::{NotaDecode, NotaEncode, NotaSource};
+use signal_lojix::schema::lib::{
+    ActivationEffect, DeploymentEnvironment, DeploymentLifecycle, DeploymentRecord,
+    DeploymentRequestIdentity, DeploymentRequestedSource, DeploymentTerminal,
+    DeploymentTerminalReason, GenerationArtifact, RequestedFlakeReference, SourceFingerprint,
+};
 
 fn marker() -> DatabaseMarker {
     DatabaseMarker {
@@ -58,10 +63,31 @@ fn deploy_accepted_output() -> Output {
 
 fn deploy_rejected_activation_failed() -> Output {
     Output::DeployRejected(
-        RejectedDeploy {
-            deploy_rejection_reason: DeployRejectionReason::ActivationFailed,
+        RejectedDeploy::new(DeploymentRecord {
+            deployment_identifier: 1.into(),
+            generation_identifier: 1.into(),
+            deployment_request_identity: DeploymentRequestIdentity {
+                deployment_environment: DeploymentEnvironment::HostEnvironment,
+                cluster_name: "goldragon".to_string().into(),
+                node_name: "ouranos".to_string().into(),
+                generation_artifact: GenerationArtifact::CompleteHost,
+                activation_effect: ActivationEffect::LiveActivation,
+                source_fingerprint: SourceFingerprint::new("fixture-source"),
+                deployment_requested_source: DeploymentRequestedSource {
+                    source_revision_policy: SourceRevisionPolicy::RequireImmutable,
+                    requested_flake_reference: RequestedFlakeReference::new(
+                        "github:LiGoldragon/CriomOS/fixture",
+                    ),
+                },
+                optional_source_revision_record: None,
+            },
             database_marker: marker(),
-        }
+            deployment_lifecycle: DeploymentLifecycle::Rejected,
+            optional_database_marker: Some(marker()),
+            optional_deployment_terminal: Some(DeploymentTerminal::Rejected(
+                DeploymentTerminalReason::ActivationFailed,
+            )),
+        })
         .into(),
     )
 }

@@ -40,6 +40,8 @@ pub use signal_lojix::schema::lib::FlakeReference as FlakeReference;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::DatabaseMarker as DatabaseMarker;
 #[rustfmt::skip]
+pub use signal_lojix::schema::lib::DeploymentRecord as DeploymentRecord;
+#[rustfmt::skip]
 pub use signal_lojix::schema::lib::TestMode as TestMode;
 #[rustfmt::skip]
 pub use signal_lojix::schema::lib::HostSelection as HostSelection;
@@ -103,6 +105,14 @@ pub struct DeployAcceptedPayload(DeployHandle);
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct DeployRejectedPayload(RejectedDeploy);
+
+#[rustfmt::skip]
+#[cfg_attr(
+    feature = "nota-text",
+    derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
+)]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
+pub struct DeployTerminalPayload(DeploymentRecord);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -400,34 +410,6 @@ pub struct AppliedRetire {
     PartialEq,
     Eq,
 )]
-pub enum DeployRejectionReason {
-    ClusterUnknown,
-    NodeUnknown,
-    ProposalSourceUnreachable,
-    FlakeReferenceMalformed,
-    BuilderUnreachable,
-    SubstituterUnreachable,
-    DeploymentInFlight,
-    UnsupportedDeployAction,
-    InternalError,
-    ActivationFailed,
-}
-
-#[rustfmt::skip]
-#[cfg_attr(
-    feature = "nota-text",
-    derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
-)]
-#[derive(
-    rkyv::Archive,
-    rkyv::Serialize,
-    rkyv::Deserialize,
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-)]
 pub enum PinRejectionReason {
     GenerationUnknown,
     NodeUnknown,
@@ -513,10 +495,7 @@ pub enum TestRejectionReason {
     derive(nota::NotaDecode, nota::NotaDecodeTraced, nota::NotaEncode)
 )]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub struct RejectedDeploy {
-    pub deploy_rejection_reason: DeployRejectionReason,
-    pub database_marker: DatabaseMarker,
-}
+pub struct RejectedDeploy(DeploymentRecord);
 
 #[rustfmt::skip]
 #[cfg_attr(
@@ -585,6 +564,7 @@ pub enum Input {
 pub enum Output {
     DeployAccepted(DeployAcceptedPayload),
     DeployRejected(DeployRejectedPayload),
+    DeployTerminal(DeployTerminalPayload),
     Pinned(PinnedPayload),
     PinRejected(PinRejectedPayload),
     Unpinned(UnpinnedPayload),
@@ -724,6 +704,25 @@ impl DeployRejectedPayload {
 #[rustfmt::skip]
 impl From<RejectedDeploy> for DeployRejectedPayload {
     fn from(payload: RejectedDeploy) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
+impl DeployTerminalPayload {
+    pub fn new(payload: DeploymentRecord) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &DeploymentRecord {
+        &self.0
+    }
+    pub fn into_payload(self) -> DeploymentRecord {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<DeploymentRecord> for DeployTerminalPayload {
+    fn from(payload: DeploymentRecord) -> Self {
         Self::new(payload)
     }
 }
@@ -938,6 +937,25 @@ impl From<String> for FlakeAttribute {
 }
 
 #[rustfmt::skip]
+impl RejectedDeploy {
+    pub fn new(payload: DeploymentRecord) -> Self {
+        Self(payload)
+    }
+    pub fn payload(&self) -> &DeploymentRecord {
+        &self.0
+    }
+    pub fn into_payload(self) -> DeploymentRecord {
+        self.0
+    }
+}
+#[rustfmt::skip]
+impl From<DeploymentRecord> for RejectedDeploy {
+    fn from(payload: DeploymentRecord) -> Self {
+        Self::new(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl TestRequest {
     pub fn run(payload: TestRun) -> Self {
         Self::Run(payload)
@@ -990,6 +1008,9 @@ impl Output {
     }
     pub fn deploy_rejected(payload: RejectedDeploy) -> Self {
         Self::DeployRejected(DeployRejectedPayload::new(payload))
+    }
+    pub fn deploy_terminal(payload: DeploymentRecord) -> Self {
+        Self::DeployTerminal(DeployTerminalPayload::new(payload))
     }
     pub fn pinned(payload: AppliedPin) -> Self {
         Self::Pinned(PinnedPayload::new(payload))
@@ -1095,6 +1116,13 @@ impl From<DeployRejectedPayload> for Output {
 }
 
 #[rustfmt::skip]
+impl From<DeployTerminalPayload> for Output {
+    fn from(payload: DeployTerminalPayload) -> Self {
+        Self::DeployTerminal(payload)
+    }
+}
+
+#[rustfmt::skip]
 impl From<PinnedPayload> for Output {
     fn from(payload: PinnedPayload) -> Self {
         Self::Pinned(payload)
@@ -1191,14 +1219,15 @@ pub mod short_header {
     pub const INPUT_TEST: u64 = 0x0004000000000000;
     pub const OUTPUT_DEPLOY_ACCEPTED: u64 = 0x0100000000000000;
     pub const OUTPUT_DEPLOY_REJECTED: u64 = 0x0101000000000000;
-    pub const OUTPUT_PINNED: u64 = 0x0102000000000000;
-    pub const OUTPUT_PIN_REJECTED: u64 = 0x0103000000000000;
-    pub const OUTPUT_UNPINNED: u64 = 0x0104000000000000;
-    pub const OUTPUT_UNPIN_REJECTED: u64 = 0x0105000000000000;
-    pub const OUTPUT_RETIRED: u64 = 0x0106000000000000;
-    pub const OUTPUT_RETIRE_REJECTED: u64 = 0x0107000000000000;
-    pub const OUTPUT_TESTED: u64 = 0x0108000000000000;
-    pub const OUTPUT_TEST_REJECTED: u64 = 0x0109000000000000;
+    pub const OUTPUT_DEPLOY_TERMINAL: u64 = 0x0102000000000000;
+    pub const OUTPUT_PINNED: u64 = 0x0103000000000000;
+    pub const OUTPUT_PIN_REJECTED: u64 = 0x0104000000000000;
+    pub const OUTPUT_UNPINNED: u64 = 0x0105000000000000;
+    pub const OUTPUT_UNPIN_REJECTED: u64 = 0x0106000000000000;
+    pub const OUTPUT_RETIRED: u64 = 0x0107000000000000;
+    pub const OUTPUT_RETIRE_REJECTED: u64 = 0x0108000000000000;
+    pub const OUTPUT_TESTED: u64 = 0x0109000000000000;
+    pub const OUTPUT_TEST_REJECTED: u64 = 0x010A000000000000;
 }
 
 #[rustfmt::skip]
@@ -1277,6 +1306,7 @@ pub enum InputRoute {
 pub enum OutputRoute {
     DeployAccepted,
     DeployRejected,
+    DeployTerminal,
     Pinned,
     PinRejected,
     Unpinned,
@@ -1366,6 +1396,7 @@ impl Output {
         match self {
             Self::DeployAccepted(_) => OutputRoute::DeployAccepted,
             Self::DeployRejected(_) => OutputRoute::DeployRejected,
+            Self::DeployTerminal(_) => OutputRoute::DeployTerminal,
             Self::Pinned(_) => OutputRoute::Pinned,
             Self::PinRejected(_) => OutputRoute::PinRejected,
             Self::Unpinned(_) => OutputRoute::Unpinned,
@@ -1380,6 +1411,7 @@ impl Output {
         match self {
             Self::DeployAccepted(_) => short_header::OUTPUT_DEPLOY_ACCEPTED,
             Self::DeployRejected(_) => short_header::OUTPUT_DEPLOY_REJECTED,
+            Self::DeployTerminal(_) => short_header::OUTPUT_DEPLOY_TERMINAL,
             Self::Pinned(_) => short_header::OUTPUT_PINNED,
             Self::PinRejected(_) => short_header::OUTPUT_PIN_REJECTED,
             Self::Unpinned(_) => short_header::OUTPUT_UNPINNED,
@@ -1396,6 +1428,7 @@ impl Output {
         match header {
             short_header::OUTPUT_DEPLOY_ACCEPTED => Ok(OutputRoute::DeployAccepted),
             short_header::OUTPUT_DEPLOY_REJECTED => Ok(OutputRoute::DeployRejected),
+            short_header::OUTPUT_DEPLOY_TERMINAL => Ok(OutputRoute::DeployTerminal),
             short_header::OUTPUT_PINNED => Ok(OutputRoute::Pinned),
             short_header::OUTPUT_PIN_REJECTED => Ok(OutputRoute::PinRejected),
             short_header::OUTPUT_UNPINNED => Ok(OutputRoute::Unpinned),

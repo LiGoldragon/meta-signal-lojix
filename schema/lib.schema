@@ -54,11 +54,12 @@
   signal-lojix.lib.ProposalSource
   signal-lojix.lib.FlakeReference
   signal-lojix.lib.DatabaseMarker
+  signal-lojix.lib.DeploymentRecord
   signal-lojix.lib.TestMode
   signal-lojix.lib.HostSelection
 }
 [Deploy.DeployPayload Pin.PinPayload Unpin.UnpinPayload Retire.RetirePayload Test.TestPayload]
-[DeployAccepted.DeployAcceptedPayload DeployRejected.DeployRejectedPayload Pinned.PinnedPayload PinRejected.PinRejectedPayload Unpinned.UnpinnedPayload UnpinRejected.UnpinRejectedPayload Retired.RetiredPayload RetireRejected.RetireRejectedPayload Tested.TestedPayload TestRejected.TestRejectedPayload]
+[DeployAccepted.DeployAcceptedPayload DeployRejected.DeployRejectedPayload DeployTerminal.DeployTerminalPayload Pinned.PinnedPayload PinRejected.PinRejectedPayload Unpinned.UnpinnedPayload UnpinRejected.UnpinRejectedPayload Retired.RetiredPayload RetireRejected.RetireRejectedPayload Tested.TestedPayload TestRejected.TestRejectedPayload]
 {
   DeployPayload.DeployRequest
   PinPayload.PinRequest
@@ -68,6 +69,7 @@
 
   DeployAcceptedPayload.DeployHandle
   DeployRejectedPayload.RejectedDeploy
+  DeployTerminalPayload.DeploymentRecord
   PinnedPayload.AppliedPin
   PinRejectedPayload.RejectedPin
   UnpinnedPayload.AppliedUnpin
@@ -148,7 +150,6 @@
   ;; target-side activation step (e.g. home-manager activate /
   ;; switch-to-configuration) exited non-zero — distinct from BuilderUnreachable
   ;; so a local/home activation failure is not mislabelled as a builder problem.
-  DeployRejectionReason.[ClusterUnknown NodeUnknown ProposalSourceUnreachable FlakeReferenceMalformed BuilderUnreachable SubstituterUnreachable DeploymentInFlight UnsupportedDeployAction InternalError ActivationFailed]
   PinRejectionReason.[GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError]
   UnpinRejectionReason.[PinLabelUnknown NodeUnknown GenerationNotPinned InternalError]
   RetireRejectionReason.[GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError]
@@ -164,7 +165,10 @@
   ;; the Deploy precedent.
   TestRejectionReason.[ClusterUnknown NodeUnknown VmHostNotDeclaredForNode HostDeclaresNoVmHost NoTestDefaults LiveNotYetEnabled SubstrateUnavailable InternalError]
 
-  RejectedDeploy.{ DeployRejectionReason DatabaseMarker }
+  ;; Rejections are durable terminal deployments, never anonymous errors.  The
+  ;; record includes the minted identifier, request identity, admission marker,
+  ;; terminal marker, and typed reason through the imported DeploymentRecord.
+  RejectedDeploy.{ DeploymentRecord }
   RejectedPin.{ PinRejectionReason DatabaseMarker }
   RejectedUnpin.{ UnpinRejectionReason DatabaseMarker }
   RejectedRetire.{ RetireRejectionReason DatabaseMarker }

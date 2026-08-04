@@ -1,6 +1,6 @@
 [package]
 name         = "meta-signal-lojix"
-version      = "0.3.0"
+version      = "0.4.0"
 edition      = "2024"
 rust-version = "1.88"
 license      = "MIT OR Apache-2.0"
@@ -20,7 +20,7 @@ nota-text = ["dep:nota", "signal-lojix/nota-text", "signal-frame/nota-text"]
 [dependencies]
 nota    = { git = "https://github.com/LiGoldragon/nota.git", branch = "main", optional = true }
 rkyv         = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "41f796fe2e7f225ac986e73c7033da1d504e9bd2" }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "6f24c9b4472b1ab880bd382a5356e8eb03faec9f" }
 signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", branch = "main", default-features = false }
 
 [build-dependencies]

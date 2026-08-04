@@ -8,7 +8,7 @@ use nota::{NotaDecode, NotaEncode, NotaSource};
 use signal_lojix::schema::lib::{
     ActivationEffect, DeploymentEnvironment, DeploymentLifecycle, DeploymentRecord,
     DeploymentRequestIdentity, DeploymentRequestedSource, DeploymentTerminal,
-    DeploymentTerminalReason, GenerationArtifact, RequestedFlakeReference, SourceFingerprint,
+    DeploymentTerminalReason, GenerationArtifact, RequestedFlakeReference,
 };
 
 fn marker() -> DatabaseMarker {
@@ -72,7 +72,6 @@ fn deploy_rejected_activation_failed() -> Output {
                 node_name: "ouranos".to_string().into(),
                 generation_artifact: GenerationArtifact::CompleteHost,
                 activation_effect: ActivationEffect::LiveActivation,
-                source_fingerprint: SourceFingerprint::new("fixture-source"),
                 deployment_requested_source: DeploymentRequestedSource {
                     source_revision_policy: SourceRevisionPolicy::RequireImmutable,
                     requested_flake_reference: RequestedFlakeReference::new(

@@ -1,7 +1,7 @@
 use std::process::Command;
 
 #[test]
-fn default_dependency_tree_does_not_pull_text_or_retired_signal_crates() {
+fn default_runtime_tree_excludes_bootstrap_and_retired_crates() {
     let output = Command::new("cargo")
         .args(["tree", "--edges", "normal", "--no-default-features"])
         .output()
@@ -10,12 +10,39 @@ fn default_dependency_tree_does_not_pull_text_or_retired_signal_crates() {
     assert!(output.status.success(), "status: {:?}", output.status);
     let tree = String::from_utf8(output.stdout).expect("dependency tree");
 
-    for forbidden_crate in ["nota", "nota-codec", "signal-core"] {
+    for forbidden_crate in [
+        "core-ethos",
+        "name-table",
+        "nota",
+        "nota-codec",
+        "rust-logos",
+        "schema-language",
+        "schema-rust",
+        "sema-translator",
+        "signal-core",
+        "signal-sema-translator",
+        "structural-codec",
+    ] {
         assert!(
             !tree.contains(forbidden_crate),
-            "default dependency tree must not contain {forbidden_crate}:\n{tree}"
+            "default runtime tree must not contain {forbidden_crate}:\n{tree}"
         );
     }
+}
+
+#[test]
+fn lockfile_has_one_exact_schema_producer_and_ordinary_interface() {
+    const LOCKFILE: &str = include_str!("../Cargo.lock");
+
+    assert_eq!(LOCKFILE.matches("name = \"schema-rust\"").count(), 1);
+    assert!(LOCKFILE.contains(
+        "schema-rust.git?rev=9e36587c85bd69357e9042729ba2df0052799756#9e36587c85bd69357e9042729ba2df0052799756"
+    ));
+    assert_eq!(LOCKFILE.matches("name = \"signal-lojix\"").count(), 1);
+    assert!(LOCKFILE.contains(
+        "signal-lojix.git?rev=90b45601d775c960068efe1d28ff2151d060ad74#90b45601d775c960068efe1d28ff2151d060ad74"
+    ));
+    assert!(!LOCKFILE.contains("name = \"schema-language\""));
 }
 
 #[test]
@@ -37,12 +64,12 @@ fn dotos_text_feature_is_the_only_text_projection_opt_in() {
 
     assert!(
         tree.contains("dotos"),
-        "dotos-text feature should opt into dotos:\n{tree}"
+        "dotos-text should opt into Dotos:\n{tree}"
     );
-    for forbidden_crate in ["nota-codec", "signal-core"] {
+    for forbidden_crate in ["nota-codec", "schema-language", "signal-core"] {
         assert!(
             !tree.contains(forbidden_crate),
-            "dotos-text dependency tree must not contain {forbidden_crate}:\n{tree}"
+            "dotos-text runtime tree must not contain {forbidden_crate}:\n{tree}"
         );
     }
 }

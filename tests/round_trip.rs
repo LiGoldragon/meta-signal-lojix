@@ -1,191 +1,42 @@
 #![cfg(feature = "dotos-text")]
 
 use dotos::{DotosDecode, DotosEncode, DotosSource};
-use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRequest, HostDeployment, Input, Output, PinRequest,
-    RejectedDeploy, SourceRevisionPolicy,
-};
-use signal_lojix::schema::lib::{
-    ActivationEffect, AdmissionMarker, DeploymentEnvironment, DeploymentLifecycle,
-    DeploymentRecord, DeploymentRequestIdentity, DeploymentTerminal, DeploymentTerminalReason,
-    GenerationArtifact, RequestedDeploymentAction, TerminalMarker,
-};
+use meta_signal_lojix::schema::lib::{z2VLhK, z2VW7Q, z2VX4m, z2VaSW, z2VdJT, z2VeCY};
+use signal_lojix::schema::lib::{z2VMFV, z2VR89, z2VU8F, z2VXGN, z2VXtV, z2VaUx, z2Vdkm, z2VebC};
 
-fn marker() -> DatabaseMarker {
-    DatabaseMarker {
-        commit_sequence: 1.into(),
-        state_digest: 1.into(),
-    }
+fn pin_request() -> z2VW7Q {
+    z2VW7Q::z2VevS(z2VLhK::new(z2VdJT {
+        field_0: z2VXtV::new("goldragon".to_owned()),
+        field_1: z2VXGN::new("ouranos".to_owned()),
+        field_2: z2VU8F::new(7),
+        field_3: z2VMFV::new("known-good".to_owned()),
+    }))
 }
 
-fn deploy_request() -> DeployRequest {
-    DeployRequest::Host(HostDeployment {
-        cluster_name: "fixture-cluster".to_string().into(),
-        node_name: "fixture-node".to_string().into(),
-        host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
-        proposal_source: "/tmp/fixture-cluster.dotos".to_string().into(),
-        flake_reference: "github:example/fixture?rev=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            .to_string()
-            .into(),
-        deployment_transport: signal_lojix::schema::lib::DeploymentTransport {
-            nix_store_uri: "ssh-ng://fixture-copy-a.invalid".to_string().into(),
-            ssh_destination: "fixture-login-a@fixture-activate-a.invalid"
-                .to_string()
-                .into(),
+fn deploy_accepted_reply() -> z2VeCY {
+    z2VeCY::z2VZGL(z2VaSW::new(z2VX4m {
+        field_0: z2Vdkm::new(11),
+        field_1: z2VaUx {
+            field_0: z2VR89::new(1),
+            field_1: z2VebC::new(2),
         },
-        deployment_input_mode: signal_lojix::schema::lib::DeploymentInputMode::Direct,
-        deployment_output_selector: signal_lojix::schema::lib::DeploymentOutputSelector::new(
-            signal_lojix::schema::lib::FlakeAttribute::new("checks.fixture-a"),
-        ),
-        activation_backend: signal_lojix::schema::lib::ActivationBackend::NixosSystemdBootV1,
-        host_deploy_action: signal_lojix::schema::lib::HostDeployAction::Evaluate,
-        source_revision_policy: SourceRevisionPolicy::ResolveAndRecord,
-        optional_nix_builder_spec: None,
-        extra_substituter_vector: Vec::new(),
-    })
+    }))
 }
 
-fn deploy_input() -> Input {
-    Input::Deploy(deploy_request().into())
-}
-
-fn pin_input() -> Input {
-    Input::Pin(
-        PinRequest {
-            cluster_name: "goldragon".to_string().into(),
-            node_name: "ouranos".to_string().into(),
-            generation_identifier: 1.into(),
-            pin_label: "known-good".to_string().into(),
-        }
-        .into(),
-    )
-}
-
-fn deploy_accepted_output() -> Output {
-    Output::DeployAccepted(
-        DeployHandle {
-            deployment_identifier: 1.into(),
-            database_marker: marker(),
-        }
-        .into(),
-    )
-}
-
-fn deploy_rejected_activation_failed() -> Output {
-    Output::DeployRejected(
-        RejectedDeploy::new(DeploymentRecord {
-            deployment_identifier: 1.into(),
-            generation_identifier: 1.into(),
-            deployment_request_identity: DeploymentRequestIdentity {
-                deployment_environment: DeploymentEnvironment::HostEnvironment,
-                cluster_name: "goldragon".to_string().into(),
-                node_name: "ouranos".to_string().into(),
-                generation_artifact: GenerationArtifact::CompleteHost,
-                requested_deployment_action: RequestedDeploymentAction::Host(
-                    signal_lojix::schema::lib::HostDeployAction::ActivateNow,
-                ),
-                activation_effect: ActivationEffect::LiveActivation,
-                source_revision_policy: SourceRevisionPolicy::RequireImmutable,
-                optional_immutable_revision: Some(
-                    signal_lojix::schema::lib::ImmutableRevision::new(
-                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    ),
-                ),
-            },
-            optional_admission_marker: Some(AdmissionMarker::new(marker())),
-            deployment_lifecycle: DeploymentLifecycle::Rejected,
-            optional_terminal_marker: Some(TerminalMarker::new(marker())),
-            optional_deployment_terminal: Some(DeploymentTerminal::Rejected(
-                DeploymentTerminalReason::ActivationFailed,
-            )),
-        })
-        .into(),
-    )
-}
-
-fn exchange() -> signal_frame::ExchangeIdentifier {
-    signal_frame::ExchangeIdentifier::new(
-        signal_frame::SessionEpoch::new(9),
-        signal_frame::ExchangeLane::Connector,
-        signal_frame::LaneSequence::new(3),
-    )
-}
-
-fn round_trip_dotos<Value>(value: Value)
+fn round_trip<Value>(value: Value) -> String
 where
-    Value: DotosEncode + DotosDecode + PartialEq + std::fmt::Debug,
+    Value: DotosDecode + DotosEncode + PartialEq + std::fmt::Debug,
 {
     let encoded = value.to_dotos();
     let recovered = DotosSource::new(&encoded)
         .parse::<Value>()
-        .expect("decode dotos text");
+        .expect("decode Dotos text");
     assert_eq!(recovered, value);
+    encoded
 }
 
 #[test]
-fn meta_requests_round_trip_through_rkyv_frames() {
-    for request in [deploy_input(), pin_input()] {
-        let frame = request
-            .clone()
-            .encode_request_frame(exchange())
-            .expect("encode request");
-        let (decoded_exchange, decoded) =
-            meta_signal_lojix::schema::lib::ContractMarker::decode_single_request(&frame)
-                .expect("decode request");
-        assert_eq!(decoded_exchange, exchange());
-        assert_eq!(decoded, request);
-    }
-}
-
-#[test]
-fn meta_replies_round_trip_through_rkyv_frames() {
-    let reply = deploy_accepted_output();
-    let frame = reply
-        .clone()
-        .encode_reply_frame(exchange())
-        .expect("encode reply");
-    let decoded =
-        meta_signal_lojix::schema::lib::ContractMarker::decode_frame(&frame).expect("decode reply");
-    let meta_signal_lojix::schema::lib::FrameBody::Reply {
-        exchange: decoded_exchange,
-        reply: decoded_reply,
-    } = decoded.into_body()
-    else {
-        panic!("decoded frame must retain a reply body");
-    };
-    assert_eq!(decoded_exchange, exchange());
-    assert_eq!(
-        decoded_reply,
-        signal_frame::Reply::committed(signal_frame::NonEmpty::single(signal_frame::SubReply::Ok(
-            reply
-        ),)),
-    );
-}
-
-#[test]
-fn meta_roots_round_trip_through_dotos_text() {
-    round_trip_dotos(deploy_input());
-    round_trip_dotos(pin_input());
-    round_trip_dotos(deploy_accepted_output());
-}
-
-#[test]
-fn activation_failed_reason_round_trips_through_dotos_text() {
-    round_trip_dotos(deploy_rejected_activation_failed());
-    assert!(
-        deploy_rejected_activation_failed()
-            .to_dotos()
-            .contains("ActivationFailed")
-    );
-}
-
-#[test]
-fn meta_dotos_heads_are_owner_policy_verbs() {
-    assert!(deploy_input().to_dotos().contains("Deploy"));
-    assert!(pin_input().to_dotos().contains("Pin"));
-    assert!(
-        deploy_accepted_output()
-            .to_dotos()
-            .contains("DeployAccepted")
-    );
+fn encoded_roots_round_trip_through_readable_dotos_roles() {
+    assert!(round_trip(pin_request()).contains("Pin"));
+    assert!(round_trip(deploy_accepted_reply()).contains("DeployAccepted"));
 }

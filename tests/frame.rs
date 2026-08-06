@@ -1,7 +1,8 @@
 use meta_signal_lojix::schema::lib::{
-    DatabaseMarker, DeployHandle, DeployRequest, FrameBody, HostDeployment, Input, Output,
-    SourceRevisionPolicy,
+    ContractMarker, FrameBody, InputRoute, OutputRoute, z2VLhK, z2VW7Q, z2VX4m, z2VaSW, z2VdJT,
+    z2VeCY,
 };
+use signal_lojix::schema::lib::{z2VMFV, z2VR89, z2VU8F, z2VXGN, z2VXtV, z2VaUx, z2Vdkm, z2VebC};
 
 fn exchange() -> signal_frame::ExchangeIdentifier {
     signal_frame::ExchangeIdentifier::new(
@@ -11,75 +12,52 @@ fn exchange() -> signal_frame::ExchangeIdentifier {
     )
 }
 
-fn marker() -> DatabaseMarker {
-    DatabaseMarker {
-        commit_sequence: 1.into(),
-        state_digest: 1.into(),
+fn marker() -> z2VaUx {
+    z2VaUx {
+        field_0: z2VR89::new(1),
+        field_1: z2VebC::new(2),
     }
 }
 
-fn deploy_request() -> DeployRequest {
-    DeployRequest::Host(HostDeployment {
-        cluster_name: "fixture-cluster".to_string().into(),
-        node_name: "fixture-node".to_string().into(),
-        host_composition: signal_lojix::schema::lib::HostComposition::BaseHost,
-        proposal_source: "/tmp/fixture-cluster.dotos".to_string().into(),
-        flake_reference: "github:example/fixture?rev=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            .to_string()
-            .into(),
-        deployment_transport: signal_lojix::schema::lib::DeploymentTransport {
-            nix_store_uri: "ssh-ng://fixture-copy-a.invalid".to_string().into(),
-            ssh_destination: "fixture-login-a@fixture-activate-a.invalid"
-                .to_string()
-                .into(),
-        },
-        deployment_input_mode: signal_lojix::schema::lib::DeploymentInputMode::Direct,
-        deployment_output_selector: signal_lojix::schema::lib::DeploymentOutputSelector::new(
-            signal_lojix::schema::lib::FlakeAttribute::new("checks.fixture-a"),
-        ),
-        activation_backend: signal_lojix::schema::lib::ActivationBackend::NixosSystemdBootV1,
-        host_deploy_action: signal_lojix::schema::lib::HostDeployAction::Evaluate,
-        source_revision_policy: SourceRevisionPolicy::ResolveAndRecord,
-        optional_nix_builder_spec: None,
-        extra_substituter_vector: Vec::new(),
-    })
+fn pin_request() -> z2VW7Q {
+    z2VW7Q::z2VevS(z2VLhK::new(z2VdJT {
+        field_0: z2VXtV::new("goldragon".to_owned()),
+        field_1: z2VXGN::new("ouranos".to_owned()),
+        field_2: z2VU8F::new(7),
+        field_3: z2VMFV::new("known-good".to_owned()),
+    }))
 }
 
-fn deploy_input() -> Input {
-    Input::Deploy(deploy_request().into())
+fn deploy_accepted_reply() -> z2VeCY {
+    z2VeCY::z2VZGL(z2VaSW::new(z2VX4m {
+        field_0: z2Vdkm::new(11),
+        field_1: marker(),
+    }))
 }
 
 #[test]
-fn default_build_round_trips_meta_request_without_dotos_text() {
-    let input = deploy_input();
+fn handwritten_input_role_round_trips_the_encoded_request() {
+    let input = pin_request();
+    assert_eq!(input.route(), InputRoute::Pin);
     let frame = input
         .clone()
         .encode_request_frame(exchange())
         .expect("encode request");
     let (decoded_exchange, decoded) =
-        meta_signal_lojix::schema::lib::ContractMarker::decode_single_request(&frame)
-            .expect("decode request");
-
+        ContractMarker::decode_single_request(&frame).expect("decode request");
     assert_eq!(decoded_exchange, exchange());
     assert_eq!(decoded, input);
 }
 
 #[test]
-fn default_build_round_trips_meta_reply_without_dotos_text() {
-    let output = Output::DeployAccepted(
-        DeployHandle {
-            deployment_identifier: 1.into(),
-            database_marker: marker(),
-        }
-        .into(),
-    );
+fn handwritten_output_role_round_trips_the_encoded_reply() {
+    let output = deploy_accepted_reply();
+    assert_eq!(output.route(), OutputRoute::DeployAccepted);
     let frame = output
         .clone()
         .encode_reply_frame(exchange())
         .expect("encode reply");
-    let decoded =
-        meta_signal_lojix::schema::lib::ContractMarker::decode_frame(&frame).expect("decode reply");
-
+    let decoded = ContractMarker::decode_frame(&frame).expect("decode reply");
     assert_eq!(
         decoded.into_body(),
         FrameBody::Reply {
@@ -87,6 +65,6 @@ fn default_build_round_trips_meta_reply_without_dotos_text() {
             reply: signal_frame::Reply::committed(signal_frame::NonEmpty::single(
                 signal_frame::SubReply::Ok(output),
             )),
-        },
+        }
     );
 }

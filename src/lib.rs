@@ -1,15 +1,11 @@
-//! Meta (owner-only policy) Signal contract for the lojix deploy orchestrator.
+//! Owner Lojix Interface.
 //!
-//! Wire-only: the rkyv + NOTA codec and the signal-frame mail envelope for the
-//! owner-only mutation surface — submitting a deploy and rewriting the GC-roots
-//! retention policy (Deploy/Pin/Unpin/Retire). The peer-callable
-//! read/observe/subscribe surface lives in the ordinary `signal-lojix`
-//! contract.
-//!
-//! The shared record types are DEFINED ONCE in `signal-lojix`; this crate
-//! cross-imports them via `signal-lojix:lib:TypeName`. The generated module
-//! references them through `pub use signal_lojix::schema::lib::*` aliases, so
-//! the path dependency on `signal-lojix` is load-bearing for both schema
-//! generation and compilation.
+//! `schema/lib.schema` is a strict role-free bootstrap Interface. Its imports
+//! resolve through the ordinary producer's published Ethos source directory,
+//! and its Rust projection uses only authority-verified encoded coordinates.
 
+pub mod bootstrap_manifest;
 pub mod schema;
+
+pub const META_LOJIX_INTERFACE_SOURCE: &str = include_str!("../schema/lib.schema");
+pub const META_LOJIX_INTERFACE_RUST: &str = include_str!("schema/lib/generated.rs");

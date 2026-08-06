@@ -23,3 +23,10 @@ fn strict_rust_projection_uses_encoded_local_and_imported_coordinates() {
     assert!(META_LOJIX_INTERFACE_RUST.contains("signal_lojix::schema::lib::z"));
     assert!(bootstrap_manifest::DECLARATION_SEATS.len() > 80);
 }
+
+#[test]
+fn retired_schema_source_directory_is_absent() {
+    let crate_root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    assert!(!crate_root.join("schema").exists());
+    assert!(crate_root.join("ethos/lib.ethos").is_file());
+}

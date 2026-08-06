@@ -73,7 +73,7 @@ impl SchemaBuild {
     }
 
     fn run(&self) {
-        println!("cargo:rerun-if-changed=schema/lib.schema");
+        println!("cargo:rerun-if-changed=ethos/lib.ethos");
         println!("cargo:rerun-if-changed=src/bootstrap_manifest.rs");
         println!("cargo:rerun-if-changed=src/schema/lib/generated.rs");
 
@@ -82,7 +82,7 @@ impl SchemaBuild {
         let ordinary_source_path = ordinary_metadata
             .dependency_source_directory()
             .expect("signal-lojix publishes its Ethos source directory")
-            .join("lib.schema");
+            .join("lib.ethos");
         let ordinary_source = fs::read_to_string(&ordinary_source_path)
             .expect("read the producer-owned ordinary Lojix Interface source");
         assert_eq!(
@@ -91,7 +91,7 @@ impl SchemaBuild {
             "Cargo metadata must resolve the exact source compiled by signal-lojix",
         );
 
-        let source_path = self.crate_root.join("schema/lib.schema");
+        let source_path = self.crate_root.join("ethos/lib.ethos");
         let rust_path = self.crate_root.join("src/schema/lib/generated.rs");
         let source = fs::read_to_string(&source_path).expect("read owner Lojix Interface source");
         let catalog = bootstrap_catalog();
@@ -115,7 +115,7 @@ impl SchemaBuild {
             .write_or_check("META_SIGNAL_LOJIX_UPDATE_INTERFACE_ARTIFACTS")
             .expect("checked-in owner Lojix Interface source and Rust projection are fresh");
         CargoEthosSourceMetadata::new("meta-signal-lojix")
-            .publish_owned_source_directory(self.crate_root.join("schema"));
+            .publish_owned_source_directory(self.crate_root.join("ethos"));
     }
 }
 

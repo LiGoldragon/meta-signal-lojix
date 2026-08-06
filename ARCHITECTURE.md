@@ -7,14 +7,14 @@ schema.
 
 ## Source and imported authority
 
-`schema/lib.schema` is the canonical `Interface.{1 0 0}` document. Imports are
+`ethos/lib.ethos` is the canonical `Interface.{1 0 0}` document. Imports are
 explicitly drawn from `signal_lojix:lib`. Nexus, Sema, and role sections are
 empty; all owner-local structure lives in Types under `OwnerRequest` and
 `OwnerReply`.
 
 The ordinary contract owns every imported type once. Cargo's
 `ethos-source-dir` metadata locates the exact producer source directory. The
-owner build reads `lib.schema` there and requires it to equal the canonical
+owner build reads `lib.ethos` there and requires it to equal the canonical
 source compiled into the pinned `signal-lojix`. Imported textual metadata,
 opaque identities, canonical order, and Rust type paths come from that
 producer's authority manifest. There is no copied schema model or second alias

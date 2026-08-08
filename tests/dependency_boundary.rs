@@ -40,7 +40,7 @@ fn lockfile_has_one_exact_schema_producer_and_ordinary_interface() {
     ));
     assert_eq!(LOCKFILE.matches("name = \"signal-lojix\"").count(), 1);
     assert!(LOCKFILE.contains(
-        "signal-lojix.git?rev=e76d25dd9da261cc0e72afd2074240d843974e4d#e76d25dd9da261cc0e72afd2074240d843974e4d"
+        "signal-lojix.git?rev=50c4fab3f8a2b16aa1261104395f1dae315035d1#50c4fab3f8a2b16aa1261104395f1dae315035d1"
     ));
     assert!(!LOCKFILE.contains("name = \"schema-language\""));
 }

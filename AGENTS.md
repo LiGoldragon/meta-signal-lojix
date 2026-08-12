@@ -9,3 +9,9 @@ contract at the repo root.
   behavior, or deployment logic here.
 - Shared types are imported from `signal-lojix`; do not duplicate
   shared deploy nouns locally.
+
+## Protos estate status
+
+Stack: correct-new destination
+Status: active component contract, current checkout legacy-wired
+This checkout is not proof of correct-new adoption.

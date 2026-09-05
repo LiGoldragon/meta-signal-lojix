@@ -17,7 +17,7 @@ path = "src/lib.rs"
 datom-codec = { git = "https://github.com/LiGoldragon/datom-codec", rev = "41a3c073d5c5" }
 protos = { git = "https://github.com/LiGoldragon/protos", rev = "2d999f173334" }
 rkyv         = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "80fdc28e462d75ecb571dd573c265a04e9e1f755" }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "d302c726f7f96dde200f7bf0de5c1921f9842c38" }
 signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", rev = "80f70d929ae6d72707052f097be2264872913983", default-features = false }
 
 [build-dependencies]

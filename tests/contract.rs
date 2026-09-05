@@ -1,8 +1,9 @@
 use datom_codec::{Actualizable, IncorporationBudget, Potential, Textualizable};
 use meta_signal_lojix::{MetaLojixWire, Request, RequestWire, RetireRequest, WireConversion};
 use signal_frame::{
-    BoundExchangeFrame, ExchangeFrameBody, ExchangeIdentifier, ExchangeLane, LaneSequence,
-    RootCode, SessionEpoch, VariantCode, WireRoute,
+    BoundExchangeFrame, ContractBinding, ContractId, ExchangeFrameBody, ExchangeIdentifier,
+    ExchangeLane, LaneSequence, RootCode, SessionEpoch, VariantCode, WireContract, WireRevision,
+    WireRoute,
 };
 
 fn request() -> Request {
@@ -34,4 +35,27 @@ fn owner_request_crosses_datom_and_bound_structural_frame() {
     ).unwrap();
     let ExchangeFrameBody::Request { request, .. } = decoded.into_body() else { panic!("request body") };
     assert_eq!(Request::try_from_wire(request.payloads().clone().into_head()).unwrap(), expected);
+}
+
+struct OrchestrateWire;
+impl WireContract for OrchestrateWire {
+    const BINDING: ContractBinding = ContractBinding::new(
+        ContractId::new(core::num::NonZeroU32::new(2).unwrap()),
+        WireRevision::new(core::num::NonZeroU16::new(3).unwrap()),
+    );
+}
+
+#[test]
+fn foreign_orchestrate_binding_is_rejected_before_owner_archive_decodes() {
+    let frame = BoundExchangeFrame::<OrchestrateWire, RequestWire, meta_signal_lojix::ResponseWire>::new(
+        WireRoute::new(RootCode::new(0), VariantCode::new(0)),
+        ExchangeFrameBody::Request {
+            exchange: ExchangeIdentifier::new(SessionEpoch::new(3), ExchangeLane::Connector, LaneSequence::new(7)),
+            request: signal_frame::Request::from_payload(request().into_wire()),
+        },
+    );
+    assert!(matches!(
+        BoundExchangeFrame::<MetaLojixWire, RequestWire, meta_signal_lojix::ResponseWire>::decode_length_prefixed(&frame.encode_length_prefixed().unwrap()),
+        Err(signal_frame::FrameError::ContractMismatch { .. })
+    ));
 }

@@ -1,11 +1,17 @@
-//! Owner Lojix Interface.
-//!
-//! `ethos/lib.ethos` is a strict role-free bootstrap Interface. Its imports
-//! resolve through the ordinary producer's published Ethos source directory,
-//! and its Rust projection uses only authority-verified encoded coordinates.
+//! Privileged Lojix Signal contract generated from current Ethos.
 
-pub mod bootstrap_manifest;
-pub mod schema;
+#[path = "generated.rs"]
+mod generated;
+pub use generated::*;
 
-pub const META_LOJIX_INTERFACE_SOURCE: &str = include_str!("../ethos/lib.ethos");
-pub const META_LOJIX_INTERFACE_RUST: &str = include_str!("schema/lib/generated.rs");
+pub const META_LOJIX_SIGNAL_SOURCE: &str = include_str!("../ethos/lib.ethos");
+
+/// The allocated privileged Lojix wire contract: seat 2, structural revision 3.
+pub enum MetaLojixWire {}
+
+impl signal_frame::WireContract for MetaLojixWire {
+    const BINDING: signal_frame::ContractBinding = signal_frame::ContractBinding::new(
+        signal_frame::ContractId::new(core::num::NonZeroU32::new(2).expect("meta seat is nonzero")),
+        signal_frame::WireRevision::new(core::num::NonZeroU16::new(3).expect("meta revision is nonzero")),
+    );
+}

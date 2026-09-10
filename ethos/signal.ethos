@@ -1,0 +1,48 @@
+; Privileged Lojix query and response contract.
+Signal
+
+[ signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference ] ]
+
+[ Retire.RetireRequest
+  Pin.PinRequest
+  Deploy.DeploySubmission
+  Test.TestRequest
+  Unpin.UnpinRequest ]
+
+[ PinRejected.RejectedPin
+  DeployRejected.RejectedDeploy
+  DeployAccepted.DeployHandle
+  TestRejected.RejectedTest
+  Unpinned.AppliedUnpin
+  Tested.AcceptedTest
+  UnpinRejected.RejectedUnpin
+  DeployTerminal.DeploymentRecord
+  Pinned.AppliedPin
+  RetireRejected.RejectedRetire
+  Retired.AppliedRetire ]
+
+[ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
+  HostDeployment.{ ClusterName NodeName HostComposition ProposalSource FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
+  AppliedPin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
+  PinRejectionReason.[ PinSlotExhausted InternalError NodeUnknown PinLabelInUse GenerationUnknown ]
+  NodeSelection.[ All Nodes.Vector<NodeName> ]
+  RetireRejectionReason.[ NodeUnknown GenerationUnknown GenerationPinned InternalError GenerationActive ]
+  RejectedTest.{ TestRejectionReason DatabaseMarker }
+  RejectedDeploy.DeploymentRecord
+  UnpinRejectionReason.[ GenerationNotPinned PinLabelUnknown InternalError NodeUnknown ]
+  PinRequest.{ ClusterName NodeName GenerationIdentifier PinLabel }
+  RejectedUnpin.{ UnpinRejectionReason DatabaseMarker }
+  TestRequest.[ Run.TestRun Check.QuickCheck ]
+  RejectedPin.{ PinRejectionReason DatabaseMarker }
+  UnpinRequest.{ ClusterName NodeName PinLabel }
+  ExtraSubstituter.{ String String }
+  DeployHandle.{ DeploymentIdentifier DatabaseMarker }
+  RetireRequest.{ ClusterName NodeName GenerationIdentifier }
+  DeploySubmission.[ UserEnvironment.UserEnvironmentDeployment Host.HostDeployment ]
+  QuickCheck.Vector<NodeName>
+  AcceptedTest.{ TestRunIdentifier DatabaseMarker }
+  AppliedUnpin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
+  TestRejectionReason.[ SubstrateUnavailable NoTestDefaults ClusterUnknown HostDeclaresNoVmHost LiveNotYetEnabled NodeUnknown VmHostNotDeclaredForNode InternalError ]
+  RejectedRetire.{ RetireRejectionReason DatabaseMarker }
+  AppliedRetire.{ GenerationIdentifier GenerationSlot DatabaseMarker }
+  TestRun.{ ClusterName NodeSelection HostSelection TestExecutionProfile } ]

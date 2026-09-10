@@ -1,30 +1,26 @@
 [package]
-name         = "meta-signal-lojix"
-version      = "0.8.2"
-edition      = "2024"
+name = "meta-signal-lojix"
+version = "1.0.0"
+edition = "2024"
 rust-version = "1.89"
-license      = "MIT OR Apache-2.0"
-description  = "Meta Signal contract for the lojix deploy orchestrator owner-only policy surface."
-publish      = false
-links        = "meta-signal-lojix"
-build        = "build.rs"
+description = "Privileged Signal contract for the Lojix deployment Nexus."
+publish = false
+build = "build.rs"
 
-[lib]
-name = "meta_signal_lojix"
-path = "src/lib.rs"
+[features]
+default = []
+datom = ["dep:datom-codec", "dep:protos", "signal-lojix/datom"]
 
 [dependencies]
-datom-codec = { git = "https://github.com/LiGoldragon/datom-codec", rev = "41a3c073d5c5" }
-protos = { git = "https://github.com/LiGoldragon/protos", rev = "2d999f173334" }
-rkyv         = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix.git", rev = "5ce3f11feac22a0ddbed028dec2a60385f77fa55" }
-signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", rev = "80f70d929ae6d72707052f097be2264872913983", default-features = false }
+datom-codec = { git = "https://github.com/LiGoldragon/datom-codec", rev = "f2cc06858d38a4028c928d33323a6d682e7c222f", optional = true }
+protos = { git = "https://github.com/LiGoldragon/protos", rev = "b543678cfc8609529cea7174eb4af8a64daa54ad", optional = true }
+rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "4b7ebb973ddae35cbbefd96637818684389f2dfa", default-features = false }
 
 [build-dependencies]
-ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero.git", rev = "bcf728bbe4521e663f4773d3c1fd4ebb643df32e" }
-protos = { git = "https://github.com/LiGoldragon/protos", rev = "2d999f173334" }
+ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "79efacaff9c6384d1637491eba9082c49d0a8897" }
 
 [lints.rust]
 unsafe_code = "forbid"
-unused      = { level = "warn", priority = -1 }
-dead_code   = "warn"
+unused = { level = "warn", priority = -1 }
+dead_code = "warn"

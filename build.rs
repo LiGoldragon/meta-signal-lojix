@@ -1,21 +1,18 @@
-use std::{env, fs, path::PathBuf};
-
-use ethos_zero::{File, Generating};
-use protos::{Actualizable, Potential};
+use ethos_zero::{Actualizing, File, Generating, Potential};
 
 fn main() {
-    println!("cargo:rerun-if-changed=ethos/lib.ethos");
-    println!("cargo:rerun-if-changed=src/generated.rs");
-    let root = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").expect("manifest directory"));
-    let source = fs::read_to_string(root.join("ethos/lib.ethos")).expect("read MetaSignal source");
+    let root = std::path::PathBuf::from(std::env::var_os("CARGO_MANIFEST_DIR").expect("manifest"));
+    println!("cargo:rerun-if-changed=ethos/signal.ethos");
+    println!("cargo:rerun-if-changed=src/generated/signal.rs");
+    let source = std::fs::read_to_string(root.join("ethos/signal.ethos")).expect("source");
     let file = Potential::<File>::from(source)
-        .actualize(())
-        .expect("parse checked MetaSignal source");
-    let generated = file.generate().expect("generate checked MetaSignal Rust");
-    let checked_in =
-        fs::read_to_string(root.join("src/generated.rs")).expect("read checked-in MetaSignal Rust");
+        .actualize()
+        .unwrap_or_else(|_| panic!("read Signal"));
+    let generated = file
+        .generate()
+        .unwrap_or_else(|_| panic!("generate Signal"));
     assert_eq!(
-        generated, checked_in,
-        "checked-in MetaSignal Rust is stale; regenerate src/generated.rs before building"
+        generated,
+        std::fs::read_to_string(root.join("src/generated/signal.rs")).expect("generated")
     );
 }

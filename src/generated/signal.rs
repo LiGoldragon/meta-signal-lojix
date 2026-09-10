@@ -10,6 +10,7 @@ pub struct UserEnvironmentDeployment {
     pub node_name: signal_lojix::NodeName,
     pub user_name: signal_lojix::UserName,
     pub proposal_source: signal_lojix::ProposalSource,
+    pub secrets_input: signal_lojix::SecretsInput,
     pub flake_reference: signal_lojix::FlakeReference,
     pub deployment_transport: signal_lojix::DeploymentTransport,
     pub deployment_input_mode: signal_lojix::DeploymentInputMode,
@@ -31,6 +32,7 @@ pub struct HostDeployment {
     pub node_name: signal_lojix::NodeName,
     pub host_composition: signal_lojix::HostComposition,
     pub proposal_source: signal_lojix::ProposalSource,
+    pub secrets_input: signal_lojix::SecretsInput,
     pub flake_reference: signal_lojix::FlakeReference,
     pub deployment_transport: signal_lojix::DeploymentTransport,
     pub deployment_input_mode: signal_lojix::DeploymentInputMode,
@@ -101,7 +103,14 @@ pub struct RejectedTest {
     pub database_marker: signal_lojix::DatabaseMarker,
 }
 #[rustfmt::skip]
-pub type RejectedDeploy = signal_lojix::DeploymentRecord;
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq)]
+#[cfg_attr(
+    feature = "datom",
+    derive(datom_codec::Datomizable, datom_codec::Compositional)
+)]
+pub struct RejectedDeploy {
+    pub deployment_record: signal_lojix::DeploymentRecord,
+}
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(

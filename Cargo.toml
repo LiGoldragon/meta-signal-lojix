@@ -1,6 +1,6 @@
 [package]
 name = "meta-signal-lojix"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 rust-version = "1.89"
 description = "Privileged Signal contract for the Lojix deployment Nexus."
@@ -15,10 +15,10 @@ datom = ["dep:datom-codec", "dep:protos", "signal-lojix/datom"]
 datom-codec = { git = "https://github.com/LiGoldragon/datom-codec", rev = "f2cc06858d38a4028c928d33323a6d682e7c222f", optional = true }
 protos = { git = "https://github.com/LiGoldragon/protos", rev = "b543678cfc8609529cea7174eb4af8a64daa54ad", optional = true }
 rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "4b7ebb973ddae35cbbefd96637818684389f2dfa", default-features = false }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "bc8c1235bb25a055a81edf9ec62806ff101b6995", default-features = false }
 
 [build-dependencies]
-ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "79efacaff9c6384d1637491eba9082c49d0a8897" }
+ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "4695ee0c1f5d00dcf5cceba08f5fa00412b92184" }
 
 [lints.rust]
 unsafe_code = "forbid"

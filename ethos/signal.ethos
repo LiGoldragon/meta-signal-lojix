@@ -1,7 +1,7 @@
 ; Privileged Lojix query and response contract.
 Signal
 
-[ signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference ] ]
+[ signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference ] ]
 
 [ Retire.RetireRequest
   Pin.PinRequest
@@ -21,14 +21,14 @@ Signal
   RetireRejected.RejectedRetire
   Retired.AppliedRetire ]
 
-[ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
-  HostDeployment.{ ClusterName NodeName HostComposition ProposalSource FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
+[ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
+  HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   AppliedPin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
   PinRejectionReason.[ PinSlotExhausted InternalError NodeUnknown PinLabelInUse GenerationUnknown ]
   NodeSelection.[ All Nodes.Vector<NodeName> ]
   RetireRejectionReason.[ NodeUnknown GenerationUnknown GenerationPinned InternalError GenerationActive ]
   RejectedTest.{ TestRejectionReason DatabaseMarker }
-  RejectedDeploy.DeploymentRecord
+  RejectedDeploy.{ DeploymentRecord }
   UnpinRejectionReason.[ GenerationNotPinned PinLabelUnknown InternalError NodeUnknown ]
   PinRequest.{ ClusterName NodeName GenerationIdentifier PinLabel }
   RejectedUnpin.{ UnpinRejectionReason DatabaseMarker }

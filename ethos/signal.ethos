@@ -1,11 +1,11 @@
 ; Privileged Lojix query and response contract.
 Signal
 
-[ signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference ] ]
+[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference ] ]
 
 [ Retire.RetireRequest
   Pin.PinRequest
-  Deploy.DeploySubmission
+  Deploy.ActualizedDeploySubmission
   Test.TestRequest
   Unpin.UnpinRequest ]
 
@@ -23,6 +23,8 @@ Signal
 
 [ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
+  ActualizedDeploySubmission.{ DeploySubmission Option<HorizonDefinition> }
+  ClientQuery.[ Retire.RetireRequest Pin.PinRequest Deploy.DeploySubmission Test.TestRequest Unpin.UnpinRequest ]
   AppliedPin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
   PinRejectionReason.[ PinSlotExhausted InternalError NodeUnknown PinLabelInUse GenerationUnknown ]
   NodeSelection.[ All Nodes.Vector<NodeName> ]

@@ -49,6 +49,29 @@ pub struct HostDeployment {
     feature = "datom",
     derive(datom_codec::Datomizable, datom_codec::Compositional)
 )]
+pub struct ActualizedDeploySubmission {
+    pub deploy_submission: DeploySubmission,
+    pub horizon_definition_option: Option<horizon_lib::HorizonDefinition>,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq)]
+#[cfg_attr(
+    feature = "datom",
+    derive(datom_codec::Datomizable, datom_codec::Compositional)
+)]
+pub enum ClientQuery {
+    Retire(RetireRequest),
+    Pin(PinRequest),
+    Deploy(DeploySubmission),
+    Test(TestRequest),
+    Unpin(UnpinRequest),
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq)]
+#[cfg_attr(
+    feature = "datom",
+    derive(datom_codec::Datomizable, datom_codec::Compositional)
+)]
 pub struct AppliedPin {
     pub generation_identifier: signal_lojix::GenerationIdentifier,
     pub pin_label: signal_lojix::PinLabel,
@@ -300,7 +323,7 @@ pub struct TestRun {
 pub enum Query {
     Retire(RetireRequest),
     Pin(PinRequest),
-    Deploy(DeploySubmission),
+    Deploy(ActualizedDeploySubmission),
     Test(TestRequest),
     Unpin(UnpinRequest),
 }

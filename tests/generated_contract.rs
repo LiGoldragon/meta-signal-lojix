@@ -14,31 +14,59 @@ fn pin_query() -> Query {
 }
 
 fn deployment_with_secret_reference() -> Query {
-    Query::Deploy(meta_signal_lojix::DeploySubmission::Host(
-        meta_signal_lojix::HostDeployment {
-            cluster_name: "production.eu".into(),
-            node_name: "node-a".into(),
-            host_composition: signal_lojix::HostComposition::BaseHost,
-            proposal_source: "proposal.datom".into(),
-            secrets_input: signal_lojix::SecretsInput::SecretsDirectory(
-                "fixture-secret-directory".into(),
-            ),
-            flake_reference: "github:example/system".into(),
-            deployment_transport: signal_lojix::DeploymentTransport {
-                nix_store_uri: "ssh-ng://builder.invalid".into(),
-                ssh_destination: "root@node.invalid".into(),
+    Query::Deploy(meta_signal_lojix::ActualizedDeploySubmission {
+        deploy_submission: meta_signal_lojix::DeploySubmission::Host(
+            meta_signal_lojix::HostDeployment {
+                cluster_name: "production.eu".into(),
+                node_name: "node-a".into(),
+                host_composition: signal_lojix::HostComposition::BaseHost,
+                proposal_source: "proposal.datom".into(),
+                secrets_input: signal_lojix::SecretsInput::SecretsDirectory(
+                    "fixture-secret-directory".into(),
+                ),
+                flake_reference: "github:example/system".into(),
+                deployment_transport: signal_lojix::DeploymentTransport {
+                    nix_store_uri: "ssh-ng://builder.invalid".into(),
+                    ssh_destination: "root@node.invalid".into(),
+                },
+                deployment_input_mode: signal_lojix::DeploymentInputMode::Horizon,
+                deployment_output_selector: signal_lojix::DeploymentOutputSelector {
+                    flake_attribute: "nixosConfigurations.node.config.system.build.toplevel".into(),
+                },
+                activation_backend: signal_lojix::ActivationBackend::NixosSystemdBootV1,
+                host_deploy_action: signal_lojix::HostDeployAction::Realize,
+                source_revision_policy: signal_lojix::SourceRevisionPolicy::ResolveAndRecord,
+                nix_builder_spec_option: None,
+                extra_substituter_vector: vec![],
             },
-            deployment_input_mode: signal_lojix::DeploymentInputMode::Direct,
-            deployment_output_selector: signal_lojix::DeploymentOutputSelector {
-                flake_attribute: "nixosConfigurations.node.config.system.build.toplevel".into(),
+        ),
+        horizon_definition_option: Some(minimal_horizon_definition()),
+    })
+}
+
+fn minimal_horizon_definition() -> horizon_lib::HorizonDefinition {
+    horizon_lib::HorizonDefinition {
+        horizon_configuration: horizon_lib::HorizonConfiguration {
+            generic_nodes: vec![],
+            domain_configuration: horizon_lib::DomainConfiguration {
+                string: "internal.invalid".into(),
+                domain_name_vector: vec![],
             },
-            activation_backend: signal_lojix::ActivationBackend::NixosSystemdBootV1,
-            host_deploy_action: signal_lojix::HostDeployAction::Realize,
-            source_revision_policy: signal_lojix::SourceRevisionPolicy::ResolveAndRecord,
-            nix_builder_spec_option: None,
-            extra_substituter_vector: vec![],
         },
-    ))
+        cluster_definition: horizon_lib::ClusterDefinition {
+            cluster_name: "production.eu".into(),
+            cluster_nodes: vec![],
+            generic_node_names: vec![],
+            users: vec![],
+            domains: vec![],
+            cluster_trust: horizon_lib::ClusterTrust {
+                magnitude: horizon_lib::Magnitude::Zero,
+                cluster_trust_entry_vector: vec![],
+                node_trust_entry_vector: vec![],
+                user_trust_entry_vector: vec![],
+            },
+        },
+    }
 }
 
 #[test]
@@ -101,4 +129,27 @@ fn datom_round_trip_preserves_named_privileged_query() {
         })
         .expect("restore secret-reference deployment");
     assert_eq!(restored, deployment);
+}
+
+#[cfg(feature = "datom")]
+#[test]
+fn client_query_keeps_the_authored_pre_actualization_shape() {
+    use datom_codec::{Actualizing, Budget, Datomizable, Potential};
+    use protos::{Protosizable, ReaderBudget, Textualizable};
+
+    let wire = deployment_with_secret_reference();
+    let Query::Deploy(actualized) = wire else {
+        unreachable!()
+    };
+    let client = meta_signal_lojix::ClientQuery::Deploy(actualized.deploy_submission);
+    let rendered = client.clone().datomize(vec![]).protosize().textualize();
+    let restored = Potential::<meta_signal_lojix::ClientQuery>::from(rendered)
+        .actualize(&mut Budget {
+            remaining: 4_096,
+            reader: ReaderBudget { remaining: 4_096 },
+            depth: 0,
+            maximum_depth: 256,
+        })
+        .expect("restore client deployment");
+    assert_eq!(restored, client);
 }

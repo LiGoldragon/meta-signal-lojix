@@ -60,6 +60,8 @@ pub struct ActualizedDeploySubmission {
     derive(datom_codec::Datomizable, datom_codec::Compositional)
 )]
 pub enum ClientQuery {
+    Configure(signal_lojix::LojixNexusConfiguration),
+    ReverseConfiguration,
     Retire(RetireRequest),
     Pin(PinRequest),
     Deploy(DeploySubmission),

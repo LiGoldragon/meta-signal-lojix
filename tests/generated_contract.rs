@@ -187,4 +187,20 @@ fn client_query_keeps_the_authored_pre_actualization_shape() {
         })
         .expect("restore client deployment");
     assert_eq!(restored, client);
+
+    for client in [
+        meta_signal_lojix::ClientQuery::Configure(configuration()),
+        meta_signal_lojix::ClientQuery::ReverseConfiguration,
+    ] {
+        let rendered = client.clone().datomize(vec![]).protosize().textualize();
+        let restored = Potential::<meta_signal_lojix::ClientQuery>::from(rendered)
+            .actualize(&mut Budget {
+                remaining: 4_096,
+                reader: ReaderBudget { remaining: 4_096 },
+                depth: 0,
+                maximum_depth: 256,
+            })
+            .expect("restore client configuration transition");
+        assert_eq!(restored, client);
+    }
 }

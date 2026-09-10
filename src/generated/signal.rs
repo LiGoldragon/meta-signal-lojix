@@ -321,6 +321,8 @@ pub struct TestRun {
     derive(datom_codec::Datomizable, datom_codec::Compositional)
 )]
 pub enum Query {
+    Configure(signal_lojix::LojixNexusConfiguration),
+    ReverseConfiguration,
     Retire(RetireRequest),
     Pin(PinRequest),
     Deploy(ActualizedDeploySubmission),
@@ -334,6 +336,9 @@ pub enum Query {
     derive(datom_codec::Datomizable, datom_codec::Compositional)
 )]
 pub enum Response {
+    Configured(signal_lojix::ConfigurationReceipt),
+    ConfigurationRejected(signal_lojix::ConfigurationRejection),
+    ConfigurationReversed(signal_lojix::ConfigurationReceipt),
     PinRejected(RejectedPin),
     DeployRejected(RejectedDeploy),
     DeployAccepted(DeployHandle),

@@ -1,15 +1,20 @@
 ; Privileged Lojix query and response contract.
 Signal
 
-[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference ] ]
+[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference LojixNexusConfiguration ConfigurationReceipt ConfigurationRejection ] ]
 
-[ Retire.RetireRequest
+[ Configure.LojixNexusConfiguration
+  ReverseConfiguration
+  Retire.RetireRequest
   Pin.PinRequest
   Deploy.ActualizedDeploySubmission
   Test.TestRequest
   Unpin.UnpinRequest ]
 
-[ PinRejected.RejectedPin
+[ Configured.ConfigurationReceipt
+  ConfigurationRejected.ConfigurationRejection
+  ConfigurationReversed.ConfigurationReceipt
+  PinRejected.RejectedPin
   DeployRejected.RejectedDeploy
   DeployAccepted.DeployHandle
   TestRejected.RejectedTest

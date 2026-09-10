@@ -4,6 +4,18 @@ use meta_signal_lojix::{
 };
 use signal_lojix::DatabaseMarker;
 
+fn configuration() -> signal_lojix::LojixNexusConfiguration {
+    signal_lojix::LojixNexusConfiguration {
+        ordinary_socket_path: "/run/lojix/ordinary.sock".into(),
+        ordinary_socket_mode: 0o660,
+        owner_socket_path: "/run/lojix/meta.sock".into(),
+        owner_socket_mode: 0o600,
+        state_directory_path: "/var/lib/lojix".into(),
+        daemon_host: "deployment.host".into(),
+        test_defaults_choice: signal_lojix::TestDefaultsChoice::NoTestDefaults,
+    }
+}
+
 fn pin_query() -> Query {
     Query::Pin(PinRequest {
         cluster_name: "production.eu".into(),
@@ -95,6 +107,29 @@ fn peer_bytes_preserve_nonempty_secret_reference() {
     let sent = query.signalize().expect("signalize deployment query");
     let received = Signal::<Query>::from(sent.bytes().to_vec());
     assert_eq!(received.restore().expect("restore deployment query"), query);
+}
+
+#[test]
+fn meta_configure_and_reversal_cross_fresh_peer_bytes() {
+    for query in [
+        Query::Configure(configuration()),
+        Query::ReverseConfiguration,
+    ] {
+        let sent = query.signalize().expect("signalize lifecycle query");
+        let received = Signal::<Query>::from(sent.bytes().to_vec());
+        assert_eq!(received.restore().expect("restore lifecycle query"), query);
+    }
+
+    let response = Response::ConfigurationReversed(signal_lojix::ConfigurationReceipt {
+        lojix_nexus_configuration: configuration(),
+        meta_configure_occurred: false,
+    });
+    let sent = response.signalize().expect("signalize reversal receipt");
+    let received = Signal::<Response>::from(sent.bytes().to_vec());
+    assert_eq!(
+        received.restore().expect("restore reversal receipt"),
+        response
+    );
 }
 
 #[cfg(feature = "datom")]

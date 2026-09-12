@@ -16,8 +16,8 @@ datom-codec = { git = "https://github.com/LiGoldragon/datom-codec", rev = "627db
 protos = { git = "https://github.com/LiGoldragon/protos", rev = "171b21f65337983ab624b7b906397a4f1f92c5a3", optional = true }
 rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
 signal = { git = "https://github.com/LiGoldragon/signal", rev = "8f9a0deb701cebbea518679548df4a795affc918", default-features = false }
-horizon-lib = { git = "https://github.com/LiGoldragon/horizon-rs", rev = "6942b472193f53ddba5ab557a3ee736529e904f3", package = "horizon-lib", default-features = false }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "e3c5a5bbd2a7c0fb56c4e4a04f1840546c414f3d", default-features = false }
+horizon-lib = { git = "https://github.com/LiGoldragon/horizon-rs", rev = "40d04d2504fee619e9b2b2564b8a769a3a9d6049", package = "horizon-lib", default-features = false }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "5c94485c84d20d5b1496d867a2b40f2d908a02e3", default-features = false }
 
 [build-dependencies]
 ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "de3d9928b156f2e1a92d060b7817af201abfdbef" }

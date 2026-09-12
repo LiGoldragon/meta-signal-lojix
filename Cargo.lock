@@ -167,13 +167,14 @@ dependencies = [
 
 [[package]]
 name = "meta-signal-lojix"
-version = "2.3.0"
+version = "3.0.0"
 dependencies = [
  "datom-codec 0.25.7",
  "ethos-zero",
  "horizon-lib",
  "protos",
  "rkyv",
+ "signal",
  "signal-lojix",
 ]
 
@@ -344,6 +345,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 3.0.5",
+]
+
+[[package]]
+name = "signal"
+version = "2.0.0"
+source = "git+https://github.com/LiGoldragon/signal?rev=626e407be520a7a12f39b1d06c56ec423f3b3d09#626e407be520a7a12f39b1d06c56ec423f3b3d09"
+dependencies = [
+ "ethos-zero",
+ "rkyv",
+ "thiserror",
 ]
 
 [[package]]

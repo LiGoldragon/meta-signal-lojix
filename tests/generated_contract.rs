@@ -1,7 +1,5 @@
-use meta_signal_lojix::{
-    ByteViewable, PinRejectionReason, PinRequest, Query, RejectedPin, Response, Restorable, Signal,
-    Signalizable,
-};
+use meta_signal_lojix::{PinRejectionReason, PinRequest, Query, RejectedPin, Response};
+use signal::{ByteViewable, Restorable, Signal, Signalizable};
 use signal_lojix::DatabaseMarker;
 
 fn configuration() -> signal_lojix::LojixNexusConfiguration {

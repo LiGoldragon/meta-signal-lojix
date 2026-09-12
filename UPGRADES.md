@@ -1,5 +1,12 @@
 # Upgrades
 
+# 5.0.0 to 5.1.0
+
+`horizon-lib` moves to 0.10.0 (`a56330451934d682ae15612acd49924356ec0205`) and
+`signal-lojix` to 4.1.0 (`d0f5c70d437add1df16055dcb760b7ef9a140ef0`). No type
+in this crate changed; see horizon-rs UPGRADES.md for the trait rehoming a
+consumer must import.
+
 # 3.0.1 to 5.0.0
 
 No type in this crate changed. `DeployTerminal` carries `signal-lojix`'s

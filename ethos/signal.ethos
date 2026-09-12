@@ -16,6 +16,7 @@ Signal
   ConfigurationReversed.ConfigurationReceipt
   PinRejected.RejectedPin
   DeployRejected.RejectedDeploy
+  DeployRefused.RefusedDeploy
   DeployAccepted.DeployHandle
   TestRejected.RejectedTest
   Unpinned.AppliedUnpin
@@ -36,6 +37,8 @@ Signal
   RetireRejectionReason.[ NodeUnknown GenerationUnknown GenerationPinned InternalError GenerationActive ]
   RejectedTest.{ TestRejectionReason DatabaseMarker }
   RejectedDeploy.{ DeploymentRecord }
+  RefusedDeploy.{ DeployRefusalReason DatabaseMarker }
+  DeployRefusalReason.[ ContinuationBudgetExhausted NoCorrelatedDeployment DurableWriteFailed ]
   UnpinRejectionReason.[ GenerationNotPinned PinLabelUnknown InternalError NodeUnknown ]
   PinRequest.{ ClusterName NodeName GenerationIdentifier PinLabel }
   RejectedUnpin.{ UnpinRejectionReason DatabaseMarker }

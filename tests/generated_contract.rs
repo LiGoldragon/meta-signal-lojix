@@ -202,3 +202,63 @@ fn client_query_keeps_the_authored_pre_actualization_shape() {
         assert_eq!(restored, client);
     }
 }
+
+/// The three refusals that name no deployment. Each is a state the Nexus can
+/// actually reach and could not previously answer: the continuation budget ran
+/// out, a completion arrived with no correlated deployment cursor, or the
+/// durable write that would have produced the record failed. These examples
+/// are the falsifiable specification of that reply.
+#[test]
+fn a_deploy_refusal_that_names_no_deployment_crosses_peer_bytes() {
+    use meta_signal_lojix::{DeployRefusalReason, RefusedDeploy};
+
+    for deploy_refusal_reason in [
+        DeployRefusalReason::ContinuationBudgetExhausted,
+        DeployRefusalReason::NoCorrelatedDeployment,
+        DeployRefusalReason::DurableWriteFailed,
+    ] {
+        let response = Response::DeployRefused(RefusedDeploy {
+            deploy_refusal_reason,
+            database_marker: DatabaseMarker {
+                commit_sequence: 7,
+                state_digest: 3,
+            },
+        });
+        let sent = response.signalize().expect("signalize deploy refusal");
+        let received = Signal::<Response>::from(sent.bytes().to_vec());
+        assert_eq!(
+            received.restore().expect("restore deploy refusal"),
+            response
+        );
+    }
+}
+
+#[cfg(feature = "datom")]
+#[test]
+fn a_deploy_refusal_renders_its_reason_in_datom() {
+    use datom_codec::{Actualizing, Budget, Datomizable, Potential};
+    use meta_signal_lojix::{DeployRefusalReason, RefusedDeploy};
+    use protos::{Protosizable, ReaderBudget, Textualizable};
+
+    let response = Response::DeployRefused(RefusedDeploy {
+        deploy_refusal_reason: DeployRefusalReason::NoCorrelatedDeployment,
+        database_marker: DatabaseMarker {
+            commit_sequence: 7,
+            state_digest: 3,
+        },
+    });
+    let rendered = response.clone().datomize(vec![]).protosize().textualize();
+    assert!(
+        rendered.contains("DeployRefused") && rendered.contains("NoCorrelatedDeployment"),
+        "an uncorrelated refusal names itself: {rendered}"
+    );
+    let restored = Potential::<Response>::from(rendered)
+        .actualize(&mut Budget {
+            remaining: 4_096,
+            reader: ReaderBudget { remaining: 4_096 },
+            depth: 0,
+            maximum_depth: 256,
+        })
+        .expect("restore deploy refusal");
+    assert_eq!(restored, response);
+}

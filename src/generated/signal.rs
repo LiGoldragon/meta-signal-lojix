@@ -142,6 +142,27 @@ pub struct RejectedDeploy {
     feature = "datom",
     derive(datom_codec::Datomizable, datom_codec::Compositional)
 )]
+pub struct RefusedDeploy {
+    pub deploy_refusal_reason: DeployRefusalReason,
+    pub database_marker: signal_lojix::DatabaseMarker,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq)]
+#[cfg_attr(
+    feature = "datom",
+    derive(datom_codec::Datomizable, datom_codec::Compositional)
+)]
+pub enum DeployRefusalReason {
+    ContinuationBudgetExhausted,
+    NoCorrelatedDeployment,
+    DurableWriteFailed,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq)]
+#[cfg_attr(
+    feature = "datom",
+    derive(datom_codec::Datomizable, datom_codec::Compositional)
+)]
 pub enum UnpinRejectionReason {
     GenerationNotPinned,
     PinLabelUnknown,
@@ -343,6 +364,7 @@ pub enum Response {
     ConfigurationReversed(signal_lojix::ConfigurationReceipt),
     PinRejected(RejectedPin),
     DeployRejected(RejectedDeploy),
+    DeployRefused(RefusedDeploy),
     DeployAccepted(DeployHandle),
     TestRejected(RejectedTest),
     Unpinned(AppliedUnpin),

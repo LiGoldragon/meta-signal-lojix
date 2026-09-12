@@ -1,6 +1,6 @@
 [package]
 name = "meta-signal-lojix"
-version = "5.1.1"
+version = "6.0.0"
 edition = "2024"
 rust-version = "1.89"
 description = "Privileged Signal contract for the Lojix deployment Nexus."
@@ -17,7 +17,7 @@ protos = { git = "https://github.com/LiGoldragon/protos", rev = "171b21f65337983
 rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
 signal = { git = "https://github.com/LiGoldragon/signal", rev = "8f9a0deb701cebbea518679548df4a795affc918", default-features = false }
 horizon-lib = { git = "https://github.com/LiGoldragon/horizon-rs", rev = "40d04d2504fee619e9b2b2564b8a769a3a9d6049", package = "horizon-lib", default-features = false }
-signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "5c94485c84d20d5b1496d867a2b40f2d908a02e3", default-features = false }
+signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "4271b5ced31ea02f11f29b602301832e83cfe6c2", default-features = false }
 
 [build-dependencies]
 ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "de3d9928b156f2e1a92d060b7817af201abfdbef" }

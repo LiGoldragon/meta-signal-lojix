@@ -1,5 +1,31 @@
 # Upgrades
 
+# 5.1.1 to 6.0.0
+
+`Answer` gains `DeployRefused.RefusedDeploy`, with
+`RefusedDeploy.{ DeployRefusalReason DatabaseMarker }` and
+`DeployRefusalReason.[ ContinuationBudgetExhausted NoCorrelatedDeployment
+DurableWriteFailed ]`. `signal-lojix` moves to 5.0.0
+(`4271b5ced31ea02f11f29b602301832e83cfe6c2`).
+
+`RejectedDeploy.{ DeploymentRecord }` names the deployment it rejects, and it
+is the only deploy refusal this contract had. Three refusals name no
+deployment, because at the moment of refusal there is none to name: the
+Nexus's continuation budget ran out, an effect or write completion arrived
+with no correlated deployment cursor, or the durable write that would have
+produced the record failed. Each of those was previously answered with a
+fabricated record or not answered at all. `DeployRefused` is their honest
+answer and carries the same `reason + marker` shape the four other meta
+refusals (`RejectedPin`, `RejectedUnpin`, `RejectedRetire`, `RejectedTest`)
+already carry.
+
+`DeployRejected` is unchanged and keeps its meaning: a refusal that names the
+deployment record it rejected.
+
+Breaking: `Answer` gains a variant, so its rkyv archive changes. A client
+matching on `Answer` adds the arm; a client that only submits sees nothing new
+unless the Nexus refuses uncorrelated.
+
 # 5.1.0 to 5.1.1
 
 A repin only. The producer chain settles on its final heads: `protos` 0.30.1

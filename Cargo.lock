@@ -380,7 +380,7 @@ dependencies = [
 [[package]]
 name = "signal-lojix"
 version = "5.0.0"
-source = "git+https://github.com/LiGoldragon/signal-lojix?rev=ca32405cc27fac55011a0b9ff5e719d5f5d2459f#ca32405cc27fac55011a0b9ff5e719d5f5d2459f"
+source = "git+https://github.com/LiGoldragon/signal-lojix?rev=3f550fc278b8e14c37158036d420e7e3ed1d7c7b#3f550fc278b8e14c37158036d420e7e3ed1d7c7b"
 dependencies = [
  "datom-codec 0.26.3",
  "ethos-zero 8.0.1",

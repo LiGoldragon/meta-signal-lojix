@@ -42,7 +42,7 @@ pub struct HostDeployment {
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct ActualizedDeploySubmission {
     pub deploy_submission: DeploySubmission,
-    pub horizon_definition_option: Option<horizon_lib::HorizonDefinition>,
+    pub cluster_proposal_wire_option: Option<signal_lojix::ClusterProposalWire>,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]

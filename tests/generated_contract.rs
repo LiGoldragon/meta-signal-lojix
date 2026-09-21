@@ -50,89 +50,76 @@ fn deployment_with_secret_reference() -> Query {
                 extra_substituter_vector: vec![],
             },
         ),
-        horizon_definition_option: Some(minimal_horizon_definition()),
+        cluster_proposal_wire_option: Some(usb_cluster_proposal()),
     })
 }
 
-fn minimal_horizon_definition() -> horizon_lib::HorizonDefinition {
-    horizon_lib::HorizonDefinition {
-        horizon_configuration: horizon_lib::HorizonConfiguration {
-            generic_nodes: vec![horizon_lib::NodeDefinition {
-                node_name: "opencode-test".into(),
-                node_variant: horizon_lib::NodeVariant::Live(horizon_lib::LiveDefinition {}),
-                first_magnitude: horizon_lib::Magnitude::Min,
-                second_magnitude: horizon_lib::Magnitude::Min,
-                machine_definition: horizon_lib::MachineDefinition::Metal(horizon_lib::Metal_Data {
-                    architecture: horizon_lib::Architecture::X86_64,
-                    hardware: horizon_lib::Hardware {
-                        integer: 1,
-                        model_name_option: None,
-                        mother_board_option: None,
-                        first_integer_option: None,
-                        second_integer_option: None,
-                        location_option: None,
-                    },
-                }),
-                node_environment: horizon_lib::NodeEnvironment {
-                    keyboard: horizon_lib::Keyboard::Qwerty,
-                    compressed_swap_option: None,
+fn usb_cluster_proposal() -> signal_lojix::ClusterProposalWire {
+    use signal_lojix::horizon_wire_types::*;
+    ClusterProposalWire {
+        nodes: vec![NodeProposalEntryWire {
+            name: NodeNameWire("ouranos".into()),
+            proposal: NodeProposalWire {
+                species: NodeSpeciesWire::Center,
+                size: MagnitudeWire::Min,
+                trust: MagnitudeWire::Min,
+                machine: MachineWire {
+                    species: MachineSpeciesWire::Metal,
+                    arch: Some(ArchWire::X86_64),
+                    cores: 4,
+                    model: None,
+                    mother_board: None,
+                    super_node: None,
+                    super_user: None,
+                    chip_gen: None,
+                    ram_gb: None,
+                    disk_gb: None,
+                    location: None,
+                    super_nodes: vec![],
                 },
-                node_network: horizon_lib::NodeNetwork {
-                    link_local_ip_vector: vec![],
-                    node_ip_option: None,
-                    wireguard_pub_key_option: None,
-                    wireguard_proxy_vector: vec![],
-                    router_interfaces_option: None,
+                io: IoWire {
+                    keyboard: KeyboardWire::Qwerty,
+                    bootloader: BootloaderWire::Uefi,
+                    disks: vec![],
+                    swap_devices: vec![],
+                    compressed_swap: None,
                 },
-                node_keys: horizon_lib::NodeKeys {
-                    ssh_pub_key: "ssh-ed25519 AAAAfixture".into(),
-                    nix_pub_key_option: None,
-                    yggdrasil_key_option: None,
+                pub_keys: NodePubKeysWire {
+                    ssh: SshPubKeyWire("ssh-ed25519 AAAAfixture".into()),
+                    nix: None,
+                    yggdrasil: None,
                 },
-                boolean_option: None,
-                capabilities: vec![horizon_lib::NodeCapability::OpenCodeTesting(
-                    horizon_lib::NoSettings {},
-                )],
-                fixed_location_option: None,
-            }],
-            domain_configuration: horizon_lib::DomainConfiguration {
-                string: "internal.invalid".into(),
-                domain_name_vector: vec![],
+                link_local_ips: vec![],
+                node_ip: None,
+                wireguard_pub_key: None,
+                nordvpn: false,
+                wifi_cert: false,
+                wireguard_untrusted_proxies: vec![],
+                wants_printing: false,
+                wants_hw_video_accel: false,
+                router_interfaces: None,
+                online: None,
+                services: vec![NodeServiceWire::UsbIpv4Gateway {
+                    downstream: InterfaceWire("enp0s20f0u1c2".into()),
+                    downstream_mac: MacAddressWire("00:0e:c6:33:4f:97".into()),
+                    gateway: Ipv4CidrWire("10.44.0.1/24".into()),
+                    uplink: InterfaceWire("enp0s31f6".into()),
+                }],
             },
-        },
-        cluster_definition: horizon_lib::ClusterDefinition {
-            cluster_name: "production.eu".into(),
-            cluster_nodes: vec![],
-            generic_node_names: vec![],
+        }],
+        users: vec![],
+        domains: vec![],
+        trust: ClusterTrustWire {
+            cluster: MagnitudeWire::Zero,
+            clusters: vec![],
+            nodes: vec![],
             users: vec![],
-            domains: vec![],
-            cluster_trust: horizon_lib::ClusterTrust {
-                magnitude: horizon_lib::Magnitude::Zero,
-                cluster_trust_entry_vector: vec![],
-                node_trust_entry_vector: vec![],
-                user_trust_entry_vector: vec![],
-            },
+        },
+        domain_configuration: DomainConfigurationWire {
+            internal_suffix: InternalDomainSuffixWire("criome".into()),
+            public_cluster_domains: vec![],
         },
     }
-}
-
-#[cfg(feature = "datom")]
-fn gold_horizon_definition_with_decimal_location() -> horizon_lib::HorizonDefinition {
-    use datom_codec::Decimal;
-
-    let mut definition = minimal_horizon_definition();
-    let node = definition
-        .horizon_configuration
-        .generic_nodes
-        .first_mut()
-        .expect("OpenCodeTesting fixture node");
-    node.fixed_location_option = Some(horizon_lib::FixedLocation {
-        first_decimal: Decimal::try_from(19.4326).expect("finite latitude"),
-        second_decimal: Decimal::try_from(-99.1332).expect("finite longitude"),
-        third_decimal: Decimal::try_from(2_240.0).expect("finite altitude"),
-        fourth_decimal: Decimal::try_from(3.5).expect("finite accuracy"),
-    });
-    definition
 }
 
 #[test]
@@ -165,7 +152,7 @@ fn peer_bytes_preserve_nonempty_secret_reference() {
 
 #[cfg(feature = "datom")]
 #[test]
-fn peer_bytes_restore_gold_opencode_testing_decimal_location() {
+fn peer_bytes_restore_usb_cluster_proposal() {
     use datom_codec::{Actualizing, Budget, Datomizable, Potential};
     use protos::{Protosizable, ReaderBudget, Textualizable};
 
@@ -193,12 +180,12 @@ fn peer_bytes_restore_gold_opencode_testing_decimal_location() {
                 extra_substituter_vector: vec![],
             },
         ),
-        horizon_definition_option: Some(gold_horizon_definition_with_decimal_location()),
+        cluster_proposal_wire_option: Some(usb_cluster_proposal()),
     });
-    let sent = query.signalize().expect("signalize Gold definition");
+    let sent = query.signalize().expect("signalize USB proposal");
     let received = Signal::<Query>::from(sent.bytes().to_vec());
     assert_eq!(
-        received.restore().expect("restore Gold definition"),
+        received.restore().expect("restore USB proposal"),
         query
     );
     let rendered = query.clone().datomize(vec![]).protosize().textualize();
@@ -209,7 +196,7 @@ fn peer_bytes_restore_gold_opencode_testing_decimal_location() {
             depth: 0,
             maximum_depth: 256,
         })
-        .expect("restore Gold definition from Datom");
+        .expect("restore USB proposal from Datom");
     assert_eq!(restored, query);
 }
 

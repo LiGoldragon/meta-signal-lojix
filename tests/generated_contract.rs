@@ -57,7 +57,44 @@ fn deployment_with_secret_reference() -> Query {
 fn minimal_horizon_definition() -> horizon_lib::HorizonDefinition {
     horizon_lib::HorizonDefinition {
         horizon_configuration: horizon_lib::HorizonConfiguration {
-            generic_nodes: vec![],
+            generic_nodes: vec![horizon_lib::NodeDefinition {
+                node_name: "opencode-test".into(),
+                node_variant: horizon_lib::NodeVariant::Live(horizon_lib::LiveDefinition {}),
+                first_magnitude: horizon_lib::Magnitude::Min,
+                second_magnitude: horizon_lib::Magnitude::Min,
+                machine_definition: horizon_lib::MachineDefinition::Metal(horizon_lib::Metal_Data {
+                    architecture: horizon_lib::Architecture::X86_64,
+                    hardware: horizon_lib::Hardware {
+                        integer: 1,
+                        model_name_option: None,
+                        mother_board_option: None,
+                        first_integer_option: None,
+                        second_integer_option: None,
+                        location_option: None,
+                    },
+                }),
+                node_environment: horizon_lib::NodeEnvironment {
+                    keyboard: horizon_lib::Keyboard::Qwerty,
+                    compressed_swap_option: None,
+                },
+                node_network: horizon_lib::NodeNetwork {
+                    link_local_ip_vector: vec![],
+                    node_ip_option: None,
+                    wireguard_pub_key_option: None,
+                    wireguard_proxy_vector: vec![],
+                    router_interfaces_option: None,
+                },
+                node_keys: horizon_lib::NodeKeys {
+                    ssh_pub_key: "ssh-ed25519 AAAAfixture".into(),
+                    nix_pub_key_option: None,
+                    yggdrasil_key_option: None,
+                },
+                boolean_option: None,
+                capabilities: vec![horizon_lib::NodeCapability::OpenCodeTesting(
+                    horizon_lib::NoSettings {},
+                )],
+                fixed_location_option: None,
+            }],
             domain_configuration: horizon_lib::DomainConfiguration {
                 string: "internal.invalid".into(),
                 domain_name_vector: vec![],
@@ -77,6 +114,25 @@ fn minimal_horizon_definition() -> horizon_lib::HorizonDefinition {
             },
         },
     }
+}
+
+#[cfg(feature = "datom")]
+fn gold_horizon_definition_with_decimal_location() -> horizon_lib::HorizonDefinition {
+    use datom_codec::Decimal;
+
+    let mut definition = minimal_horizon_definition();
+    let node = definition
+        .horizon_configuration
+        .generic_nodes
+        .first_mut()
+        .expect("OpenCodeTesting fixture node");
+    node.fixed_location_option = Some(horizon_lib::FixedLocation {
+        first_decimal: Decimal::try_from(19.4326).expect("finite latitude"),
+        second_decimal: Decimal::try_from(-99.1332).expect("finite longitude"),
+        third_decimal: Decimal::try_from(2_240.0).expect("finite altitude"),
+        fourth_decimal: Decimal::try_from(3.5).expect("finite accuracy"),
+    });
+    definition
 }
 
 #[test]
@@ -105,6 +161,56 @@ fn peer_bytes_preserve_nonempty_secret_reference() {
     let sent = query.signalize().expect("signalize deployment query");
     let received = Signal::<Query>::from(sent.bytes().to_vec());
     assert_eq!(received.restore().expect("restore deployment query"), query);
+}
+
+#[cfg(feature = "datom")]
+#[test]
+fn peer_bytes_restore_gold_opencode_testing_decimal_location() {
+    use datom_codec::{Actualizing, Budget, Datomizable, Potential};
+    use protos::{Protosizable, ReaderBudget, Textualizable};
+
+    let query = Query::Deploy(meta_signal_lojix::ActualizedDeploySubmission {
+        deploy_submission: meta_signal_lojix::DeploySubmission::Host(
+            meta_signal_lojix::HostDeployment {
+                cluster_name: "production.eu".into(),
+                node_name: "opencode-test".into(),
+                host_composition: signal_lojix::HostComposition::BaseHost,
+                proposal_source: "proposal.datom".into(),
+                secrets_input: signal_lojix::SecretsInput::NoSecrets,
+                flake_reference: "github:example/system".into(),
+                deployment_transport: signal_lojix::DeploymentTransport {
+                    nix_store_uri: "ssh-ng://builder.invalid".into(),
+                    ssh_destination: "root@node.invalid".into(),
+                },
+                deployment_input_mode: signal_lojix::DeploymentInputMode::Horizon,
+                deployment_output_selector: signal_lojix::DeploymentOutputSelector {
+                    flake_attribute: "checks.x86_64-linux.contract".into(),
+                },
+                activation_backend: signal_lojix::ActivationBackend::NixosSystemdBootV1,
+                host_deploy_action: signal_lojix::HostDeployAction::Realize,
+                source_revision_policy: signal_lojix::SourceRevisionPolicy::RequireImmutable,
+                nix_builder_spec_option: None,
+                extra_substituter_vector: vec![],
+            },
+        ),
+        horizon_definition_option: Some(gold_horizon_definition_with_decimal_location()),
+    });
+    let sent = query.signalize().expect("signalize Gold definition");
+    let received = Signal::<Query>::from(sent.bytes().to_vec());
+    assert_eq!(
+        received.restore().expect("restore Gold definition"),
+        query
+    );
+    let rendered = query.clone().datomize(vec![]).protosize().textualize();
+    let restored = Potential::<Query>::from(rendered)
+        .actualize(&mut Budget {
+            remaining: 4_096,
+            reader: ReaderBudget { remaining: 4_096 },
+            depth: 0,
+            maximum_depth: 256,
+        })
+        .expect("restore Gold definition from Datom");
+    assert_eq!(restored, query);
 }
 
 #[test]
@@ -203,11 +309,6 @@ fn client_query_keeps_the_authored_pre_actualization_shape() {
     }
 }
 
-/// The three refusals that name no deployment. Each is a state the Nexus can
-/// actually reach and could not previously answer: the continuation budget ran
-/// out, a completion arrived with no correlated deployment cursor, or the
-/// durable write that would have produced the record failed. These examples
-/// are the falsifiable specification of that reply.
 #[test]
 fn a_deploy_refusal_that_names_no_deployment_crosses_peer_bytes() {
     use meta_signal_lojix::{DeployRefusalReason, RefusedDeploy};
@@ -226,10 +327,7 @@ fn a_deploy_refusal_that_names_no_deployment_crosses_peer_bytes() {
         });
         let sent = response.signalize().expect("signalize deploy refusal");
         let received = Signal::<Response>::from(sent.bytes().to_vec());
-        assert_eq!(
-            received.restore().expect("restore deploy refusal"),
-            response
-        );
+        assert_eq!(received.restore().expect("restore deploy refusal"), response);
     }
 }
 

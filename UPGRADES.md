@@ -1,5 +1,25 @@
 # Upgrades
 
+# 6.0.0 to 7.0.0
+
+`horizon-lib` moves from 0.12.0 (`ee8d6f8d27eb6e200504807971ffdd26aaca7ed1`)
+to 0.13.0 (`a3ddaf8685b920093a2328b85ba350a04e11477a`), and `signal-lojix`
+moves from 5.0.0 (`f7866bf013499503d21491bcdaadaf88ea6c810c`) to 6.0.0
+(`cd164896311af9849e2ddf1cdbdd35b5feedcdd1`).
+
+`ActualizedDeploySubmission` carries `Option<HorizonDefinition>`, and the
+ordinary contract embeds it too. Horizon 0.13.0 changes its archived layout:
+`NodeCapability::TailnetClient` carries a `SecretReference`,
+`NodeCapability::TailnetController` carries the certificate authority and the
+TLS certificate and key references, `NodeCapability` gains `UsbDownlink`, and
+`RouterInterfaces` gains an eighth field, `country_code`.
+
+Breaking: the rkyv archive of every message that can hold a
+`HorizonDefinition` changes. Consumers repin and bump. `ethos-zero` and
+`datom-codec` are unchanged, and the generated contract is byte-identical.
+The contract fixture now carries a router with a country, a tailnet
+controller, a tailnet client and a USB downlink.
+
 # 5.1.1 to 6.0.0
 
 `Answer` gains `DeployRefused.RefusedDeploy`, with

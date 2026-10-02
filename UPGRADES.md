@@ -1,5 +1,16 @@
 # Upgrades
 
+## 7.0.0 to 8.0.0
+
+Use Horizon 0.14 and signal-lojix 7 throughout the workspace. Removing the
+wired/WAN field changes every embedded `HorizonDefinition` archive, including
+actualized deploy submissions and desired Nexus configuration. Repin the
+Nexus, ordinary/meta clients and offline tools together with Lojix 9, and
+regenerate typed input archives with the new producer. Preserve existing
+meta-owned state through the separately qualified schema-5-to-6 converter;
+changing a startup archive does not override stored desired configuration.
+See Lojix's `UPGRADES.md` for migration, refusal and rollback gates.
+
 # 6.0.0 to 7.0.0
 
 `horizon-lib` moves from 0.12.0 (`ee8d6f8d27eb6e200504807971ffdd26aaca7ed1`)

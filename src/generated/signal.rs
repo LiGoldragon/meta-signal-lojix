@@ -15,7 +15,7 @@ pub struct UserEnvironmentDeployment {
     pub activation_backend: signal_lojix::ActivationBackend,
     pub user_environment_action: signal_lojix::UserEnvironmentAction,
     pub source_revision_policy: signal_lojix::SourceRevisionPolicy,
-    pub nix_builder_spec_option: Option<signal_lojix::NixBuilderSpec>,
+    pub nix_builder_spec_option: std::option::Option<signal_lojix::NixBuilderSpec>,
     pub extra_substituter_vector: std::vec::Vec<ExtraSubstituter>,
 }
 #[rustfmt::skip]
@@ -34,7 +34,7 @@ pub struct HostDeployment {
     pub activation_backend: signal_lojix::ActivationBackend,
     pub host_deploy_action: signal_lojix::HostDeployAction,
     pub source_revision_policy: signal_lojix::SourceRevisionPolicy,
-    pub nix_builder_spec_option: Option<signal_lojix::NixBuilderSpec>,
+    pub nix_builder_spec_option: std::option::Option<signal_lojix::NixBuilderSpec>,
     pub extra_substituter_vector: std::vec::Vec<ExtraSubstituter>,
 }
 #[rustfmt::skip]
@@ -42,7 +42,7 @@ pub struct HostDeployment {
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub struct ActualizedDeploySubmission {
     pub deploy_submission: DeploySubmission,
-    pub horizon_definition_option: Option<horizon_lib::HorizonDefinition>,
+    pub horizon_definition_option: std::option::Option<horizon_lib::HorizonDefinition>,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]

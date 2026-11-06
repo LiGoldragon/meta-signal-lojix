@@ -1,5 +1,24 @@
 # Upgrades
 
+# 8.0.0 to 0.9.0
+
+The numbering rule changes: the major number is only for a full rewrite, and
+the past majors were wrong. A change to a stored or archived layout is a
+subversion. This contract is now numbered in the 0.x scheme; 0.9.0 is the next
+subversion after 8.0.0, and the next full rewrite is 1.0.0.
+
+`horizon-lib` moves from 0.14.0 (`2e09ebbdc725f64fd9ee102b5758bab85be217e1`)
+to 0.15.0 (`91abfd754fe09e296bb4de074204885b1e209b0d`), and `signal-lojix`
+moves from 7.0.0 (`0a83f2d6d89b473ce63ff10bf05982df314894ad`) to 0.8.0
+(`a55516571f7fa58aca92c973738d1788b6bd3604`). `UserPubKey` gains a fourth
+position, `Vector<UserCapability>`, with `UserCapability.[ AgentStack CodexCandidate ]`.
+
+Any message holding a `HorizonDefinition` changes archive layout because
+`UserPubKey` gained a position; `ActualizedDeploySubmission` carries
+`Option<HorizonDefinition>`. Clients and daemon move together. `signal`,
+`protos`, `datom-codec` and `ethos-zero` are unchanged, and
+`src/generated/signal.rs` is byte-identical.
+
 # 7.0.0 to 8.0.0
 
 One step onto ethos-zero 16.0.0 and the 0.32.2 substrate:

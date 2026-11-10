@@ -1,5 +1,14 @@
 # Upgrades
 
+# 0.11.1 to 0.12.0
+
+`signal-lojix` moves from 0.10.1 (`ba4d4ac9fa0d189e78c912be8bb188b3b529c071`)
+to 0.11.0 (`bd5d250f6923c85ee785f0e9bb4b4b8320a67c11`), whose `Response`
+gains `DeploymentPhaseObserved.DeploymentPhaseEvent`. None of the types this
+contract imports from `signal-lojix` change, and `src/generated/signal.rs` is
+byte-identical; the number moves with the ordinary contract so that clients
+and daemon take the two together.
+
 # 0.11.0 to 0.11.1
 
 `horizon-lib` moves from 0.17.0 (`187b028a1c1ec6c8926a618a3ca435440d077ae7`)

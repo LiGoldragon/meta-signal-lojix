@@ -18,9 +18,9 @@ position. 29.0.0 generates the same Rust from this file as 28.0.0 (`970459d`). O
   `DeployRefused`, `TestRejected`, `UnpinRejected`; then the reaction
   `DeployTerminal`; then `Refused`. `DeployAccepted` stays the acknowledgement
   of an admitted deployment.
-- `Refused.Refusal` answers any input the Nexus store could not carry out,
-  with the store's own words. `Refusal`, `[ Store.String ]`, is imported from
-  `signal-lojix`; its text is `Refused.Store.«…»`.
+- `Refused.StoreFailure` answers any input the Nexus store could not carry
+  out, with the store's own words. `StoreFailure`, a `String`, is imported
+  from `signal-lojix`; its text is `Refused.«…»`.
 - Every enumeration lists its variants in the order Lojix holds them (lojix
   `src/runtime_model.rs` at `da0ad8a`). `DeploySubmission`, stored in the
   deploy job, is `[ Host UserEnvironment ]`, which a test checks.
@@ -29,9 +29,10 @@ position. 29.0.0 generates the same Rust from this file as 28.0.0 (`970459d`). O
   unchanged, through `datom-codec` 0.32.3
   (`eb792265a67b2c6865f9b8c9ed9d2e5ae5a7174c`, was `4dff16b4…` / 0.32.2); the
   deploy text CriomOS's harness-update sends reads and writes unchanged.
-- `signal-lojix` moves to 0.12.0 (`8a776198db368c7f5d39e1615c3d3d319fc2cf5d`,
+- `signal-lojix` moves to 0.12.0 (`17c23e2ef85afdb2834b546442d3020c204d14f9`,
   was `bd5d250f…` / 0.11.0) and `horizon-lib` to 0.18.0
-  (`825a7f09242380a7b3d2609b26e20647db46a8ce`, was `e723ce11…` / 0.17.1).
+  (`182f5307962896e95a2a83c45f68785b1f7c84d3`, was `e723ce11…` / 0.17.1), whose
+  one text change is the `MotherBoard` variant `Ondyfaind`, now `Undefined`.
   `protos` and `signal` are unchanged. `Input` is unchanged in order.
 
 The archived tags that move:

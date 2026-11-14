@@ -291,7 +291,7 @@ pub enum Output {
     TestRejected(RejectedTest),
     UnpinRejected(RejectedUnpin),
     DeployTerminal(signal_lojix::DeploymentRecord),
-    Refused(signal_lojix::Refusal),
+    Refused(signal_lojix::StoreFailure),
 }
 #[rustfmt::skip]
 #[allow(clippy::result_large_err, clippy::ptr_arg, clippy::borrowed_box)]

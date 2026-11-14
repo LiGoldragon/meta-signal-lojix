@@ -585,7 +585,7 @@ fn each_input_is_answered_by_its_own_output() {
 
 #[test]
 fn a_store_refusal_is_an_output_of_the_contract() {
-    let refusal = Output::Refused(signal_lojix::Refusal::Store("the commit failed".into()));
+    let refusal = Output::Refused(signal_lojix::StoreFailure("the commit failed".into()));
     let received = Signal::<Output>::from(
         refusal
             .signalize()
@@ -602,10 +602,10 @@ fn a_store_refusal_is_written_by_its_name() {
     use datom_codec::Datomizable;
     use protos::{Protosizable, Textualizable};
 
-    let refusal = Output::Refused(signal_lojix::Refusal::Store("the commit failed".into()));
+    let refusal = Output::Refused(signal_lojix::StoreFailure("the commit failed".into()));
     assert_eq!(
         refusal.datomize(vec![]).protosize().textualize(),
-        "Refused.Store.«the commit failed»"
+        "Refused.«the commit failed»"
     );
 }
 

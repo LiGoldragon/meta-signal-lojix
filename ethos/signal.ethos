@@ -5,14 +5,14 @@
 ; DeployAccepted, Tested, Unpinned. DeployAccepted acknowledges a deployment
 ; at admission; the deployment's own end follows as the reaction
 ; DeployTerminal. The rejections follow the outputs in the order of the
-; inputs they answer, then DeployTerminal, then Refused.Store, which answers
-; any input the Nexus's store could not carry out, with the store's own words.
+; inputs they answer, then DeployTerminal, then Refused, which answers any
+; input the Nexus's store could not carry out, with the store's own words.
 ;
 ; Every enumeration lists its variants in the order Lojix stores them, so a
 ; stored value keeps its archived tag.
 Signal
 
-[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference LojixNexusConfiguration ConfigurationReceipt ConfigurationRejection Refusal ] ]
+[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference LojixNexusConfiguration ConfigurationReceipt ConfigurationRejection StoreFailure ] ]
 
 [ Configure.LojixNexusConfiguration
   ReverseConfiguration
@@ -37,7 +37,7 @@ Signal
   TestRejected.RejectedTest
   UnpinRejected.RejectedUnpin
   DeployTerminal.DeploymentRecord
-  Refused.Refusal ]
+  Refused.StoreFailure ]
 
 [ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }

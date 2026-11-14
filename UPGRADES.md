@@ -1,5 +1,83 @@
 # Upgrades
 
+# 0.12.0 to 0.13.0
+
+The build reads `ethos/signal.ethos` with ethos-zero 28.0.0
+(`970459d100ddee5f62a76c05642ecfabefba6329`, was `c2653dd8…` / 16.0.0), which
+reads a Signal's first two sections as `Input` and `Output` and pairs them by
+position. One wire break carries every change below, together with
+`signal-lojix` 0.12.0; clients and daemon move together.
+
+- `Query` is `Input` and `Response` is `Output`. The file also generates
+  `Answering`, one capability per input, and `impl Answerable for Input`.
+  `ClientQuery`, the privileged client's text root, keeps its name and shape.
+- `Output` is ordered so the n-th output answers the n-th input:
+  `Configured`, `ConfigurationReversed`, `Retired`, `Pinned`,
+  `DeployAccepted`, `Tested`, `Unpinned`; then the rejections in input order,
+  `ConfigurationRejected`, `RetireRejected`, `PinRejected`, `DeployRejected`,
+  `DeployRefused`, `TestRejected`, `UnpinRejected`; then the reaction
+  `DeployTerminal`; then `Refused`. `DeployAccepted` stays the acknowledgement
+  of an admitted deployment.
+- `Refused.Refusal` answers any input the Nexus store could not carry out,
+  with the store's own words. `Refusal`, `[ Store.String ]`, is imported from
+  `signal-lojix`; its text is `Refused.Store.«…»`.
+- Every enumeration lists its variants in the order Lojix holds them (lojix
+  `src/runtime_model.rs` at `da0ad8a`). `DeploySubmission`, stored in the
+  deploy job, is `[ Host UserEnvironment ]`, which a test checks.
+- `QuickCheck` is a newtype struct over `Vector<NodeName>` in place of a type
+  alias, as is every scalar `signal-lojix` declares. Archive and Datom text are
+  unchanged, through `datom-codec` 0.32.3
+  (`eb792265a67b2c6865f9b8c9ed9d2e5ae5a7174c`, was `4dff16b4…` / 0.32.2); the
+  deploy text CriomOS's harness-update sends reads and writes unchanged.
+- `signal-lojix` moves to 0.12.0 (`8a776198db368c7f5d39e1615c3d3d319fc2cf5d`,
+  was `bd5d250f…` / 0.11.0) and `horizon-lib` to 0.18.0
+  (`825a7f09242380a7b3d2609b26e20647db46a8ce`, was `e723ce11…` / 0.17.1).
+  `protos` and `signal` are unchanged. `Input` is unchanged in order.
+
+The archived tags that move:
+
+| enumeration | variant | was | now |
+|---|---|---|---|
+| Output | ConfigurationRejected | 1 | 7 |
+| Output | ConfigurationReversed | 2 | 1 |
+| Output | PinRejected | 3 | 9 |
+| Output | DeployRejected | 4 | 10 |
+| Output | DeployRefused | 5 | 11 |
+| Output | DeployAccepted | 6 | 4 |
+| Output | TestRejected | 7 | 12 |
+| Output | Unpinned | 8 | 6 |
+| Output | Tested | 9 | 5 |
+| Output | UnpinRejected | 10 | 13 |
+| Output | DeployTerminal | 11 | 14 |
+| Output | Pinned | 12 | 3 |
+| Output | RetireRejected | 13 | 8 |
+| Output | Retired | 14 | 2 |
+| Output | Refused | (new) | 15 |
+| PinRejectionReason | PinSlotExhausted | 0 | 3 |
+| PinRejectionReason | InternalError | 1 | 4 |
+| PinRejectionReason | NodeUnknown | 2 | 1 |
+| PinRejectionReason | PinLabelInUse | 3 | 2 |
+| PinRejectionReason | GenerationUnknown | 4 | 0 |
+| NodeSelection | All | 0 | 1 |
+| NodeSelection | Nodes | 1 | 0 |
+| RetireRejectionReason | NodeUnknown | 0 | 1 |
+| RetireRejectionReason | GenerationUnknown | 1 | 0 |
+| RetireRejectionReason | GenerationPinned | 2 | 3 |
+| RetireRejectionReason | InternalError | 3 | 4 |
+| RetireRejectionReason | GenerationActive | 4 | 2 |
+| UnpinRejectionReason | GenerationNotPinned | 0 | 2 |
+| UnpinRejectionReason | PinLabelUnknown | 1 | 0 |
+| UnpinRejectionReason | InternalError | 2 | 3 |
+| UnpinRejectionReason | NodeUnknown | 3 | 1 |
+| DeploySubmission | UserEnvironment | 0 | 1 |
+| DeploySubmission | Host | 1 | 0 |
+| TestRejectionReason | SubstrateUnavailable | 0 | 6 |
+| TestRejectionReason | NoTestDefaults | 1 | 4 |
+| TestRejectionReason | ClusterUnknown | 2 | 0 |
+| TestRejectionReason | LiveNotYetEnabled | 4 | 5 |
+| TestRejectionReason | NodeUnknown | 5 | 1 |
+| TestRejectionReason | VmHostNotDeclaredForNode | 6 | 2 |
+
 # 0.11.1 to 0.12.0
 
 `signal-lojix` moves from 0.10.1 (`ba4d4ac9fa0d189e78c912be8bb188b3b529c071`)

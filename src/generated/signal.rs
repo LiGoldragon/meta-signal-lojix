@@ -1,4 +1,9 @@
-#![allow(dead_code, non_camel_case_types, non_snake_case)]
+#![allow(
+    dead_code,
+    non_camel_case_types,
+    non_snake_case,
+    clippy::type_complexity
+)]
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
@@ -70,28 +75,28 @@ pub struct AppliedPin {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum PinRejectionReason {
-    PinSlotExhausted,
-    InternalError,
+    GenerationUnknown,
     NodeUnknown,
     PinLabelInUse,
-    GenerationUnknown,
+    PinSlotExhausted,
+    InternalError,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum NodeSelection {
-    All,
     Nodes(std::vec::Vec<signal_lojix::NodeName>),
+    All,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum RetireRejectionReason {
-    NodeUnknown,
     GenerationUnknown,
+    NodeUnknown,
+    GenerationActive,
     GenerationPinned,
     InternalError,
-    GenerationActive,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -125,10 +130,10 @@ pub enum DeployRefusalReason {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum UnpinRejectionReason {
-    GenerationNotPinned,
     PinLabelUnknown,
-    InternalError,
     NodeUnknown,
+    GenerationNotPinned,
+    InternalError,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -194,11 +199,13 @@ pub struct RetireRequest {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum DeploySubmission {
-    UserEnvironment(UserEnvironmentDeployment),
     Host(HostDeployment),
+    UserEnvironment(UserEnvironmentDeployment),
 }
 #[rustfmt::skip]
-pub type QuickCheck = std::vec::Vec<signal_lojix::NodeName>;
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct QuickCheck(pub std::vec::Vec<signal_lojix::NodeName>);
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
@@ -220,13 +227,13 @@ pub struct AppliedUnpin {
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
 pub enum TestRejectionReason {
-    SubstrateUnavailable,
-    NoTestDefaults,
     ClusterUnknown,
-    HostDeclaresNoVmHost,
-    LiveNotYetEnabled,
     NodeUnknown,
     VmHostNotDeclaredForNode,
+    HostDeclaresNoVmHost,
+    NoTestDefaults,
+    LiveNotYetEnabled,
+    SubstrateUnavailable,
     InternalError,
 }
 #[rustfmt::skip]
@@ -256,7 +263,7 @@ pub struct TestRun {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub enum Query {
+pub enum Input {
     Configure(signal_lojix::LojixNexusConfiguration),
     ReverseConfiguration,
     Retire(RetireRequest),
@@ -268,20 +275,87 @@ pub enum Query {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub enum Response {
+pub enum Output {
     Configured(signal_lojix::ConfigurationReceipt),
-    ConfigurationRejected(signal_lojix::ConfigurationRejection),
     ConfigurationReversed(signal_lojix::ConfigurationReceipt),
+    Retired(AppliedRetire),
+    Pinned(AppliedPin),
+    DeployAccepted(DeployHandle),
+    Tested(AcceptedTest),
+    Unpinned(AppliedUnpin),
+    ConfigurationRejected(signal_lojix::ConfigurationRejection),
+    RetireRejected(RejectedRetire),
     PinRejected(RejectedPin),
     DeployRejected(RejectedDeploy),
     DeployRefused(RefusedDeploy),
-    DeployAccepted(DeployHandle),
     TestRejected(RejectedTest),
-    Unpinned(AppliedUnpin),
-    Tested(AcceptedTest),
     UnpinRejected(RejectedUnpin),
     DeployTerminal(signal_lojix::DeploymentRecord),
-    Pinned(AppliedPin),
-    RetireRejected(RejectedRetire),
-    Retired(AppliedRetire),
+    Refused(signal_lojix::Refusal),
+}
+#[rustfmt::skip]
+#[allow(clippy::result_large_err, clippy::ptr_arg, clippy::borrowed_box)]
+pub trait Answering {
+    fn configure(
+        &self,
+        lojix_nexus_configuration: &signal_lojix::LojixNexusConfiguration,
+    ) -> std::result::Result<signal_lojix::ConfigurationReceipt, Output>;
+    fn reverse_configuration(
+        &self,
+    ) -> std::result::Result<signal_lojix::ConfigurationReceipt, Output>;
+    fn retire(
+        &self,
+        retire_request: &RetireRequest,
+    ) -> std::result::Result<AppliedRetire, Output>;
+    fn pin(&self, pin_request: &PinRequest) -> std::result::Result<AppliedPin, Output>;
+    fn deploy(
+        &self,
+        actualized_deploy_submission: &ActualizedDeploySubmission,
+    ) -> std::result::Result<DeployHandle, Output>;
+    fn test(
+        &self,
+        test_request: &TestRequest,
+    ) -> std::result::Result<AcceptedTest, Output>;
+    fn unpin(
+        &self,
+        unpin_request: &UnpinRequest,
+    ) -> std::result::Result<AppliedUnpin, Output>;
+}
+#[rustfmt::skip]
+pub trait Answerable {
+    fn answer<Nexus: Answering>(&self, nexus: &Nexus) -> Output;
+}
+#[rustfmt::skip]
+impl Answerable for Input {
+    fn answer<Nexus: Answering>(&self, nexus: &Nexus) -> Output {
+        match self {
+            Input::Configure(carried) => {
+                nexus
+                    .configure(carried)
+                    .map_or_else(|refusal| refusal, Output::Configured)
+            }
+            Input::ReverseConfiguration => {
+                nexus
+                    .reverse_configuration()
+                    .map_or_else(|refusal| refusal, Output::ConfigurationReversed)
+            }
+            Input::Retire(carried) => {
+                nexus.retire(carried).map_or_else(|refusal| refusal, Output::Retired)
+            }
+            Input::Pin(carried) => {
+                nexus.pin(carried).map_or_else(|refusal| refusal, Output::Pinned)
+            }
+            Input::Deploy(carried) => {
+                nexus
+                    .deploy(carried)
+                    .map_or_else(|refusal| refusal, Output::DeployAccepted)
+            }
+            Input::Test(carried) => {
+                nexus.test(carried).map_or_else(|refusal| refusal, Output::Tested)
+            }
+            Input::Unpin(carried) => {
+                nexus.unpin(carried).map_or_else(|refusal| refusal, Output::Unpinned)
+            }
+        }
+    }
 }

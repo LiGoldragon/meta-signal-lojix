@@ -1,7 +1,18 @@
 ; Privileged Lojix query and response contract.
+;
+; Each input's own output is named in its past tense and stands at its
+; position: Configured, ConfigurationReversed, Retired, Pinned,
+; DeployAccepted, Tested, Unpinned. DeployAccepted acknowledges a deployment
+; at admission; the deployment's own end follows as the reaction
+; DeployTerminal. The rejections follow the outputs in the order of the
+; inputs they answer, then DeployTerminal, then Refused.Store, which answers
+; any input the Nexus's store could not carry out, with the store's own words.
+;
+; Every enumeration lists its variants in the order Lojix stores them, so a
+; stored value keeps its archived tag.
 Signal
 
-[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference LojixNexusConfiguration ConfigurationReceipt ConfigurationRejection ] ]
+[ horizon_lib:[ HorizonDefinition ] signal_lojix:[ UserEnvironmentAction GenerationIdentifier ProposalSource SecretsInput NodeName DeploymentRecord HostDeployAction PinLabel GenerationSlot TestRunIdentifier HostComposition DatabaseMarker UserName NixBuilderSpec DeploymentInputMode DeploymentTransport TestExecutionProfile ActivationBackend HostSelection DeploymentOutputSelector TestMode SourceRevisionPolicy ClusterName DeploymentIdentifier FlakeReference LojixNexusConfiguration ConfigurationReceipt ConfigurationRejection Refusal ] ]
 
 [ Configure.LojixNexusConfiguration
   ReverseConfiguration
@@ -12,34 +23,35 @@ Signal
   Unpin.UnpinRequest ]
 
 [ Configured.ConfigurationReceipt
-  ConfigurationRejected.ConfigurationRejection
   ConfigurationReversed.ConfigurationReceipt
+  Retired.AppliedRetire
+  Pinned.AppliedPin
+  DeployAccepted.DeployHandle
+  Tested.AcceptedTest
+  Unpinned.AppliedUnpin
+  ConfigurationRejected.ConfigurationRejection
+  RetireRejected.RejectedRetire
   PinRejected.RejectedPin
   DeployRejected.RejectedDeploy
   DeployRefused.RefusedDeploy
-  DeployAccepted.DeployHandle
   TestRejected.RejectedTest
-  Unpinned.AppliedUnpin
-  Tested.AcceptedTest
   UnpinRejected.RejectedUnpin
   DeployTerminal.DeploymentRecord
-  Pinned.AppliedPin
-  RetireRejected.RejectedRetire
-  Retired.AppliedRetire ]
+  Refused.Refusal ]
 
 [ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   ActualizedDeploySubmission.{ DeploySubmission Option<HorizonDefinition> }
   ClientQuery.[ Configure.LojixNexusConfiguration ReverseConfiguration Retire.RetireRequest Pin.PinRequest Deploy.DeploySubmission Test.TestRequest Unpin.UnpinRequest ]
   AppliedPin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
-  PinRejectionReason.[ PinSlotExhausted InternalError NodeUnknown PinLabelInUse GenerationUnknown ]
-  NodeSelection.[ All Nodes.Vector<NodeName> ]
-  RetireRejectionReason.[ NodeUnknown GenerationUnknown GenerationPinned InternalError GenerationActive ]
+  PinRejectionReason.[ GenerationUnknown NodeUnknown PinLabelInUse PinSlotExhausted InternalError ]
+  NodeSelection.[ Nodes.Vector<NodeName> All ]
+  RetireRejectionReason.[ GenerationUnknown NodeUnknown GenerationActive GenerationPinned InternalError ]
   RejectedTest.{ TestRejectionReason DatabaseMarker }
   RejectedDeploy.{ DeploymentRecord }
   RefusedDeploy.{ DeployRefusalReason DatabaseMarker }
   DeployRefusalReason.[ ContinuationBudgetExhausted NoCorrelatedDeployment DurableWriteFailed ]
-  UnpinRejectionReason.[ GenerationNotPinned PinLabelUnknown InternalError NodeUnknown ]
+  UnpinRejectionReason.[ PinLabelUnknown NodeUnknown GenerationNotPinned InternalError ]
   PinRequest.{ ClusterName NodeName GenerationIdentifier PinLabel }
   RejectedUnpin.{ UnpinRejectionReason DatabaseMarker }
   TestRequest.[ Run.TestRun Check.QuickCheck ]
@@ -48,11 +60,11 @@ Signal
   ExtraSubstituter.{ String String }
   DeployHandle.{ DeploymentIdentifier DatabaseMarker }
   RetireRequest.{ ClusterName NodeName GenerationIdentifier }
-  DeploySubmission.[ UserEnvironment.UserEnvironmentDeployment Host.HostDeployment ]
+  DeploySubmission.[ Host.HostDeployment UserEnvironment.UserEnvironmentDeployment ]
   QuickCheck.Vector<NodeName>
   AcceptedTest.{ TestRunIdentifier DatabaseMarker }
   AppliedUnpin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
-  TestRejectionReason.[ SubstrateUnavailable NoTestDefaults ClusterUnknown HostDeclaresNoVmHost LiveNotYetEnabled NodeUnknown VmHostNotDeclaredForNode InternalError ]
+  TestRejectionReason.[ ClusterUnknown NodeUnknown VmHostNotDeclaredForNode HostDeclaresNoVmHost NoTestDefaults LiveNotYetEnabled SubstrateUnavailable InternalError ]
   RejectedRetire.{ RetireRejectionReason DatabaseMarker }
   AppliedRetire.{ GenerationIdentifier GenerationSlot DatabaseMarker }
   TestRun.{ ClusterName NodeSelection HostSelection TestExecutionProfile } ]

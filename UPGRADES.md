@@ -2,10 +2,10 @@
 
 # 0.12.0 to 0.13.0
 
-The build reads `ethos/signal.ethos` with ethos-zero 28.0.0
-(`970459d100ddee5f62a76c05642ecfabefba6329`, was `c2653dd8…` / 16.0.0), which
+The build reads `ethos/signal.ethos` with ethos-zero 29.0.0
+(`f23eacf338a90ce4a6dea011554724fa6488fcc9`, was `c2653dd8…` / 16.0.0), which
 reads a Signal's first two sections as `Input` and `Output` and pairs them by
-position. One wire break carries every change below, together with
+position. 29.0.0 generates the same Rust from this file as 28.0.0 (`970459d`). One wire break carries every change below, together with
 `signal-lojix` 0.12.0; clients and daemon move together.
 
 - `Query` is `Input` and `Response` is `Output`. The file also generates

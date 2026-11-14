@@ -20,7 +20,7 @@ horizon-lib = { git = "https://github.com/LiGoldragon/horizon-rs", rev = "825a7f
 signal-lojix = { git = "https://github.com/LiGoldragon/signal-lojix", rev = "8a776198db368c7f5d39e1615c3d3d319fc2cf5d", default-features = false }
 
 [build-dependencies]
-ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "970459d100ddee5f62a76c05642ecfabefba6329" }
+ethos-zero = { git = "https://github.com/LiGoldragon/ethos-zero", rev = "f23eacf338a90ce4a6dea011554724fa6488fcc9" }
 
 [lints.rust]
 unsafe_code = "forbid"

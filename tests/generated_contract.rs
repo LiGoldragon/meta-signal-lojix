@@ -205,10 +205,14 @@ fn peer_bytes_restore_typed_query_and_response() {
 #[test]
 fn user_environment_retirement_request_crosses_fresh_peer_bytes() {
     let query = user_environment_retirement_query();
-    let sent = query.signalize().expect("signalize user-environment retirement");
+    let sent = query
+        .signalize()
+        .expect("signalize user-environment retirement");
     let received = Signal::<Query>::from(sent.bytes().to_vec());
     assert_eq!(
-        received.restore().expect("restore user-environment retirement"),
+        received
+            .restore()
+            .expect("restore user-environment retirement"),
         query
     );
 }

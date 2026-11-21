@@ -5,7 +5,7 @@ Signal
 
 [ Configure.LojixNexusConfiguration
   ReverseConfiguration
-  Retire.RetireRequest
+  Retire.RetirementRequest
   Pin.PinRequest
   Deploy.ActualizedDeploySubmission
   Test.TestRequest
@@ -30,7 +30,7 @@ Signal
 [ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
   ActualizedDeploySubmission.{ DeploySubmission Option<HorizonDefinition> }
-  ClientQuery.[ Configure.LojixNexusConfiguration ReverseConfiguration Retire.RetireRequest Pin.PinRequest Deploy.DeploySubmission Test.TestRequest Unpin.UnpinRequest ]
+  ClientQuery.[ Configure.LojixNexusConfiguration ReverseConfiguration Retire.RetirementRequest Pin.PinRequest Deploy.DeploySubmission Test.TestRequest Unpin.UnpinRequest ]
   AppliedPin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
   PinRejectionReason.[ PinSlotExhausted InternalError NodeUnknown PinLabelInUse GenerationUnknown ]
   NodeSelection.[ All Nodes.Vector<NodeName> ]
@@ -47,7 +47,9 @@ Signal
   UnpinRequest.{ ClusterName NodeName PinLabel }
   ExtraSubstituter.{ String String }
   DeployHandle.{ DeploymentIdentifier DatabaseMarker }
-  RetireRequest.{ ClusterName NodeName GenerationIdentifier }
+  RetirementRequest.[ Generation.GenerationRetirement UserEnvironment.UserEnvironmentRetirement ]
+  GenerationRetirement.{ ClusterName NodeName GenerationIdentifier }
+  UserEnvironmentRetirement.{ ClusterName NodeName UserName DeploymentTransport }
   DeploySubmission.[ UserEnvironment.UserEnvironmentDeployment Host.HostDeployment ]
   QuickCheck.Vector<NodeName>
   AcceptedTest.{ TestRunIdentifier DatabaseMarker }

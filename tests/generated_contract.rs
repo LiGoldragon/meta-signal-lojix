@@ -23,6 +23,20 @@ fn pin_query() -> Query {
     })
 }
 
+fn user_environment_retirement_query() -> Query {
+    Query::Retire(meta_signal_lojix::RetirementRequest::UserEnvironment(
+        meta_signal_lojix::UserEnvironmentRetirement {
+            cluster_name: "fixture-cluster".into(),
+            node_name: "fixture-node".into(),
+            user_name: "ada".into(),
+            deployment_transport: signal_lojix::DeploymentTransport {
+                nix_store_uri: "ssh-ng://copy.invalid".into(),
+                ssh_destination: "root@target.invalid".into(),
+            },
+        },
+    ))
+}
+
 fn deployment_with_secret_reference() -> Query {
     Query::Deploy(meta_signal_lojix::ActualizedDeploySubmission {
         deploy_submission: meta_signal_lojix::DeploySubmission::Host(
@@ -189,6 +203,17 @@ fn peer_bytes_restore_typed_query_and_response() {
 }
 
 #[test]
+fn user_environment_retirement_request_crosses_fresh_peer_bytes() {
+    let query = user_environment_retirement_query();
+    let sent = query.signalize().expect("signalize user-environment retirement");
+    let received = Signal::<Query>::from(sent.bytes().to_vec());
+    assert_eq!(
+        received.restore().expect("restore user-environment retirement"),
+        query
+    );
+}
+
+#[test]
 fn peer_bytes_preserve_nonempty_secret_reference() {
     let query = deployment_with_secret_reference();
     let sent = query.signalize().expect("signalize deployment query");
@@ -225,6 +250,7 @@ fn a_user_key_carrying_agent_stack_and_stable_codex_crosses_archive_and_datom() 
         }],
         editor_option: Some(horizon_lib::Editor::Emacs),
         text_size_option: Some(horizon_lib::TextSize::Large),
+        synchronization_vector: vec![],
     }];
     assert_deployment_crosses_archive_and_datom(definition);
 }
@@ -342,6 +368,18 @@ fn datom_round_trip_preserves_named_privileged_query() {
         })
         .expect("restore secret-reference deployment");
     assert_eq!(restored, deployment);
+
+    let retirement = user_environment_retirement_query();
+    let rendered = retirement.clone().datomize(vec![]).protosize().textualize();
+    let restored = Potential::<Query>::from(rendered)
+        .actualize(&mut Budget {
+            remaining: 4_096,
+            reader: ReaderBudget { remaining: 4_096 },
+            depth: 0,
+            maximum_depth: 256,
+        })
+        .expect("restore user-environment retirement");
+    assert_eq!(restored, retirement);
 }
 
 #[cfg(feature = "datom")]

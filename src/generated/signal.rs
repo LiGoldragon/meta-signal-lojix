@@ -50,7 +50,7 @@ pub struct ActualizedDeploySubmission {
 pub enum ClientQuery {
     Configure(signal_lojix::LojixNexusConfiguration),
     ReverseConfiguration,
-    Retire(RetireRequest),
+    Retire(RetirementRequest),
     Pin(PinRequest),
     Deploy(DeploySubmission),
     Test(TestRequest),
@@ -185,10 +185,26 @@ pub struct DeployHandle {
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
-pub struct RetireRequest {
+pub enum RetirementRequest {
+    Generation(GenerationRetirement),
+    UserEnvironment(UserEnvironmentRetirement),
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct GenerationRetirement {
     pub cluster_name: signal_lojix::ClusterName,
     pub node_name: signal_lojix::NodeName,
     pub generation_identifier: signal_lojix::GenerationIdentifier,
+}
+#[rustfmt::skip]
+#[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "datom", derive(datom_codec::Datomizable, datom_codec::Composing))]
+pub struct UserEnvironmentRetirement {
+    pub cluster_name: signal_lojix::ClusterName,
+    pub node_name: signal_lojix::NodeName,
+    pub user_name: signal_lojix::UserName,
+    pub deployment_transport: signal_lojix::DeploymentTransport,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -259,7 +275,7 @@ pub struct TestRun {
 pub enum Query {
     Configure(signal_lojix::LojixNexusConfiguration),
     ReverseConfiguration,
-    Retire(RetireRequest),
+    Retire(RetirementRequest),
     Pin(PinRequest),
     Deploy(ActualizedDeploySubmission),
     Test(TestRequest),

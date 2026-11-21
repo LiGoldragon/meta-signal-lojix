@@ -1,3 +1,7 @@
+# 0.12.0 to 0.12.1
+
+Pin Horizon 0.17.2 replica-account synchronization validation and matching signal-lojix 0.11.1. Contract schemas and generated Rust remain unchanged; this dependency child stays in the typed Unison archive cohort.
+
 # Upgrades
 
 # 0.11.1 to 0.12.0

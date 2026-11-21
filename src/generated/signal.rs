@@ -75,6 +75,7 @@ pub enum PinRejectionReason {
     NodeUnknown,
     PinLabelInUse,
     GenerationUnknown,
+    EnvironmentRetirementInFlight,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -92,6 +93,7 @@ pub enum RetireRejectionReason {
     GenerationPinned,
     InternalError,
     GenerationActive,
+    EnvironmentRetirementInFlight,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -129,6 +131,7 @@ pub enum UnpinRejectionReason {
     PinLabelUnknown,
     InternalError,
     NodeUnknown,
+    EnvironmentRetirementInFlight,
 }
 #[rustfmt::skip]
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]

@@ -27,13 +27,13 @@ Signal
   RetireRejected.RejectedRetire
   Retired.AppliedRetire ]
 
-[ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
-  HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> Vector<ExtraSubstituter> }
+[ UserEnvironmentDeployment.{ ClusterName NodeName UserName ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend UserEnvironmentAction SourceRevisionPolicy Option<NixBuilderSpec> ⟦ ExtraSubstituter ⟧ }
+  HostDeployment.{ ClusterName NodeName HostComposition ProposalSource SecretsInput FlakeReference DeploymentTransport DeploymentInputMode DeploymentOutputSelector ActivationBackend HostDeployAction SourceRevisionPolicy Option<NixBuilderSpec> ⟦ ExtraSubstituter ⟧ }
   ActualizedDeploySubmission.{ DeploySubmission Option<HorizonDefinition> }
   ClientQuery.[ Configure.LojixNexusConfiguration ReverseConfiguration Retire.RetirementRequest Pin.PinRequest Deploy.DeploySubmission Test.TestRequest Unpin.UnpinRequest ]
   AppliedPin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
   PinRejectionReason.[ PinSlotExhausted InternalError NodeUnknown PinLabelInUse GenerationUnknown EnvironmentRetirementInFlight ]
-  NodeSelection.[ All Nodes.Vector<NodeName> ]
+  NodeSelection.[ All Nodes.⟦ NodeName ⟧ ]
   RetireRejectionReason.[ NodeUnknown GenerationUnknown GenerationPinned InternalError GenerationActive EnvironmentRetirementInFlight ]
   RejectedTest.{ TestRejectionReason DatabaseMarker }
   RejectedDeploy.{ DeploymentRecord }
@@ -51,7 +51,7 @@ Signal
   GenerationRetirement.{ ClusterName NodeName GenerationIdentifier }
   UserEnvironmentRetirement.{ ClusterName NodeName UserName DeploymentTransport }
   DeploySubmission.[ UserEnvironment.UserEnvironmentDeployment Host.HostDeployment ]
-  QuickCheck.Vector<NodeName>
+  QuickCheck.⟦ NodeName ⟧
   AcceptedTest.{ TestRunIdentifier DatabaseMarker }
   AppliedUnpin.{ GenerationIdentifier PinLabel GenerationSlot GenerationSlot DatabaseMarker }
   TestRejectionReason.[ SubstrateUnavailable NoTestDefaults ClusterUnknown HostDeclaresNoVmHost LiveNotYetEnabled NodeUnknown VmHostNotDeclaredForNode InternalError ]

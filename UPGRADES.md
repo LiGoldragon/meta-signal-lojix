@@ -1,3 +1,12 @@
+# 0.12.1 to 0.13.0
+
+Pin Horizon 0.18.0 and matching signal-lojix 0.12.0 for the appended,
+validated `RouterUsbParentPowerOn` capability. The Horizon capability and its
+archive retain their deployed size and alignment, so old definitions and
+stored deploy submissions remain readable. Meta-signal-lojix's schema and
+generated Rust remain byte-identical; owner client and daemon repin together
+because `ActualizedDeploySubmission` can carry the new capability.
+
 # 0.12.0 to 0.12.1
 
 Pin Horizon 0.17.2 replica-account synchronization validation and matching signal-lojix 0.11.1. Contract schemas and generated Rust remain unchanged; this dependency child stays in the typed Unison archive cohort.

@@ -1,3 +1,11 @@
+# 0.12.1 to 0.14.0
+
+Pin the paired Horizon 0.19.0 release and canonical ordinary Signal 0.13.0 producer. Their
+append-only `RouterUsbParentPowerOn` and `PreferredWiredInternet` Horizon
+capabilities travel inside existing deployment messages. The owner contract
+schema and generated Rust remain unchanged, including standalone user
+environment retirement; clients and the daemon move with the paired producers.
+
 # 0.12.0 to 0.12.1
 
 Pin Horizon 0.17.2 replica-account synchronization validation and matching signal-lojix 0.11.1. Contract schemas and generated Rust remain unchanged; this dependency child stays in the typed Unison archive cohort.
